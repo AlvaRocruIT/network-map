@@ -1,47 +1,92 @@
-/* Contenedor principal */
-
 #organigrama {
     display: flex;
     justify-content: center;
     padding: 2rem;
+    overflow-x: auto;
 }
 
-
-/* Cada rama del árbol */
-
 .rama {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
-
-/* Hijos */
-
-.subordinados {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-
-/* Nodo */
 
 .nodo {
     border: 1px solid black;
     padding: 0.5rem;
     min-width: 160px;
     text-align: center;
+    background: white;
 }
 
-
-/* Tipo de vínculo */
-
-.vinculo-dependencia {
-    border-style: solid;
+.nodo strong,
+.nodo span,
+.nodo small {
+    display: block;
 }
 
+/* Dependencias directas */
+
+.subordinados {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 1rem;
+}
+
+.subordinados::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    border-top: 1px solid black;
+}
+
+.rama > .subordinados::after {
+    content: "";
+    position: absolute;
+    top: -3rem;
+    left: 50%;
+    height: 3rem;
+    border-left: 1px solid black;
+}
+
+.subordinados > .rama::before {
+    content: "";
+    position: absolute;
+    top: -1rem;
+    left: 50%;
+    height: 1rem;
+    border-left: 1px solid black;
+}
+
+/* Pseudo-dependencias */
+
+.pseudo-dependencias {
+    position: absolute;
+    top: 4rem;
+    left: calc(50% + 3rem);
+    display: flex;
+    gap: 1rem;
+    padding-left: 4rem;
+}
+
+.pseudo-dependencias::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 4rem;
+    border-top: 1px solid black;
+}
+
+/* Ambos tipos usan cuadros completos */
+
+.vinculo-dependencia,
 .vinculo-pseudo {
-    border-style: dashed;
+    border-style: solid;
 }
