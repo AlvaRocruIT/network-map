@@ -1,0 +1,47 @@
+/* Contenedor principal */
+
+#organigrama {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+
+/* Cada rama del árbol */
+
+.rama {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/* Hijos */
+
+.subordinados {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+
+/* Nodo */
+
+.nodo {
+    border: 1px solid black;
+    padding: 0.5rem;
+    min-width: 160px;
+    text-align: center;
+}
+
+
+/* Tipo de vínculo */
+
+.vinculo-dependencia {
+    border-style: solid;
+}
+
+.vinculo-pseudo {
+    border-style: dashed;
+}
