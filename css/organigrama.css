@@ -1,5 +1,4 @@
  :root { --linea: #222; --borde: #222; --trunk: 2.5rem; }
-  body { font-family: Arial, sans-serif; background:#fafafa; padding: 3rem 1rem; }
  
   .tree, .tree ul, .tree li { list-style:none; margin:0; padding:0; }
   .tree { display:flex; justify-content:center; }
