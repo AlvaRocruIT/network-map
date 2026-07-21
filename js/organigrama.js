@@ -11,15 +11,22 @@ async function cargarOrganigrama() {
     }
 
     const personas = await respuesta.json();
+
+    const raices = personas.filter(
+      persona => persona.reportaA === null
+    );
+
+    contenedor.innerHTML = "";
+
     const arbol = document.createElement("ul");
-arbol.classList.add("tree");
+    arbol.classList.add("tree");
 
-raices.forEach(raiz => {
-  arbol.appendChild(crearRama(raiz, personas));
-});
-
-contenedor.appendChild(arbol);
+    raices.forEach(raiz => {
+      arbol.appendChild(crearRama(raiz, personas));
     });
+
+    contenedor.appendChild(arbol);
+
   } catch (error) {
     console.error(error);
     contenedor.textContent = "Error al cargar el organigrama.";
