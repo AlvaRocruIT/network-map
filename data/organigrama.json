@@ -9,15 +9,15 @@
   {
     "id": "Ops1",
     "nombre": "Gonzalo",
-    "cargo": "Jefe de Ingeniería",
-    "equipo": "Ingeniería",
+    "cargo": "Gerente Operaciones",
+    "equipo": "Operaciones",
     "reportaA": "gg"
   },
   {
     "id": "TechLead",
     "nombre": "Pablo",
-    "cargo": "Project Manager",
-    "equipo": "Tech",
+    "cargo": "Dirección Técnica",
+    "equipo": "",
     "reportaA": "gg"
   }
 ]
