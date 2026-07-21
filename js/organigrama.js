@@ -11,12 +11,14 @@ async function cargarOrganigrama() {
     }
 
     const personas = await respuesta.json();
-    const raices = personas.filter(persona => persona.reportaA === null);
+    const arbol = document.createElement("ul");
+arbol.classList.add("tree");
 
-    contenedor.innerHTML = "";
+raices.forEach(raiz => {
+  arbol.appendChild(crearRama(raiz, personas));
+});
 
-    raices.forEach(raiz => {
-      contenedor.appendChild(crearRama(raiz, personas));
+contenedor.appendChild(arbol);
     });
   } catch (error) {
     console.error(error);
@@ -25,11 +27,11 @@ async function cargarOrganigrama() {
 }
 
 function crearRama(persona, personas) {
-  const rama = document.createElement("section");
-  rama.classList.add("rama");
+  const item = document.createElement("li");
 
-  // Nodo principal
-  rama.appendChild(crearNodo(persona));
+  const nodoWrap = document.createElement("div");
+  nodoWrap.classList.add("nodo-wrap");
+  nodoWrap.appendChild(crearNodo(persona));
 
   const vinculados = personas.filter(
     candidato => candidato.reportaA === persona.id
@@ -39,46 +41,43 @@ function crearRama(persona, personas) {
     candidato => candidato.tipoVinculo !== "pseudo"
   );
 
-  const pseudodependencias = vinculados.filter(
+  const pseudos = vinculados.filter(
     candidato => candidato.tipoVinculo === "pseudo"
   );
 
-  // Pseudo-dependencias: lateral inferior derecha
-  if (pseudodependencias.length > 0) {
-    const pseudogrupo = document.createElement("div");
-    pseudogrupo.classList.add("pseudo-dependencias");
+  if (pseudos.length > 0) {
+    const pseudoRama = document.createElement("div");
+    pseudoRama.classList.add("pseudo-rama");
 
-    pseudodependencias.forEach(pseudo => {
-      pseudogrupo.appendChild(crearNodo(pseudo));
+    const pseudoLista = document.createElement("div");
+    pseudoLista.classList.add("pseudo-lista");
+
+    pseudos.forEach(pseudo => {
+      pseudoLista.appendChild(crearNodo(pseudo));
     });
 
-    rama.appendChild(pseudogrupo);
+    pseudoRama.appendChild(pseudoLista);
+    nodoWrap.appendChild(pseudoRama);
   }
 
-  // Dependencias directas: debajo del líder
+  item.appendChild(nodoWrap);
+
   if (dependencias.length > 0) {
-    const hijos = document.createElement("div");
-    hijos.classList.add("subordinados");
+    const listaHijos = document.createElement("ul");
 
     dependencias.forEach(dependencia => {
-      hijos.appendChild(crearRama(dependencia, personas));
+      listaHijos.appendChild(crearRama(dependencia, personas));
     });
 
-    rama.appendChild(hijos);
+    item.appendChild(listaHijos);
   }
 
-  return rama;
+  return item;
 }
 
 function crearNodo(persona) {
   const nodo = document.createElement("article");
   nodo.classList.add("nodo");
-
-  const tipo = persona.tipoVinculo === "pseudo"
-    ? "pseudo"
-    : "dependencia";
-
-  nodo.classList.add(`vinculo-${tipo}`);
 
   nodo.innerHTML = `
     <strong>${persona.nombre}</strong>
