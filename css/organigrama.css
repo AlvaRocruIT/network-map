@@ -34,16 +34,15 @@
     justify-content: center;
     gap: 2rem;
     margin-top: 3rem;
-    padding-top: 1rem;
 }
 
-.subordinados::before {
+.rama > .subordinados::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    border-top: 1px solid black;
+    top: -3rem;
+    left: 50%;
+    height: 3rem;
+    border-left: 1px solid black;
 }
 
 .rama > .subordinados::after {
@@ -55,33 +54,17 @@
     border-left: 1px solid black;
 }
 
-.subordinados > .rama::before {
-    content: "";
-    position: absolute;
-    top: -1rem;
-    left: 50%;
-    height: 1rem;
-    border-left: 1px solid black;
-}
-
 /* Pseudo-dependencias */
 
 .pseudo-dependencias {
-    position: absolute;
-    top: 4rem;
-    left: calc(50% + 3rem);
-    display: flex;
-    gap: 1rem;
-    padding-left: 4rem;
+    top: 3rem;
+    left: 50%;
+    padding-left: 5rem;
 }
 
 .pseudo-dependencias::before {
-    content: "";
-    position: absolute;
     top: 50%;
-    left: 0;
-    width: 4rem;
-    border-top: 1px solid black;
+    width: 5rem;
 }
 
 /* Ambos tipos usan cuadros completos */
