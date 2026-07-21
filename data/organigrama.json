@@ -1,1 +1,23 @@
-
+[
+  {
+    "id": "gg",
+    "nombre": "Pato",
+    "cargo": "Gerente General",
+    "equipo": "Dirección",
+    "reportaA": null
+  },
+  {
+    "id": "Ops1",
+    "nombre": "Gonzalo",
+    "cargo": "Jefe de Ingeniería",
+    "equipo": "Ingeniería",
+    "reportaA": "gg"
+  },
+  {
+    "id": "TechLead",
+    "nombre": "Pablo",
+    "cargo": "Project Manager",
+    "equipo": "Tech",
+    "reportaA": "gg"
+  }
+]
