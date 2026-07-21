@@ -37,15 +37,6 @@
   border-top: 1px solid black;
 }
 
-.subordinados > .rama::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  height: 1rem;
-  border-left: 1px solid black;
-}
-
 .rama > .subordinados::after {
     content: "";
     position: absolute;
