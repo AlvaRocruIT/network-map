@@ -20,5 +20,11 @@
     "equipo": "",
     "reportaA": "gg",
     "tipoVinculo": "pseudo"
-  }
+  },
+    "id": "Com1",
+    "nombre": "Lucas",
+    "cargo": "Gerente Comercial",
+    "equipo": "Comercial",
+    "reportaA": "gg"
+  },
 ]
