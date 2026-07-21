@@ -1,81 +1,65 @@
-#organigrama {
-    display: flex;
-    justify-content: center;
-    padding: 2rem;
-    overflow-x: auto;
-}
-
-.rama {
+ :root { --linea: #222; --borde: #222; --trunk: 2.5rem; }
+  body { font-family: Arial, sans-serif; background:#fafafa; padding: 3rem 1rem; }
+ 
+  .tree, .tree ul, .tree li { list-style:none; margin:0; padding:0; }
+  .tree { display:flex; justify-content:center; }
+ 
+  /* cada UL anidado reserva el espacio del tronco que baja hacia su fork */
+  .tree li > ul { display:flex; justify-content:center; padding-top: var(--trunk); position:relative; }
+ 
+  /* tronco: línea vertical desde el nodo padre hasta la barra del fork */
+  .tree li > ul::before {
+    content:"";
+    position:absolute; top:0; left:50%;
+    width:0; height:var(--trunk);
+    border-left:1px solid var(--linea);
+  }
+ 
+  .tree li {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.nodo {
-    border: 1px solid black;
-    padding: 0.5rem;
-    min-width: 160px;
-    text-align: center;
-    background: white;
-}
-
-.nodo strong,
-.nodo span,
-.nodo small {
-    display: block;
-}
-
-/* Dependencias directas */
-
-.subordinados {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 3rem;
-}
-
-.rama > .subordinados::before {
-    content: "";
-    position: absolute;
-    top: -3rem;
-    left: 50%;
-    height: 3rem;
-    border-left: 1px solid black;
-}
-
-.rama > .subordinados::after {
-    content: "";
-    position: absolute;
-    top: -3rem;
-    left: 50%;
-    height: 3rem;
-    border-left: 1px solid black;
-}
-
-/* Pseudo-dependencias */
-
-.pseudo-dependencias {
-    position: absolute;
-    top: 3.5rem;
-    left: 50%;
-    margin-left: 5rem;
-    display: flex;
-}
-
-.pseudo-dependencias::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 100%;
-    width: 5rem;
-    border-top: 1px solid black;
-}
-
-/* Ambos tipos usan cuadros completos */
-
-.vinculo-dependencia,
-.vinculo-pseudo {
-    border-style: solid;
-}
+    padding: var(--trunk) 1rem 0 1rem; /* espacio arriba: línea que llega desde el fork del padre */
+  }
+ 
+  /* barra horizontal entre hermanos (mitad izquierda / mitad derecha) */
+  .tree li::before, .tree li::after {
+    content:"";
+    position:absolute;
+    top:0; right:50%; width:50%; height:var(--trunk);
+    border-top:1px solid var(--linea);
+  }
+  /* la mitad derecha ADEMÁS baja verticalmente hasta tocar la caja hija */
+  .tree li::after {
+    right:auto; left:50%;
+    border-left:1px solid var(--linea);
+  }
+  .tree li:only-child::before, .tree li:only-child::after { display:none; }
+  .tree li:only-child { padding-top:0; }
+  .tree li:first-child::before, .tree li:last-child::after { border-top:none; }
+  .tree li:last-child::before { border-right:1px solid var(--linea); }
+ 
+  .nodo {
+    display:inline-block;
+    border:1px solid var(--borde);
+    background:#fff;
+    padding:0.6rem 1rem;
+    min-width: 110px;
+    text-align:center;
+    font-size:0.9rem;
+  }
+ 
+  /* wrapper solo para anclar la rama pseudo al nodo (no dibuja tronco, eso ya lo hace ul::before) */
+  .nodo-wrap { position: relative; display:inline-block; }
+ 
+  /* rama lateral hacia la PSEUDO-DEPENDENCIA: nace a mitad del tronco que sigue hacia abajo */
+  .pseudo-rama {
+    position:absolute;
+    top:100%; left:50%;
+    margin-top: calc(var(--trunk) / 2);
+    transform: translateY(-50%);
+    display:flex; align-items:center;
+  }
+  .pseudo-rama::before { content:""; width:2rem; border-top:1px solid var(--linea); }
+  .pseudo-lista { display:flex; flex-direction:column; gap:1.5rem; }
