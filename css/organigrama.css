@@ -28,21 +28,22 @@
 
 /* Dependencias directas */
 
-.subordinados {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 3rem;
+.subordinados::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 25%;
+  right: 25%;
+  border-top: 1px solid black;
 }
 
-.rama > .subordinados::before {
-    content: "";
-    position: absolute;
-    top: -3rem;
-    left: 50%;
-    height: 3rem;
-    border-left: 1px solid black;
+.subordinados > .rama::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 1rem;
+  border-left: 1px solid black;
 }
 
 .rama > .subordinados::after {
