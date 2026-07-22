@@ -89,25 +89,46 @@ function prepararNodos(personas, ancho, alto) {
   const centroX = ancho / 2;
   const centroY = alto / 2;
 
-  const raiz = personas.find(persona => persona.reportaA === null);
+  const raiz = personas.find(
+    persona => persona.reportaA === null
+  );
 
   if (!raiz) {
     throw new Error("No se encontró una jerarquía principal.");
   }
 
-  const nodos = personas.map(persona => ({
-    ...persona,
-    x: centroX,
-    y: centroY
-  }));
+  const dependientes = personas.filter(
+    persona => persona.id !== raiz.id
+  );
 
-  const nodoRaiz = nodos.find(nodo => nodo.id === raiz.id);
+  const radio = 140;
 
-  nodoRaiz.x = centroX;
-  nodoRaiz.y = centroY;
-  nodoRaiz.fijo = true;
+  return personas.map(persona => {
+    if (persona.id === raiz.id) {
+      return {
+        ...persona,
+        x: centroX,
+        y: centroY,
+        fijo: true
+      };
+    }
 
-  return nodos;
+    const indice = dependientes.findIndex(
+      dependiente => dependiente.id === persona.id
+    );
+
+    const angulo =
+      (indice / dependientes.length) *
+      Math.PI *
+      2;
+
+    return {
+      ...persona,
+      x: centroX + Math.cos(angulo) * radio,
+      y: centroY + Math.sin(angulo) * radio,
+      fijo: false
+    };
+  });
 }
 
 function prepararConexiones(nodos) {
