@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", cargarRed);
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+
 async function cargarRed() {
   const contenedor = document.getElementById("redes");
 
@@ -15,10 +17,6 @@ async function cargarRed() {
     validarDatos(personas);
     dibujarRed(personas, contenedor);
 
-    window.addEventListener("resize", () => {
-      dibujarConexiones(personas, contenedor);
-    });
-
   } catch (error) {
     console.error(error);
     contenedor.textContent = "Error al cargar el mapa de redes.";
@@ -28,89 +26,159 @@ async function cargarRed() {
 function dibujarRed(personas, contenedor) {
   contenedor.innerHTML = "";
 
-  const conexiones = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "svg"
+  const dimensiones = obtenerDimensiones(contenedor, personas.length);
+
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.classList.add("red-svg");
+
+  svg.setAttribute(
+    "viewBox",
+    `0 0 ${dimensiones.ancho} ${dimensiones.alto}`
   );
 
-  conexiones.classList.add("conexiones-red");
-  contenedor.appendChild(conexiones);
+  svg.setAttribute("role", "img");
+  svg.setAttribute(
+    "aria-label",
+    "Mapa de relaciones organizacionales"
+  );
 
-  const nodos = document.createElement("div");
-  nodos.classList.add("nodos-red");
+  const capaConexiones = document.createElementNS(SVG_NS, "g");
+  capaConexiones.classList.add("capa-conexiones");
 
-  personas.forEach(persona => {
-    nodos.appendChild(crearNodo(persona));
-  });
+  const capaNodos = document.createElementNS(SVG_NS, "g");
+  capaNodos.classList.add("capa-nodos");
 
-  contenedor.appendChild(nodos);
+  svg.appendChild(capaConexiones);
+  svg.appendChild(capaNodos);
+  contenedor.appendChild(svg);
 
-  requestAnimationFrame(() => {
-    dibujarConexiones(personas, contenedor);
+  const nodos = prepararNodos(
+    personas,
+    dimensiones.ancho,
+    dimensiones.alto
+  );
+
+  const conexiones = prepararConexiones(nodos);
+
+  dibujarConexiones(conexiones, capaConexiones);
+  dibujarNodos(nodos, capaNodos);
+}
+
+function prepararNodos(personas, ancho, alto) {
+  const centroX = ancho / 2;
+  const centroY = alto / 2;
+
+  const raiz = personas.find(persona => persona.reportaA === null);
+
+  if (!raiz) {
+    throw new Error("No se encontró una jerarquía principal.");
+  }
+
+  const nodos = personas.map(persona => ({
+    ...persona,
+    x: centroX,
+    y: centroY
+  }));
+
+  const nodoRaiz = nodos.find(nodo => nodo.id === raiz.id);
+
+  nodoRaiz.x = centroX;
+  nodoRaiz.y = centroY;
+  nodoRaiz.fijo = true;
+
+  return nodos;
+}
+
+function prepararConexiones(nodos) {
+  const nodosPorId = new Map(
+    nodos.map(nodo => [nodo.id, nodo])
+  );
+
+  return nodos
+    .filter(nodo => nodo.reportaA)
+    .map(nodo => ({
+      source: nodosPorId.get(nodo.reportaA),
+      target: nodo
+    }))
+    .filter(conexion => conexion.source);
+}
+
+function dibujarConexiones(conexiones, capa) {
+  conexiones.forEach(conexion => {
+    const linea = document.createElementNS(SVG_NS, "line");
+
+    linea.classList.add("conexion-red");
+
+    linea.setAttribute("x1", conexion.source.x);
+    linea.setAttribute("y1", conexion.source.y);
+    linea.setAttribute("x2", conexion.target.x);
+    linea.setAttribute("y2", conexion.target.y);
+
+    capa.appendChild(linea);
   });
 }
 
-function crearNodo(persona) {
-  const nodo = document.createElement("article");
+function dibujarNodos(nodos, capa) {
+  nodos.forEach(nodo => {
+    const circulo = document.createElementNS(SVG_NS, "circle");
 
-  nodo.id = `nodo-${persona.id}`;
-  nodo.classList.add("nodo-red");
+    circulo.classList.add("nodo-red");
+    circulo.dataset.id = nodo.id;
 
-  nodo.innerHTML = `
-    <strong>${persona.nombre}</strong>
-    <span>${persona.cargo}</span>
-    <small>${persona.equipo}</small>
-  `;
+    circulo.setAttribute("cx", nodo.x);
+    circulo.setAttribute("cy", nodo.y);
+    circulo.setAttribute("r", nodo.fijo ? 7 : 5);
 
-  return nodo;
+    capa.appendChild(circulo);
+  });
 }
 
-function dibujarConexiones(personas, contenedor) {
-  const svg = contenedor.querySelector(".conexiones-red");
-  const area = contenedor.getBoundingClientRect();
+function obtenerDimensiones(contenedor, cantidadNodos) {
+  const anchoContenedor = contenedor.clientWidth || 900;
 
-  svg.innerHTML = "";
-  svg.setAttribute("width", area.width);
-  svg.setAttribute("height", area.height);
+  const ladoMinimo = 700;
+  const crecimiento = Math.sqrt(cantidadNodos) * 70;
 
-  personas
-    .filter(persona => persona.reportaA)
-    .forEach(persona => {
-      const subordinado = document.getElementById(`nodo-${persona.id}`);
-      const lider = document.getElementById(`nodo-${persona.reportaA}`);
+  const ancho = Math.max(anchoContenedor, ladoMinimo, crecimiento);
+  const alto = Math.max(700, crecimiento);
 
-      if (!subordinado || !lider) return;
-
-      const origen = subordinado.getBoundingClientRect();
-      const destino = lider.getBoundingClientRect();
-
-      const linea = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "line"
-      );
-
-      linea.setAttribute("x1", origen.left + origen.width / 2 - area.left);
-      linea.setAttribute("y1", origen.top + origen.height / 2 - area.top);
-      linea.setAttribute("x2", destino.left + destino.width / 2 - area.left);
-      linea.setAttribute("y2", destino.top + destino.height / 2 - area.top);
-      linea.classList.add("conexion-red");
-
-      svg.appendChild(linea);
-    });
+  return { ancho, alto };
 }
 
 function validarDatos(personas) {
-  const ids = new Set(personas.map(persona => persona.id));
+  if (!Array.isArray(personas) || personas.length === 0) {
+    throw new Error("El archivo no contiene personas.");
+  }
+
+  const ids = new Set();
 
   personas.forEach(persona => {
     if (!persona.id || !persona.nombre) {
       throw new Error("Cada persona necesita id y nombre.");
     }
 
+    if (ids.has(persona.id)) {
+      throw new Error(`ID duplicado: ${persona.id}`);
+    }
+
+    ids.add(persona.id);
+  });
+
+  personas.forEach(persona => {
     if (persona.reportaA && !ids.has(persona.reportaA)) {
       throw new Error(
         `${persona.nombre} reporta a un ID inexistente: ${persona.reportaA}`
       );
     }
   });
+
+  const raices = personas.filter(
+    persona => persona.reportaA === null
+  );
+
+  if (raices.length !== 1) {
+    throw new Error(
+      `Se esperaba una jerarquía principal, pero se encontraron ${raices.length}.`
+    );
+  }
 }
