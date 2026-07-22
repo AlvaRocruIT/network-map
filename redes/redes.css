@@ -93,3 +93,31 @@
     height: 560px;
   }
 }
+
+.etiqueta-nodo {
+  position: absolute;
+  z-index: 10;
+  min-width: 140px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.35rem;
+  background: #fff;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.etiqueta-nodo strong,
+.etiqueta-nodo span,
+.etiqueta-nodo small {
+  display: block;
+}
+
+.etiqueta-nodo span {
+  margin-top: 0.15rem;
+}
+
+.etiqueta-nodo small {
+  margin-top: 0.1rem;
+  color: #6b7280;
+}
