@@ -219,7 +219,7 @@
     "reportaA": "Ops4"
   },
   {
-    "id": "Ops5",
+    "id": "Ops6",
     "nombre": "Valdi",
     "cargo": "Jefe Logística",
     "equipo": "Operaciones",
@@ -230,49 +230,49 @@
     "nombre": "Anto",
     "cargo": "Compras extranjera",
     "equipo": "Logística",
-    "reportaA": "Ops5"
+    "reportaA": "Ops6"
   },
   {
     "id": "Log2",
     "nombre": "Jerry",
     "cargo": "Abastecimiento",
     "equipo": "Logística",
-    "reportaA": "Ops5"
+    "reportaA": "Ops6"
   },
   {
     "id": "Log3",
     "nombre": "Ulises",
     "cargo": "Materiales compuestos",
     "equipo": "Logística",
-    "reportaA": "Ops5"
+    "reportaA": "Ops6"
   },
   {
     "id": "Log4",
     "nombre": "Rena",
     "cargo": "Despacho-trazabilidad",
     "equipo": "Materiales compuestos",
-    "reportaA": "Ops5"
+    "reportaA": "Ops6"
   },
   {
     "id": "Log5",
     "nombre": "Balta",
     "cargo": "Casa1 Valdivia",
     "equipo": "Logística",
-    "reportaA": "Ops5"
+    "reportaA": "Ops6"
   },
   {
     "id": "Log5",
     "nombre": "Martín",
     "cargo": "Casa2 Valdivia",
     "equipo": "Logística",
-    "reportaA": "Ops5"
+    "reportaA": "Ops6"
   },
   {
     "id": "Log5",
     "nombre": "Theo",
     "cargo": "Casa Matríz",
     "equipo": "Logística",
-    "reportaA": "Ops5"
+    "reportaA": "Ops6"
   },
   {
     "id": "Com1",
