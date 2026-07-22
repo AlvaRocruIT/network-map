@@ -231,6 +231,12 @@ function dibujarRed(
     "Mapa de relaciones organizacionales"
   );
 
+  svg.addEventListener("click", evento => {
+  if (evento.target === svg) {
+    etiqueta.hidden = true;
+  }
+});
+
   const capaConexiones =
     document.createElementNS(SVG_NS, "g");
 
@@ -246,15 +252,47 @@ function dibujarRed(
 
   contenedor.appendChild(svg);
 
+  const etiqueta = crearEtiquetaNodo(contenedor);
+
   dibujarConexiones(
     conexiones,
     capaConexiones
   );
 
-  dibujarNodos(
-    nodos,
-    capaNodos
-  );
+ function dibujarNodos(
+  nodos,
+  capa,
+  contenedor,
+  etiqueta
+) {
+  nodos.forEach(nodo => {
+    const circulo =
+      document.createElementNS(SVG_NS, "circle");
+
+    circulo.classList.add("nodo-red");
+    circulo.dataset.id = nodo.id;
+
+    if (nodo.fijo) {
+      circulo.dataset.raiz = "true";
+    }
+
+    circulo.setAttribute("cx", nodo.x);
+    circulo.setAttribute("cy", nodo.y);
+    circulo.setAttribute("r", nodo.fijo ? 7 : 5);
+
+    circulo.addEventListener("click", evento => {
+      evento.stopPropagation();
+
+      mostrarEtiquetaNodo(
+        nodo,
+        circulo,
+        contenedor,
+        etiqueta
+      );
+    });
+
+    capa.appendChild(circulo);
+  });
 }
 
 function dibujarConexiones(conexiones, capa) {
@@ -335,3 +373,48 @@ function validarDatos(personas) {
     );
   }
 }
+
+function crearEtiquetaNodo(contenedor) {
+  const etiqueta = document.createElement("div");
+
+  etiqueta.classList.add("etiqueta-nodo");
+  etiqueta.hidden = true;
+
+  contenedor.appendChild(etiqueta);
+
+  return etiqueta;
+}
+
+function mostrarEtiquetaNodo(
+  nodo,
+  circulo,
+  contenedor,
+  etiqueta
+) {
+  etiqueta.innerHTML = `
+    <strong>${nodo.nombre}</strong>
+    <span>${nodo.cargo ?? ""}</span>
+    <small>${nodo.equipo ?? ""}</small>
+  `;
+
+  etiqueta.hidden = false;
+
+  const rectNodo =
+    circulo.getBoundingClientRect();
+
+  const rectContenedor =
+    contenedor.getBoundingClientRect();
+
+  etiqueta.style.left = `${
+    rectNodo.left -
+    rectContenedor.left +
+    rectNodo.width / 2
+  }px`;
+
+  etiqueta.style.top = `${
+    rectNodo.top -
+    rectContenedor.top -
+    8
+  }px`;
+}
+
