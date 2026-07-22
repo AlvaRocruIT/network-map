@@ -3,24 +3,33 @@ document.addEventListener("DOMContentLoaded", cargarRed);
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 async function cargarRed() {
-  const contenedor = document.getElementById("redes");
+  const respuesta = await fetch("data/organigrama.json");
+  const personas = await respuesta.json();
 
-  try {
-    const respuesta = await fetch("data/organigrama.json");
+  validarDatos(personas);
 
-    if (!respuesta.ok) {
-      throw new Error("No se pudo cargar organigrama.json");
-    }
+  const { ancho, alto } = obtenerDimensiones();
 
-    const personas = await respuesta.json();
+  const {
+    nodos,
+    conexiones
+  } = calcularLayout(personas, ancho, alto);
 
-    validarDatos(personas);
-    dibujarRed(personas, contenedor);
+  dibujarRed(nodos, conexiones, ancho, alto);
+}
 
-  } catch (error) {
-    console.error(error);
-    contenedor.textContent = "Error al cargar el mapa de redes.";
-  }
+function calcularLayout(personas, ancho, alto) {
+  const modelo = construirModelo(personas);
+
+  calcularTamanosDeRama(modelo.raiz);
+  asignarSectores(modelo.raiz);
+  asignarPosicionesIniciales(modelo, ancho, alto);
+  ejecutarSimulacion(modelo, ancho, alto);
+
+  return {
+    nodos: modelo.nodos,
+    conexiones: modelo.conexiones
+  };
 }
 
 function dibujarRed(personas, contenedor) {
