@@ -6,12 +6,21 @@
     "equipo": "Dirección",
     "reportaA": null
   },
+    {
+    "id": "TechLead",
+    "nombre": "Pablo",
+    "cargo": "Dirección Técnica",
+    "equipo": "",
+    "reportaA": "gg",
+    "tipoVinculo": "pseudo"
+  },
   {
     "id": "s-gg",
     "nombre": "Maca",
     "cargo": "Secretaria Gerencia",
     "equipo": "Dirección",
     "reportaA": "gg"
+    "tipoVinculo": "pseudo"
   },
   {
     "id": "cal1",
@@ -19,6 +28,13 @@
     "cargo": "Subgerente Calidad",
     "equipo": "Calidad",
     "reportaA": "gg"
+  },
+    {
+    "id": "cal2",
+    "nombre": "Norma",
+    "cargo": "Validación técnica",
+    "equipo": "Calidad",
+    "reportaA": "cal1"
   },
   {
     "id": "Ops1",
@@ -42,18 +58,63 @@
     "reportaA": "Ops1"
   },
   {
+    "id": "Inn1",
+    "nombre": "Mane",
+    "cargo": "Encargada Monitoreo",
+    "equipo": "Operaciones",
+    "reportaA": "Ops3"
+  },
+  {
     "id": "Ops4",
     "nombre": "Mati",
     "cargo": "Jefe Desarrollo Software",
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
+  
+  {
+    "id": "Sof1",
+    "nombre": "Sofi",
+    "cargo": "Desarrollador",
+    "equipo": "Operaciones",
+    "reportaA": "Ops4"
+  },
+  
+  {
+    "id": "Sof2",
+    "nombre": "Mateo",
+    "cargo": "Desarrollador",
+    "equipo": "Operaciones",
+    "reportaA": "Ops4"
+  },
+  
+  {
+    "id": "Sof3",
+    "nombre": "Ramón",
+    "cargo": "Desarrollador",
+    "equipo": "Operaciones",
+    "reportaA": "Ops4"
+  },
   {
     "id": "Ops5",
     "nombre": "Andrea",
-    "cargo": "Jefe Operaciones",
+    "cargo": "Jefe Electrónica",
     "equipo": "Operaciones",
     "reportaA": "Ops1"
+  },
+  {
+    "id": "Ele1",
+    "nombre": "Andrés",
+    "cargo": "Laboratorio Electrónica",
+    "equipo": "Operaciones",
+    "reportaA": "Ops5"
+  },
+  {
+    "id": "Ele2",
+    "nombre": "Andrés",
+    "cargo": "Sensores y monitoreo",
+    "equipo": "Operaciones",
+    "reportaA": "Ops5"
   },
   {
     "id": "TI1",
@@ -61,14 +122,6 @@
     "cargo": "Supervisor TI",
     "equipo": "Informaciones",
     "reportaA": "Ops4"
-  },
-  {
-    "id": "TechLead",
-    "nombre": "Pablo",
-    "cargo": "Dirección Técnica",
-    "equipo": "",
-    "reportaA": "gg",
-    "tipoVinculo": "pseudo"
   },
   {
     "id": "Com1",
@@ -97,6 +150,42 @@
     "cargo": "Gerente Adm y Finanzas",
     "equipo": "Finanzas",
     "reportaA": "gg"
+  },
+  {
+    "id": "AyF2",
+    "nombre": "Caro",
+    "cargo": "Subgeremte Contabilidad",
+    "equipo": "Finanzas",
+    "reportaA": "AyF1"
+  },
+  {
+    "id": "AyF3",
+    "nombre": "Fernanda",
+    "cargo": "Supervisor Riesgo",
+    "equipo": "Finanzas",
+    "reportaA": "AyF1"
+    "tipoVinculo": "pseudo"
+  },
+  {
+    "id": "Con1",
+    "nombre": "Pamela",
+    "cargo": "Cuentas nacionales",
+    "equipo": "Finanzas",
+    "reportaA": "AyF2"
+  },
+  {
+    "id": "Con2",
+    "nombre": "Carlos",
+    "cargo": "Cuentas nacionales",
+    "equipo": "Finanzas",
+    "reportaA": "AyF2"
+  },
+  {
+    "id": "Con3",
+    "nombre": "Memo",
+    "cargo": "Cuentas Internacionales",
+    "equipo": "Finanzas",
+    "reportaA": "AyF2"
   },
   {
     "id": "Per1",
