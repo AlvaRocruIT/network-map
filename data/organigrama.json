@@ -458,13 +458,6 @@
     "reportaA": "Per1"
   },
   {
-    "id": "ReL1",
-    "nombre": "Jose",
-    "cargo": "Coordinador células",
-    "equipo": "Personas",
-    "reportaA": "Per2"
-  },
-  {
     "id": "DO1",
     "nombre": "Claudia",
     "cargo": "Coordinador capacitación",
@@ -484,6 +477,13 @@
     "cargo": "Coordinador Remuneraciones",
     "equipo": "Personas",
     "reportaA": "Per2"
+  },
+    {
+    "id": "Per4",
+    "nombre": "Jose",
+    "cargo": "Coordinador células",
+    "equipo": "Personas",
+    "reportaA": "Per1"
   },
   {
     "id": "Cyd1",
