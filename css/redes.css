@@ -1,46 +1,3 @@
-:root {
-  --fondo: #fafafa;
-  --superficie: #ffffff;
-
-  --linea: #9ca3af;
-  --nodo: #155eef;
-  --nodo-raiz: #0b46b3;
-
-  --borde: #d1d5db;
-  --texto: #222;
-
-  --radio-nodo: 5px;
-  --radio-raiz: 7px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--borde);
-  background: var(--superficie);
-}
-
-header h1 {
-  margin: 0;
-  font-size: 1.25rem;
-}
-
-header a {
-  color: inherit;
-  text-decoration: none;
-}
-
-main {
-  padding: 1.5rem;
-}
-
 .mapa-redes {
   width: 100%;
 }
@@ -48,17 +5,17 @@ main {
 .controles-red {
   display: flex;
   justify-content: flex-end;
+
   margin-bottom: 0.75rem;
 }
 
 .controles-red button {
   padding: 0.5rem 0.85rem;
 
-  border: 1px solid var(--borde);
+  border: 1px solid #d1d5db;
   border-radius: 0.35rem;
 
-  background: var(--superficie);
-  color: var(--texto);
+  background: #ffffff;
 
   cursor: pointer;
 }
@@ -73,20 +30,17 @@ main {
   width: 100%;
   min-height: 700px;
 
-  overflow: auto;
+  overflow: hidden;
 
-  border: 1px solid var(--borde);
-  background: var(--superficie);
+  border: 1px solid #d1d5db;
+  background: #ffffff;
 }
 
 .red-svg {
   display: block;
 
   width: 100%;
-  height: auto;
-
-  min-width: 700px;
-  min-height: 700px;
+  height: 700px;
 }
 
 .capa-conexiones {
@@ -94,14 +48,20 @@ main {
 }
 
 .conexion-red {
-  stroke: var(--linea);
+  stroke: #9ca3af;
   stroke-width: 1;
+
   vector-effect: non-scaling-stroke;
 }
 
+.capa-nodos {
+  pointer-events: auto;
+}
+
 .nodo-red {
-  fill: var(--nodo);
-  stroke: var(--superficie);
+  fill: #2563eb;
+
+  stroke: #ffffff;
   stroke-width: 1.5;
 
   cursor: pointer;
@@ -112,36 +72,24 @@ main {
 }
 
 .nodo-red:hover {
-  r: 7px;
-}
-
-.nodo-red[data-raiz="true"] {
-  fill: var(--nodo-raiz);
-}
-
-.red-svg:hover .nodo-red {
-  opacity: 0.85;
-}
-
-.red-svg .nodo-red:hover {
   opacity: 1;
 }
 
+.nodo-red[data-raiz="true"] {
+  fill: #1e40af;
+  stroke-width: 2;
+}
+
+.red-svg:hover .nodo-red:not(:hover) {
+  opacity: 0.82;
+}
+
 @media (max-width: 700px) {
-  main {
-    padding: 0.75rem;
-  }
-
-  header {
-    padding: 1rem;
-  }
-
   .redes-contenedor {
     min-height: 560px;
   }
 
   .red-svg {
-    min-width: 900px;
-    min-height: 700px;
+    height: 560px;
   }
 }
