@@ -36,17 +36,21 @@ function calcularLayout(personas, ancho, alto) {
   };
 }
 
-function dibujarRed(personas, contenedor) {
+function dibujarRed(
+  contenedor,
+  nodos,
+  conexiones,
+  ancho,
+  alto
+) {
   contenedor.innerHTML = "";
-
-  const dimensiones = obtenerDimensiones(contenedor, personas.length);
 
   const svg = document.createElementNS(SVG_NS, "svg");
   svg.classList.add("red-svg");
 
   svg.setAttribute(
     "viewBox",
-    `0 0 ${dimensiones.ancho} ${dimensiones.alto}`
+    `0 0 ${ancho} ${alto}`
   );
 
   svg.setAttribute("role", "img");
@@ -55,26 +59,30 @@ function dibujarRed(personas, contenedor) {
     "Mapa de relaciones organizacionales"
   );
 
-  const capaConexiones = document.createElementNS(SVG_NS, "g");
+  const capaConexiones =
+    document.createElementNS(SVG_NS, "g");
+
   capaConexiones.classList.add("capa-conexiones");
 
-  const capaNodos = document.createElementNS(SVG_NS, "g");
+  const capaNodos =
+    document.createElementNS(SVG_NS, "g");
+
   capaNodos.classList.add("capa-nodos");
 
   svg.appendChild(capaConexiones);
   svg.appendChild(capaNodos);
+
   contenedor.appendChild(svg);
 
-  const nodos = prepararNodos(
-    personas,
-    dimensiones.ancho,
-    dimensiones.alto
+  dibujarConexiones(
+    conexiones,
+    capaConexiones
   );
 
-  const conexiones = prepararConexiones(nodos);
-
-  dibujarConexiones(conexiones, capaConexiones);
-  dibujarNodos(nodos, capaNodos);
+  dibujarNodos(
+    nodos,
+    capaNodos
+  );
 }
 
 function prepararNodos(personas, ancho, alto) {
