@@ -16,24 +16,196 @@ async function cargarRed() {
 
   const { ancho, alto } = obtenerDimensiones(contenedor);
 
-  const nodos = prepararNodos(personas, ancho, alto);
-  const conexiones = prepararConexiones(nodos);
+  const { nodos, conexiones } =
+  calcularLayout(personas, ancho, alto);
 
   dibujarRed(contenedor, nodos, conexiones, ancho, alto);
 }
 
 function calcularLayout(personas, ancho, alto) {
-  const modelo = construirModelo(personas);
+  const nodos = personas.map(persona => ({
+    ...persona,
+    hijos: [],
+    tamanoRama: 1,
+    profundidad: 0,
+    anguloInicio: 0,
+    anguloFin: Math.PI * 2,
+    x: 0,
+    y: 0,
+    fijo: false
+  }));
 
-  calcularTamanosDeRama(modelo.raiz);
-  asignarSectores(modelo.raiz);
-  asignarPosicionesIniciales(modelo, ancho, alto);
-  ejecutarSimulacion(modelo, ancho, alto);
+  const nodosPorId = new Map(
+    nodos.map(nodo => [nodo.id, nodo])
+  );
+
+  const raiz = nodos.find(
+    nodo => nodo.reportaA === null
+  );
+
+  if (!raiz) {
+    throw new Error(
+      "No se encontró una jerarquía principal."
+    );
+  }
+
+  nodos.forEach(nodo => {
+    if (!nodo.reportaA) {
+      return;
+    }
+
+    const superior =
+      nodosPorId.get(nodo.reportaA);
+
+    if (superior) {
+      superior.hijos.push(nodo);
+    }
+  });
+
+  asignarProfundidades(raiz, 0);
+  calcularTamanoRama(raiz);
+
+  asignarSectores(
+    raiz,
+    0,
+    Math.PI * 2
+  );
+
+  asignarPosiciones(
+    nodos,
+    raiz,
+    ancho,
+    alto
+  );
+
+  const conexiones = nodos
+    .filter(nodo => nodo.reportaA)
+    .map(nodo => ({
+      source: nodosPorId.get(nodo.reportaA),
+      target: nodo
+    }))
+    .filter(conexion => conexion.source);
 
   return {
-    nodos: modelo.nodos,
-    conexiones: modelo.conexiones
+    nodos,
+    conexiones
   };
+}
+
+function asignarProfundidades(
+  nodo,
+  profundidad
+) {
+  nodo.profundidad = profundidad;
+
+  nodo.hijos.forEach(hijo => {
+    asignarProfundidades(
+      hijo,
+      profundidad + 1
+    );
+  });
+}
+
+function calcularTamanoRama(nodo) {
+  nodo.tamanoRama = 1;
+
+  nodo.hijos.forEach(hijo => {
+    nodo.tamanoRama +=
+      calcularTamanoRama(hijo);
+  });
+
+  return nodo.tamanoRama;
+}
+
+function asignarSectores(
+  nodo,
+  anguloInicio,
+  anguloFin
+) {
+  nodo.anguloInicio = anguloInicio;
+  nodo.anguloFin = anguloFin;
+
+  if (nodo.hijos.length === 0) {
+    return;
+  }
+
+  const totalDescendientes =
+    nodo.hijos.reduce(
+      (total, hijo) =>
+        total + hijo.tamanoRama,
+      0
+    );
+
+  let anguloActual = anguloInicio;
+
+  nodo.hijos.forEach(hijo => {
+    const proporcion =
+      hijo.tamanoRama /
+      totalDescendientes;
+
+    const amplitud =
+      (anguloFin - anguloInicio) *
+      proporcion;
+
+    asignarSectores(
+      hijo,
+      anguloActual,
+      anguloActual + amplitud
+    );
+
+    anguloActual += amplitud;
+  });
+}
+
+function asignarPosiciones(
+  nodos,
+  raiz,
+  ancho,
+  alto
+) {
+  const centroX = ancho / 2;
+  const centroY = alto / 2;
+
+  const profundidadMaxima =
+    Math.max(
+      ...nodos.map(
+        nodo => nodo.profundidad
+      ),
+      1
+    );
+
+  const radioMaximo =
+    Math.min(ancho, alto) * 0.42;
+
+  raiz.x = centroX;
+  raiz.y = centroY;
+  raiz.fijo = true;
+
+  nodos.forEach(nodo => {
+    if (nodo === raiz) {
+      return;
+    }
+
+    const angulo =
+      (
+        nodo.anguloInicio +
+        nodo.anguloFin
+      ) / 2;
+
+    const radio =
+      (
+        nodo.profundidad /
+        profundidadMaxima
+      ) * radioMaximo;
+
+    nodo.x =
+      centroX +
+      Math.cos(angulo) * radio;
+
+    nodo.y =
+      centroY +
+      Math.sin(angulo) * radio;
+  });
 }
 
 function dibujarRed(
@@ -83,66 +255,6 @@ function dibujarRed(
     nodos,
     capaNodos
   );
-}
-
-function prepararNodos(personas, ancho, alto) {
-  const centroX = ancho / 2;
-  const centroY = alto / 2;
-
-  const raiz = personas.find(
-    persona => persona.reportaA === null
-  );
-
-  if (!raiz) {
-    throw new Error("No se encontró una jerarquía principal.");
-  }
-
-  const dependientes = personas.filter(
-    persona => persona.id !== raiz.id
-  );
-
-  const radio = 140;
-
-  return personas.map(persona => {
-    if (persona.id === raiz.id) {
-      return {
-        ...persona,
-        x: centroX,
-        y: centroY,
-        fijo: true
-      };
-    }
-
-    const indice = dependientes.findIndex(
-      dependiente => dependiente.id === persona.id
-    );
-
-    const angulo =
-      (indice / dependientes.length) *
-      Math.PI *
-      2;
-
-    return {
-      ...persona,
-      x: centroX + Math.cos(angulo) * radio,
-      y: centroY + Math.sin(angulo) * radio,
-      fijo: false
-    };
-  });
-}
-
-function prepararConexiones(nodos) {
-  const nodosPorId = new Map(
-    nodos.map(nodo => [nodo.id, nodo])
-  );
-
-  return nodos
-    .filter(nodo => nodo.reportaA)
-    .map(nodo => ({
-      source: nodosPorId.get(nodo.reportaA),
-      target: nodo
-    }))
-    .filter(conexion => conexion.source);
 }
 
 function dibujarConexiones(conexiones, capa) {
