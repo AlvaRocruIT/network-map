@@ -28,14 +28,14 @@
     "reportaA": "gg"
   },
   {
-  "id": "Ops2",
+    "id": "Ops2",
     "nombre": "Nico",
     "cargo": "Jefe Ingeniería",
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
   {
-  "id": "Ops3",
+    "id": "Ops3",
     "nombre": "Mauro",
     "cargo": "Jefe Innovación",
     "equipo": "Operaciones",
@@ -43,21 +43,21 @@
   },
   
   {
-  "id": "Ops4",
+    "id": "Ops4",
     "nombre": "Mati",
     "cargo": "Jefe Desarrollo Software",
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
   {
-  "id": "Ops5",
+    "id": "Ops5",
     "nombre": "Andrea",
     "cargo": "Jefe Operaciones",
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
   {
-  "id": "TI1",
+    "id": "TI1",
     "nombre": "Elías",
     "cargo": "Supervisor TI",
     "equipo": "Informaciones",
@@ -82,6 +82,13 @@
     "id": "Com2",
     "nombre": "Piero",
     "cargo": "Subgerente Venta Nacional",
+    "equipo": "Comercial",
+    "reportaA": "Com1"
+  },
+    {
+    "id": "Com3",
+    "nombre": "Alfredo",
+    "cargo": "Subgerente Exportaciones",
     "equipo": "Comercial",
     "reportaA": "Com1"
   },
@@ -119,8 +126,7 @@
     "cargo": "Jefe Relaciones Laborales",
     "equipo": "Personas",
     "reportaA": "Per1"
-  },
-  
+  },  
   {
     "id": "ReL1",
     "nombre": "Javiera",
