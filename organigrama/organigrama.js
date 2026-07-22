@@ -4,7 +4,7 @@ async function cargarOrganigrama() {
   const contenedor = document.getElementById("organigrama");
 
   try {
-    const respuesta = await fetch("data/organigrama.json");
+    const respuesta = await fetch("../data/organigrama.json");
 
     if (!respuesta.ok) {
       throw new Error("No se pudo cargar organigrama.json");
