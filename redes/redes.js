@@ -258,6 +258,7 @@ function dibujarRed(
     conexiones,
     capaConexiones
   );
+}
 
  function dibujarNodos(
   nodos,
@@ -417,4 +418,3 @@ function mostrarEtiquetaNodo(
     8
   }px`;
  }
-}
