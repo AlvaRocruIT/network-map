@@ -311,25 +311,6 @@ function dibujarConexiones(conexiones, capa) {
   });
 }
 
-function dibujarNodos(nodos, capa) {
-  nodos.forEach(nodo => {
-    const circulo = document.createElementNS(SVG_NS, "circle");
-
-    circulo.classList.add("nodo-red");
-    circulo.dataset.id = nodo.id;
-
-    if (nodo.fijo) {
-      circulo.dataset.raiz = "true";
-    }
-
-    circulo.setAttribute("cx", nodo.x);
-    circulo.setAttribute("cy", nodo.y);
-    circulo.setAttribute("r", nodo.fijo ? 7 : 5);
-
-    capa.appendChild(circulo);
-  });
-}
-
 function obtenerDimensiones(contenedor) {
   return {
     ancho: contenedor.clientWidth || 1000,
