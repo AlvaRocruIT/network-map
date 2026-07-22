@@ -258,6 +258,13 @@ function dibujarRed(
     conexiones,
     capaConexiones
   );
+
+  dibujarNodos(
+  nodos,
+  capaNodos,
+  contenedor,
+  etiqueta
+);
 }
 
  function dibujarNodos(
