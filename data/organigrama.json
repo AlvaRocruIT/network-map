@@ -32,7 +32,7 @@
     {
     "id": "cal2",
     "nombre": "Norma",
-    "cargo": "Validación técnica",
+    "cargo": "Biblioteca técnica",
     "equipo": "Calidad",
     "reportaA": "cal1"
   },
@@ -51,16 +51,100 @@
     "reportaA": "Ops1"
   },
   {
+    "id": "Min1",
+    "nombre": "Gero",
+    "cargo": "lead cell minería",
+    "equipo": "Minería",
+    "reportaA": "Ops2"
+  },
+  {
+    "id": "Min2",
+    "nombre": "Gus",
+    "cargo": "Cell minería",
+    "equipo": "Minería",
+    "reportaA": "Min1"
+  },
+  {
+    "id": "Min3",
+    "nombre": "Vale",
+    "cargo": "Cell minería",
+    "equipo": "Minería",
+    "reportaA": "Min1"
+  },
+    {
+    "id": "Min4",
+    "nombre": "Valeria",
+    "cargo": "Cell minería",
+    "equipo": "Minería",
+    "reportaA": "Min1"
+  },
+    {
+    "id": "Min5",
+    "nombre": "Pepe",
+    "cargo": "Cell minería",
+    "equipo": "Minería",
+    "reportaA": "Min1"
+  },
+  {
+    "id": "ing1",
+    "nombre": "Nico",
+    "cargo": "Jef Ingeniería",
+    "equipo": "Operaciones",
+    "reportaA": "Ops1"
+  },
+    {
+    "id": "ing2",
+    "nombre": "Nicole",
+    "cargo": "Monit. agua salada",
+    "equipo": "Operaciones",
+    "reportaA": "Ing1"
+  },
+      {
+    "id": "ing3",
+    "nombre": "Hugo",
+    "cargo": "Sismografía",
+    "equipo": "Operaciones",
+    "reportaA": "Ing1"
+  },
+    {
+    "id": "ing4",
+    "nombre": "Diego",
+    "cargo": "Monit. humedales",
+    "equipo": "Operaciones",
+    "reportaA": "Ing1"
+  },
+  {
+    "id": "ing5",
+    "nombre": "Leonor",
+    "cargo": "Estándares Piscicultura",
+    "equipo": "Operaciones",
+    "reportaA": "Ing1"
+  },
+  {
     "id": "Ops3",
     "nombre": "Mauro",
     "cargo": "Jefe Innovación",
     "equipo": "Operaciones",
-    "reportaA": "Ops1"
+    "reportaA": "Ops2"
   },
   {
     "id": "Inn1",
     "nombre": "Mane",
-    "cargo": "Encargada Monitoreo",
+    "cargo": "Monitoreo e Iteración",
+    "equipo": "Operaciones",
+    "reportaA": "Ops2"
+  },
+    {
+    "id": "Inn2",
+    "nombre": "Bea",
+    "cargo": "Vínculos academia",
+    "equipo": "Operaciones",
+    "reportaA": "Ops3"
+  },
+    {
+    "id": "Inn3",
+    "nombre": "Elo",
+    "cargo": "Desarrollo científico",
     "equipo": "Operaciones",
     "reportaA": "Ops3"
   },
@@ -71,7 +155,6 @@
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
-  
   {
     "id": "Sof1",
     "nombre": "Sofi",
@@ -79,7 +162,6 @@
     "equipo": "Operaciones",
     "reportaA": "Ops4"
   },
-  
   {
     "id": "Sof2",
     "nombre": "Mateo",
@@ -87,7 +169,6 @@
     "equipo": "Operaciones",
     "reportaA": "Ops4"
   },
-  
   {
     "id": "Sof3",
     "nombre": "Ramón",
@@ -102,15 +183,22 @@
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
-  {
+      {
     "id": "Ele1",
+    "nombre": "Felipe",
+    "cargo": "Redes satelitales",
+    "equipo": "Electronica",
+    "reportaA": "Ops5"
+  },
+  {
+    "id": "Ele2",
     "nombre": "Andrés",
     "cargo": "Laboratorio Electrónica",
     "equipo": "Operaciones",
     "reportaA": "Ops5"
   },
   {
-    "id": "Ele2",
+    "id": "Ele3",
     "nombre": "Andrés",
     "cargo": "Sensores y monitoreo",
     "equipo": "Operaciones",
@@ -122,6 +210,69 @@
     "cargo": "Supervisor TI",
     "equipo": "Informaciones",
     "reportaA": "Ops4"
+  },
+    {
+    "id": "TI2",
+    "nombre": "Juanito",
+    "cargo": "Admin DB",
+    "equipo": "Operaciones",
+    "reportaA": "Ops4"
+  },
+  {
+    "id": "Ops5",
+    "nombre": "Valdi",
+    "cargo": "Jefe Logística",
+    "equipo": "Operaciones",
+    "reportaA": "Ops1"
+  },
+    {
+    "id": "Log1",
+    "nombre": "Anto",
+    "cargo": "Compras extranjera",
+    "equipo": "Logística",
+    "reportaA": "Ops5"
+  },
+  {
+    "id": "Log2",
+    "nombre": "Jerry",
+    "cargo": "Abastecimiento",
+    "equipo": "Logística",
+    "reportaA": "Ops5"
+  },
+  {
+    "id": "Log3",
+    "nombre": "Ulises",
+    "cargo": "Materiales compuestos",
+    "equipo": "Logística",
+    "reportaA": "Ops5"
+  },
+  {
+    "id": "Log4",
+    "nombre": "Rena",
+    "cargo": "Despacho-trazabilidad",
+    "equipo": "Materiales compuestos",
+    "reportaA": "Ops5"
+  },
+    {
+    "id": "Log5",
+    "nombre": "Balta",
+    "cargo": "Casa1 Valdivia",
+    "equipo": "Logística",
+    "reportaA": "Ops5"
+  },
+    {
+    "id": "Log5",
+    "nombre": "Martín",
+    "cargo": "Casa2 Valdivia",
+    "equipo": "Logística",
+    "reportaA": "Ops5"
+  },
+  {
+    "id": "Log5",
+    "nombre": "Theo",
+    "cargo": "Casa Matríz",
+    "equipo": "Logística",
+    "reportaA": "Ops5"
   },
   {
     "id": "Com1",
@@ -137,12 +288,121 @@
     "equipo": "Comercial",
     "reportaA": "Com1"
   },
+  
+  {
+    "id": "Com3",
+    "nombre": "Paulo",
+    "cargo": "KAM y Nuevos productos",
+    "equipo": "Comercial",
+    "reportaA": "Com2"
+  },
+  {
+    "id": "Vna1",
+    "nombre": "Karen",
+    "cargo": "Enlace Bío Bío",
+    "equipo": "Comercial",
+    "reportaA": "Com2"
+  },
+  {
+    "id": "Vna2",
+    "nombre": "Lucho",
+    "cargo": "Enlace Aysén",
+    "equipo": "Comercial",
+    "reportaA": "Com2"
+  },
+  {
+    "id": "Vna1",
+    "nombre": "Tito",
+    "cargo": "Enlace Magallanes",
+    "equipo": "Comercial",
+    "reportaA": "Com2"
+  },
   {
     "id": "Com3",
     "nombre": "Alfredo",
     "cargo": "Subgerente Exportaciones",
     "equipo": "Comercial",
     "reportaA": "Com1"
+  },
+  
+  {
+    "id": "Com4",
+    "nombre": "úrsula",
+    "cargo": "Client Success Manager",
+    "equipo": "Comercial",
+    "reportaA": "Com1"
+  },
+  {
+    "id": "Csm1",
+    "nombre": "Concha",
+    "cargo": "Client Onboarding",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
+  },
+  
+  {
+    "id": "Csm2",
+    "nombre": "Xime",
+    "cargo": "Client Onboarding",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
+  },
+  
+  {
+    "id": "Csm3",
+    "nombre": "Renzo",
+    "cargo": "Operaciones Llanquihue",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
+  },
+  {
+    "id": "Csm4",
+    "nombre": "Mago",
+    "cargo": "Operaciones Magallanes",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
+  },
+  {
+    "id": "Csm5",
+    "nombre": "Willy",
+    "cargo": "Operaciones Bío-bío",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
+  },
+  {
+    "id": "Csm6",
+    "nombre": "Willy",
+    "cargo": "Operaciones Aysén",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
+  },
+  {
+    "id": "Csm7",
+    "nombre": "Antoine",
+    "cargo": "Operaciones Norte",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
+  },
+  {
+    "id": "Csm8",
+    "nombre": "Michele",
+    "cargo": "Operaciones Latam",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
+  },
+  {
+    "id": "Csm9",
+    "nombre": "Fede",
+    "cargo": "Operaciones USA-Canadá",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
+  },
+  {
+    "id": "Csm10",
+    "nombre": "Felo",
+    "cargo": "Operaciones Euro",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
   },
   {
     "id": "AyF1",
@@ -202,6 +462,13 @@
     "reportaA": "Per1"
   },
   {
+    "id": "ReL1",
+    "nombre": "Jose",
+    "cargo": "Coordinador células",
+    "equipo": "Personas",
+    "reportaA": "Per2"
+  }
+  {
     "id": "DO1",
     "nombre": "Claudia",
     "cargo": "Coordinador capacitación",
@@ -221,5 +488,33 @@
     "cargo": "Coordinador Remuneraciones",
     "equipo": "Personas",
     "reportaA": "Per2"
+  }
+    {
+    "id": "Cyd1",
+    "nombre": "Bárbara",
+    "cargo": "Subgerente Comunicaciones",
+    "equipo": "Personas",
+    "reportaA": "gg"
+  }
+  {
+    "id": "Cyd2",
+    "nombre": "Moisés",
+    "cargo": "Jefe Diseño",
+    "equipo": "Personas",
+    "reportaA": "Cyd1"
+  }
+  {
+    "id": "Cyd3",
+    "nombre": "Romi",
+    "cargo": "Diseñadora multimedia",
+    "equipo": "Personas",
+    "reportaA": "Cyd1"
+  }
+  {
+    "id": "Cyd4",
+    "nombre": "Orlando",
+    "cargo": "Diseñador industrial",
+    "equipo": "Personas",
+    "reportaA": "Cyd1"
   }
 ]
