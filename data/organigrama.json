@@ -1,3 +1,4 @@
+[
   {
     "id": "gg",
     "nombre": "Pato",
@@ -40,7 +41,6 @@
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
-  
   {
     "id": "Ops4",
     "nombre": "Mati",
@@ -84,7 +84,7 @@
     "equipo": "Comercial",
     "reportaA": "Com1"
   },
-    {
+  {
     "id": "Com3",
     "nombre": "Alfredo",
     "cargo": "Subgerente Exportaciones",
@@ -112,7 +112,7 @@
     "equipo": "Personas",
     "reportaA": "Per1"
   },
-    {
+  {
     "id": "DO1",
     "nombre": "Claudia",
     "cargo": "Coordinador capacitación",
@@ -125,7 +125,7 @@
     "cargo": "Jefe Relaciones Laborales",
     "equipo": "Personas",
     "reportaA": "Per1"
-  },  
+  },
   {
     "id": "ReL1",
     "nombre": "Javiera",
@@ -133,3 +133,4 @@
     "equipo": "Personas",
     "reportaA": "Per2"
   }
+]
