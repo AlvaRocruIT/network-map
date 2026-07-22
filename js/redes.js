@@ -3,19 +3,23 @@ document.addEventListener("DOMContentLoaded", cargarRed);
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 async function cargarRed() {
+  const contenedor = document.getElementById("redes");
+
+  if (!contenedor) {
+    throw new Error('No existe un elemento con id="redes".');
+  }
+
   const respuesta = await fetch("data/organigrama.json");
   const personas = await respuesta.json();
 
   validarDatos(personas);
 
-  const { ancho, alto } = obtenerDimensiones();
+  const { ancho, alto } = obtenerDimensiones(contenedor);
 
-  const {
-    nodos,
-    conexiones
-  } = calcularLayout(personas, ancho, alto);
+  const nodos = prepararNodos(personas, ancho, alto);
+  const conexiones = prepararConexiones(nodos);
 
-  dibujarRed(nodos, conexiones, ancho, alto);
+  dibujarRed(contenedor, nodos, conexiones, ancho, alto);
 }
 
 function calcularLayout(personas, ancho, alto) {
@@ -146,16 +150,11 @@ function dibujarNodos(nodos, capa) {
   });
 }
 
-function obtenerDimensiones(contenedor, cantidadNodos) {
-  const anchoContenedor = contenedor.clientWidth || 900;
-
-  const ladoMinimo = 700;
-  const crecimiento = Math.sqrt(cantidadNodos) * 70;
-
-  const ancho = Math.max(anchoContenedor, ladoMinimo, crecimiento);
-  const alto = Math.max(700, crecimiento);
-
-  return { ancho, alto };
+function obtenerDimensiones(contenedor) {
+  return {
+    ancho: contenedor.clientWidth || 1000,
+    alto: contenedor.clientHeight || 700
+  };
 }
 
 function validarDatos(personas) {
