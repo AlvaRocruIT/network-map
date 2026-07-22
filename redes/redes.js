@@ -247,11 +247,6 @@ function dibujarRed(
   contenedor.appendChild(svg);
 
   const etiqueta = crearEtiquetaNodo(contenedor);
-
-    svg.addEventListener("click", evento => {
-  if (evento.target === svg) {
-    etiqueta.hidden = true;
-  }
       
   dibujarConexiones(
     conexiones,
@@ -264,8 +259,13 @@ function dibujarRed(
   contenedor,
   etiqueta
 );
+
+    svg.addEventListener("click", evento => {
+  if (evento.target === svg) {
+    etiqueta.hidden = true;
+  }
+});
 }
-};
 
  function dibujarNodos(
   nodos,
