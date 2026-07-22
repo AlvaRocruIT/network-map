@@ -5,7 +5,7 @@
     "cargo": "Gerente General",
     "equipo": "Dirección",
     "reportaA": null
-  },
+    },
     {
     "id": "TechLead",
     "nombre": "Pablo",
@@ -29,7 +29,7 @@
     "equipo": "Calidad",
     "reportaA": "gg"
   },
-    {
+  {
     "id": "cal2",
     "nombre": "Norma",
     "cargo": "Biblioteca técnica",
@@ -71,14 +71,14 @@
     "equipo": "Minería",
     "reportaA": "Min1"
   },
-    {
+  {
     "id": "Min4",
     "nombre": "Valeria",
     "cargo": "Cell minería",
     "equipo": "Minería",
     "reportaA": "Min1"
   },
-    {
+  {
     "id": "Min5",
     "nombre": "Pepe",
     "cargo": "Cell minería",
@@ -92,21 +92,21 @@
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
-    {
+  {
     "id": "ing2",
     "nombre": "Nicole",
     "cargo": "Monit. agua salada",
     "equipo": "Operaciones",
     "reportaA": "Ing1"
   },
-      {
+  {
     "id": "ing3",
     "nombre": "Hugo",
     "cargo": "Sismografía",
     "equipo": "Operaciones",
     "reportaA": "Ing1"
   },
-    {
+  {
     "id": "ing4",
     "nombre": "Diego",
     "cargo": "Monit. humedales",
@@ -134,14 +134,14 @@
     "equipo": "Operaciones",
     "reportaA": "Ops2"
   },
-    {
+  {
     "id": "Inn2",
     "nombre": "Bea",
     "cargo": "Vínculos academia",
     "equipo": "Operaciones",
     "reportaA": "Ops3"
   },
-    {
+  {
     "id": "Inn3",
     "nombre": "Elo",
     "cargo": "Desarrollo científico",
@@ -183,7 +183,7 @@
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
-      {
+  {
     "id": "Ele1",
     "nombre": "Felipe",
     "cargo": "Redes satelitales",
@@ -211,7 +211,7 @@
     "equipo": "Informaciones",
     "reportaA": "Ops4"
   },
-    {
+  {
     "id": "TI2",
     "nombre": "Juanito",
     "cargo": "Admin DB",
@@ -225,7 +225,7 @@
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
-    {
+  {
     "id": "Log1",
     "nombre": "Anto",
     "cargo": "Compras extranjera",
@@ -253,14 +253,14 @@
     "equipo": "Materiales compuestos",
     "reportaA": "Ops5"
   },
-    {
+  {
     "id": "Log5",
     "nombre": "Balta",
     "cargo": "Casa1 Valdivia",
     "equipo": "Logística",
     "reportaA": "Ops5"
   },
-    {
+  {
     "id": "Log5",
     "nombre": "Martín",
     "cargo": "Casa2 Valdivia",
@@ -288,7 +288,6 @@
     "equipo": "Comercial",
     "reportaA": "Com1"
   },
-  
   {
     "id": "Com3",
     "nombre": "Paulo",
@@ -324,7 +323,6 @@
     "equipo": "Comercial",
     "reportaA": "Com1"
   },
-  
   {
     "id": "Com4",
     "nombre": "úrsula",
@@ -339,7 +337,6 @@
     "equipo": "Comercial",
     "reportaA": "Csm1"
   },
-  
   {
     "id": "Csm2",
     "nombre": "Xime",
@@ -347,7 +344,6 @@
     "equipo": "Comercial",
     "reportaA": "Csm1"
   },
-  
   {
     "id": "Csm3",
     "nombre": "Renzo",
@@ -467,7 +463,7 @@
     "cargo": "Coordinador células",
     "equipo": "Personas",
     "reportaA": "Per2"
-  }
+  },
   {
     "id": "DO1",
     "nombre": "Claudia",
@@ -488,28 +484,28 @@
     "cargo": "Coordinador Remuneraciones",
     "equipo": "Personas",
     "reportaA": "Per2"
-  }
-    {
+  },
+  {
     "id": "Cyd1",
     "nombre": "Bárbara",
     "cargo": "Subgerente Comunicaciones",
     "equipo": "Personas",
     "reportaA": "gg"
-  }
+  },
   {
     "id": "Cyd2",
     "nombre": "Moisés",
     "cargo": "Jefe Diseño",
     "equipo": "Personas",
     "reportaA": "Cyd1"
-  }
+  },
   {
     "id": "Cyd3",
     "nombre": "Romi",
     "cargo": "Diseñadora multimedia",
     "equipo": "Personas",
     "reportaA": "Cyd1"
-  }
+  },
   {
     "id": "Cyd4",
     "nombre": "Orlando",
