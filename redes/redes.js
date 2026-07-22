@@ -9,7 +9,7 @@ async function cargarRed() {
     throw new Error('No existe un elemento con id="redes".');
   }
 
-  const respuesta = await fetch("data/organigrama.json");
+  const respuesta = await fetch("../data/organigrama.json");
   const personas = await respuesta.json();
 
   validarDatos(personas);
