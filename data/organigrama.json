@@ -7,11 +7,61 @@
     "reportaA": null
   },
   {
+    "id": "s-gg",
+    "nombre": "Maca",
+    "cargo": "Secretaria Gerencia",
+    "equipo": "Dirección",
+    "reportaA": "gg"
+  },
+  {
+    "id": "cal1",
+    "nombre": "Marco",
+    "cargo": "Subgerente Calidad",
+    "equipo": "Calidad",
+    "reportaA": "gg"
+  },
+  {
     "id": "Ops1",
     "nombre": "Gonzalo",
     "cargo": "Gerente Operaciones",
     "equipo": "Operaciones",
     "reportaA": "gg"
+  },
+  {
+  "id": "Ops2",
+    "nombre": "Nico",
+    "cargo": "Jefe Ingeniería",
+    "equipo": "Operaciones",
+    "reportaA": "Ops1"
+  },
+  {
+  "id": "Ops3",
+    "nombre": "Mauro",
+    "cargo": "Jefe Innovación",
+    "equipo": "Operaciones",
+    "reportaA": "Ops1"
+  },
+  
+  {
+  "id": "Ops4",
+    "nombre": "Mati",
+    "cargo": "Jefe Desarrollo Software",
+    "equipo": "Operaciones",
+    "reportaA": "Ops1"
+  },
+  {
+  "id": "Ops5",
+    "nombre": "Andrea",
+    "cargo": "Jefe Operaciones",
+    "equipo": "Operaciones",
+    "reportaA": "Ops1"
+  },
+  {
+  "id": "TI1",
+    "nombre": "Elías",
+    "cargo": "Supervisor TI",
+    "equipo": "Informaciones",
+    "reportaA": "Ops4"
   },
   {
     "id": "TechLead",
@@ -27,5 +77,55 @@
     "cargo": "Gerente Comercial",
     "equipo": "Comercial",
     "reportaA": "gg"
-  }
+  },
+  {
+    "id": "Com2",
+    "nombre": "Piero",
+    "cargo": "Subgerente Venta Nacional",
+    "equipo": "Comercial",
+    "reportaA": "Com1"
+  },
+  {
+    "id": "AyF1",
+    "nombre": "Marcelo",
+    "cargo": "Gerente Adm y Finanzas",
+    "equipo": "Finanzas",
+    "reportaA": "GG"
+  },
+  {
+    "id": "Per1",
+    "nombre": "Tami",
+    "cargo": "Subgerente Personas",
+    "equipo": "Personas",
+    "reportaA": "AyF1"
+  },
+  {
+    "id": "Per2",
+    "nombre": "Álvaro",
+    "cargo": "Jefe Desarrollo Organizacional",
+    "equipo": "Personas",
+    "reportaA": "Per1"
+  },
+    {
+    "id": "DO1",
+    "nombre": "Claudia",
+    "cargo": "Coordinador capacitación",
+    "equipo": "Personas",
+    "reportaA": "Per2"
+  },
+  {
+    "id": "Per3",
+    "nombre": "Javiera",
+    "cargo": "Jefe Relaciones Laborales",
+    "equipo": "Personas",
+    "reportaA": "Per1"
+  },
+  
+  {
+    "id": "ReL1",
+    "nombre": "Javiera",
+    "cargo": "Coordinador Remuneraciones",
+    "equipo": "Personas",
+    "reportaA": "Per2"
+  },
 ]
