@@ -230,7 +230,6 @@ function dibujarRed(
     "aria-label",
     "Mapa de relaciones organizacionales"
   );
-};
 
   const capaConexiones =
     document.createElementNS(SVG_NS, "g");
@@ -266,13 +265,14 @@ function dibujarRed(
   etiqueta
 );
 }
+};
 
  function dibujarNodos(
   nodos,
   capa,
   contenedor,
   etiqueta
-) {
+  ) {
   nodos.forEach(nodo => {
     const circulo =
       document.createElementNS(SVG_NS, "circle");
