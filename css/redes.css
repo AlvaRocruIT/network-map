@@ -1,0 +1,154 @@
+:root {
+  --fondo: #fafafa;
+  --superficie: #ffffff;
+
+  --linea: #9ca3af;
+  --nodo: #155eef;
+  --nodo-raiz: #0b46b3;
+
+  --borde: #d1d5db;
+  --texto: #222;
+
+  --radio-nodo: 5px;
+  --radio-raiz: 7px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--borde);
+  background: var(--superficie);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+header a {
+  color: inherit;
+  text-decoration: none;
+}
+
+main {
+  padding: 1.5rem;
+}
+
+.mapa-redes {
+  width: 100%;
+}
+
+.controles-red {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.controles-red button {
+  padding: 0.5rem 0.85rem;
+
+  border: 1px solid var(--borde);
+  border-radius: 0.35rem;
+
+  background: var(--superficie);
+  color: var(--texto);
+
+  cursor: pointer;
+}
+
+.controles-red button:hover {
+  background: #f3f4f6;
+}
+
+.redes-contenedor {
+  position: relative;
+
+  width: 100%;
+  min-height: 700px;
+
+  overflow: auto;
+
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+}
+
+.red-svg {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  min-width: 700px;
+  min-height: 700px;
+}
+
+.capa-conexiones {
+  pointer-events: none;
+}
+
+.conexion-red {
+  stroke: var(--linea);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.nodo-red {
+  fill: var(--nodo);
+  stroke: var(--superficie);
+  stroke-width: 1.5;
+
+  cursor: pointer;
+
+  transition:
+    r 120ms ease,
+    opacity 120ms ease;
+}
+
+.nodo-red:hover {
+  r: 7px;
+}
+
+.nodo-red[data-raiz="true"] {
+  fill: var(--nodo-raiz);
+}
+
+.red-svg:hover .nodo-red {
+  opacity: 0.85;
+}
+
+.red-svg .nodo-red:hover {
+  opacity: 1;
+}
+
+@media (max-width: 700px) {
+  main {
+    padding: 0.75rem;
+  }
+
+  header {
+    padding: 1rem;
+  }
+
+  .redes-contenedor {
+    min-height: 560px;
+  }
+
+  .red-svg {
+    min-width: 900px;
+    min-height: 700px;
+  }
+}
