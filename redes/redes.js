@@ -416,5 +416,5 @@ function mostrarEtiquetaNodo(
     rectContenedor.top -
     8
   }px`;
+ }
 }
-
