@@ -230,12 +230,7 @@ function dibujarRed(
     "aria-label",
     "Mapa de relaciones organizacionales"
   );
-
-  svg.addEventListener("click", evento => {
-  if (evento.target === svg) {
-    etiqueta.hidden = true;
-  }
-});
+};
 
   const capaConexiones =
     document.createElementNS(SVG_NS, "g");
@@ -254,6 +249,11 @@ function dibujarRed(
 
   const etiqueta = crearEtiquetaNodo(contenedor);
 
+    svg.addEventListener("click", evento => {
+  if (evento.target === svg) {
+    etiqueta.hidden = true;
+  }
+      
   dibujarConexiones(
     conexiones,
     capaConexiones
