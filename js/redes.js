@@ -125,6 +125,10 @@ function dibujarNodos(nodos, capa) {
     circulo.classList.add("nodo-red");
     circulo.dataset.id = nodo.id;
 
+    if (nodo.fijo) {
+      circulo.dataset.raiz = "true";
+    }
+
     circulo.setAttribute("cx", nodo.x);
     circulo.setAttribute("cy", nodo.y);
     circulo.setAttribute("r", nodo.fijo ? 7 : 5);
