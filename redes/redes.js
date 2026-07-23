@@ -735,6 +735,229 @@ function resolverLayoutPersonas(
      */
     const profundidadPorId = new Map();
 
+    function resolverColisiones(
+    clusters,
+    personasPorId,
+    nodoRaiz
+) {
+    const config =
+        CONFIG_LAYOUT.colisiones;
+
+    const personas =
+        Array.from(personasPorId.values());
+
+    const clusterPorNombre = new Map(
+        clusters.map(cluster => [
+            cluster.nombre,
+            cluster
+        ])
+    );
+
+    for (
+        let iteracion = 0;
+        iteracion < config.iteraciones;
+        iteracion += 1
+    ) {
+        let huboAjustes = false;
+
+        for (
+            let i = 0;
+            i < personas.length;
+            i += 1
+        ) {
+            for (
+                let j = i + 1;
+                j < personas.length;
+                j += 1
+            ) {
+                const personaA = personas[i];
+                const personaB = personas[j];
+
+                /*
+                 * Solo corrige colisiones dentro
+                 * del mismo cluster.
+                 */
+                if (
+                    personaA.cluster !==
+                    personaB.cluster
+                ) {
+                    continue;
+                }
+
+                let dx =
+                    personaB.x -
+                    personaA.x;
+
+                let dy =
+                    personaB.y -
+                    personaA.y;
+
+                let distancia =
+                    Math.hypot(dx, dy);
+
+                if (
+                    distancia >=
+                    config.distanciaMinima
+                ) {
+                    continue;
+                }
+
+                /*
+                 * Evita una dirección indefinida
+                 * cuando ambos nodos coinciden.
+                 */
+                if (distancia < 0.001) {
+                    const angulo =
+                        (
+                            (
+                                i * 37 +
+                                j * 17
+                            ) %
+                            360
+                        ) *
+                        Math.PI /
+                        180;
+
+                    dx = Math.cos(angulo);
+                    dy = Math.sin(angulo);
+                    distancia = 1;
+                }
+
+                const solapamiento =
+                    config.distanciaMinima -
+                    distancia;
+
+                const desplazamiento =
+                    Math.min(
+                        solapamiento / 2,
+                        config.desplazamientoMaximo
+                    );
+
+                const unidadX =
+                    dx / distancia;
+
+                const unidadY =
+                    dy / distancia;
+
+                /*
+                 * El nodo raíz permanece fijo.
+                 */
+                if (personaA === nodoRaiz) {
+                    desplazarPersonaDentroCluster(
+                        personaB,
+                        unidadX *
+                            desplazamiento *
+                            2,
+                        unidadY *
+                            desplazamiento *
+                            2,
+                        clusterPorNombre,
+                        config.margenCluster
+                    );
+                } else if (
+                    personaB === nodoRaiz
+                ) {
+                    desplazarPersonaDentroCluster(
+                        personaA,
+                        -unidadX *
+                            desplazamiento *
+                            2,
+                        -unidadY *
+                            desplazamiento *
+                            2,
+                        clusterPorNombre,
+                        config.margenCluster
+                    );
+                } else {
+                    desplazarPersonaDentroCluster(
+                        personaA,
+                        -unidadX *
+                            desplazamiento,
+                        -unidadY *
+                            desplazamiento,
+                        clusterPorNombre,
+                        config.margenCluster
+                    );
+
+                    desplazarPersonaDentroCluster(
+                        personaB,
+                        unidadX *
+                            desplazamiento,
+                        unidadY *
+                            desplazamiento,
+                        clusterPorNombre,
+                        config.margenCluster
+                    );
+                }
+
+                huboAjustes = true;
+            }
+        }
+
+        if (!huboAjustes) {
+            break;
+        }
+    }
+
+    return personas;
+}
+
+    function desplazarPersonaDentroCluster(
+    persona,
+    desplazamientoX,
+    desplazamientoY,
+    clusterPorNombre,
+    margenCluster
+) {
+    const cluster =
+        clusterPorNombre.get(
+            persona.cluster
+        );
+
+    if (!cluster) {
+        return;
+    }
+
+    persona.x += desplazamientoX;
+    persona.y += desplazamientoY;
+
+    const dx =
+        persona.x -
+        cluster.centroX;
+
+    const dy =
+        persona.y -
+        cluster.centroY;
+
+    const distancia =
+        Math.hypot(dx, dy);
+
+    const radioMaximo =
+        Math.max(
+            1,
+            cluster.radio -
+                margenCluster
+        );
+
+    if (distancia > radioMaximo) {
+        persona.x =
+            cluster.centroX +
+            (
+                dx /
+                Math.max(distancia, 0.001)
+            ) *
+            radioMaximo;
+
+        persona.y =
+            cluster.centroY +
+            (
+                dy /
+                Math.max(distancia, 0.001)
+            ) *
+            radioMaximo;
+    }
+}
+    
     function obtenerProfundidad(persona) {
         if (profundidadPorId.has(persona.id)) {
             return profundidadPorId.get(persona.id);
