@@ -11,6 +11,16 @@ const CONFIG_LAYOUT = {
         separacionGrid: 140
     },
 
+    fuerzasCluster: {
+        iteracionesMaximas: 500,
+        atraccionEnlaces: 0.025,
+        atraccionCentro: 0.008,
+        repulsion: 90000,
+        separacion: 70,
+        movimientoMaximo: 18,
+        umbralConvergencia: 0.08
+    },
+
     ubicacion: {
         radioBase: 45,
         factorCrecimiento: 24,
