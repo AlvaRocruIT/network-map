@@ -83,20 +83,6 @@ function calcularLayout(personas, anchoMinimo, altoMinimo) {
     };
 }
 
-function asignarProfundidades(
-  nodo,
-  profundidad
-) {
-  nodo.profundidad = profundidad;
-
-  nodo.hijos.forEach(hijo => {
-    asignarProfundidades(
-      hijo,
-      profundidad + 1
-    );
-  });
-}
-
 function agruparPorClusterYUbicacion(personas) {
     const clustersPorNombre = new Map();
 
