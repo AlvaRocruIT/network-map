@@ -915,6 +915,13 @@ function mostrarEtiquetaNodo(
   }px`;
  }
 
+function obtenerDimensiones(contenedor) {
+    return {
+        ancho: contenedor.clientWidth,
+        alto: contenedor.clientHeight
+    };
+}
+
 function validarDatos(personas) {
   if (!Array.isArray(personas) || personas.length === 0) {
     throw new Error("El archivo no contiene personas.");
