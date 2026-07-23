@@ -14,13 +14,22 @@ async function cargarRed() {
 
   validarDatos(personas);
 
-  const { ancho, alto } = obtenerDimensiones(contenedor);
+const dimensionesBase =
+    obtenerDimensiones(contenedor);
 
-  const { nodos, conexiones } =
-  calcularLayout(personas, ancho, alto);
+const layout = calcularLayout(
+    personas,
+    dimensionesBase.ancho,
+    dimensionesBase.alto
+);
 
-  dibujarRed(contenedor, nodos, conexiones, ancho, alto);
-}
+dibujarRed(
+    contenedor,
+    layout.nodos,
+    layout.conexiones,
+    layout.ancho,
+    layout.alto
+);
 
 function calcularLayout(personas, ancho, alto) {
   const nodos = personas.map(persona => ({
