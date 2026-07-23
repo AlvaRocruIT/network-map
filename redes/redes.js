@@ -129,16 +129,23 @@ const clusterRaiz =
     clusterRaiz,
     anchoMinimo,
     altoMinimo
-    );
-    
-    const nodos =
-        Array.from(personasPorId.values());
+);
 
-    const conexiones =
-        crearConexiones(personasPorId);
+const nodos =
+    Array.from(personasPorId.values());
+
+const conexiones =
+    crearConexiones(personasPorId);
+
+const grafoClusters =
+    construirGrafoClusters(
+        clusters,
+        conexiones
+    );
 
     return {
         clusters,
+        grafoClusters,
         nodos,
         conexiones,
         ancho: anchoMinimo,
