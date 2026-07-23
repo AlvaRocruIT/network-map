@@ -34,6 +34,13 @@ const CONFIG_LAYOUT = {
         separacionUbicaciones: 24
     },
 
+    colisiones: {
+        iteraciones: 12,
+        distanciaMinima: 18,
+        desplazamientoMaximo: 3,
+        margenCluster: 14
+    },
+
     ubicacion: {
         radioBase: 45,
         factorCrecimiento: 24,
