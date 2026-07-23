@@ -19,21 +19,21 @@
     "nombre": "Maca",
     "cargo": "Secretaria Gerencia",
     "equipo": "Dirección",
-    "reportaA": "gg",
+    "reportaA": "gg"
   },
   {
     "id": "Adm1",
     "nombre": "Maca",
     "cargo": "Asistente Administrativo",
     "equipo": "Dirección",
-    "reportaA": "s-gg",
+    "reportaA": "s-gg"
   },
   {
     "id": "Adm1",
     "nombre": "Maca",
     "cargo": "Asistente Admin Valdivia",
     "equipo": "Dirección",
-    "reportaA": "s-gg",
+    "reportaA": "s-gg"
   },
   {
     "id": "cal1",
@@ -555,7 +555,7 @@
     "nombre": "Ángela",
     "cargo": "Jefa administración",
     "equipo": "Finanzas",
-    "reportaA": "AyF1",
+    "reportaA": "AyF1"
   },
   {
     "id": "Con1",
