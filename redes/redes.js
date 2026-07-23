@@ -52,6 +52,7 @@ dibujarRed(
     layout.ancho,
     layout.alto
 );
+}
 
 function calcularLayout(personas, anchoMinimo, altoMinimo) {
     const personasPorId = new Map(
