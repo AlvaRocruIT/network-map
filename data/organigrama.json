@@ -159,8 +159,8 @@
     "nombre": "Nicole",
     "cargo": "Monit. agua salada",
     "equipo": "Operaciones",
-    "cluster": "Valdivia",
-    "Ubicacion": "Roble2",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Ing1"
   },
   {
@@ -169,7 +169,7 @@
     "cargo": "Sismografía",
     "equipo": "Operaciones",
     "cluster": "Valdivia",
-    "Ubicacion": "Roble2",
+    "Ubicacion": "Roble1",
     "reportaA": "Ing1"
   },
   {
@@ -178,7 +178,7 @@
     "cargo": "Sismografía",
     "equipo": "Operaciones",
     "cluster": "Valdivia",
-    "Ubicacion": "Roble2",
+    "Ubicacion": "Roble1",
     "reportaA": "Ing1"
   },
   {
@@ -187,7 +187,7 @@
     "cargo": "Monit. humedales",
     "equipo": "Operaciones",
     "cluster": "Valdivia",
-    "Ubicacion": "Roble2",
+    "Ubicacion": "Roble1",
     "reportaA": "Ing1"
   },
   {
@@ -259,7 +259,7 @@
     "cargo": "Jefe Ensamblaje",
     "equipo": "Operaciones",
     "cluster": "Valdivia",
-    "Ubicacion": "Roble1",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing1"
   },
     {
@@ -268,7 +268,7 @@
     "cargo": "Maestro Ensamblaje",
     "equipo": "Operaciones",
     "cluster": "Valdivia",
-    "Ubicacion": "Roble1",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing11"
   },
   {
@@ -276,6 +276,8 @@
     "nombre": "Agüero",
     "cargo": "Maestro Soldador",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing11"
   },
   {
@@ -283,6 +285,8 @@
     "nombre": "David",
     "cargo": "Laboratorio ensamblaje",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing11"
   },
   {
@@ -290,6 +294,8 @@
     "nombre": "Alexis",
     "cargo": "Maestro Ensamblaje",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing11"
   },
   {
@@ -297,6 +303,8 @@
     "nombre": "Freddy",
     "cargo": "Maestro Ensamblaje",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing11"
   },
   {
@@ -304,6 +312,8 @@
     "nombre": "Don Rubén",
     "cargo": "Maestro Ensamblaje",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing11"
   },
   {
@@ -311,6 +321,8 @@
     "nombre": "Mauro",
     "cargo": "Jefe Innovación",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble1",
     "reportaA": "Ops1"
   },
   {
@@ -318,6 +330,8 @@
     "nombre": "Mane",
     "cargo": "Monitoreo e Iteración",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble1",
     "reportaA": "Ops2"
   },
   {
@@ -325,6 +339,8 @@
     "nombre": "Bea",
     "cargo": "Vínculos academia",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble1",
     "reportaA": "Ops2"
   },
   {
@@ -332,6 +348,8 @@
     "nombre": "Elo",
     "cargo": "Desarrollo científico",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble1",
     "reportaA": "Ops2"
   },
   {
@@ -339,6 +357,8 @@
     "nombre": "Nato",
     "cargo": "Líder Oceanografía",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble1",
     "reportaA": "Ing1"
   },
   {
@@ -346,6 +366,8 @@
     "nombre": "Sotito",
     "cargo": "Encargado Oceanografía",
     "equipo": "Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Inn4"
   },
   {
@@ -353,6 +375,8 @@
     "nombre": "Delfina",
     "cargo": "Encargado Oceanografía",
     "equipo": "Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Inn4"
   },
   {
@@ -360,6 +384,8 @@
     "nombre": "Marina",
     "cargo": "Encargado Oceanografía",
     "equipo": "Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Inn4"
   },
   {
@@ -367,6 +393,8 @@
     "nombre": "Rolo",
     "cargo": "Coordinador enlace",
     "equipo": "Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Ing1"
   },
   {
@@ -374,6 +402,8 @@
     "nombre": "Manolo",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -381,6 +411,8 @@
     "nombre": "Vera",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -388,6 +420,8 @@
     "nombre": "Fabri",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -395,6 +429,8 @@
     "nombre": "Vera",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -402,6 +438,8 @@
     "nombre": "Migue",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Aysen",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -409,6 +447,8 @@
     "nombre": "Santos",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Aysen",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -416,6 +456,8 @@
     "nombre": "Paul",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Aysen",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -423,6 +465,8 @@
     "nombre": "Tom",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Aysen",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -430,6 +474,8 @@
     "nombre": "Gabriel",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Magallanes",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -437,12 +483,16 @@
     "nombre": "Silverio",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Magallanes",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
     "id": "Lnk12",
     "nombre": "Jerson",
     "cargo": "Tec. en terreno",
+    "cluster": "Magallanes",
+    "Ubicacion": "Terreno",
     "equipo": "Operaciones",
     "reportaA": "Lnk1"
   },
@@ -451,6 +501,8 @@
     "nombre": "Jhanson",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Magallanes",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -458,6 +510,8 @@
     "nombre": "Quispe",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Talcahuano",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -465,6 +519,8 @@
     "nombre": "Huenchu",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Talcahuano",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -472,6 +528,8 @@
     "nombre": "Huaiqui",
     "cargo": "Tec. en terreno",
     "equipo": "Operaciones",
+    "cluster": "Mejillones",
+    "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
   {
@@ -486,6 +544,8 @@
     "nombre": "Mati",
     "cargo": "Jefe Desarrollo Software",
     "equipo": "Operaciones",
+    "cluster": "Mejillones",
+    "Ubicacion": "Terreno",
     "reportaA": "Ops1"
   },
   {
@@ -493,6 +553,8 @@
     "nombre": "Paula",
     "cargo": "Ingeniero IA",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
     {
@@ -500,6 +562,8 @@
     "nombre": "Joaco",
     "cargo": "Ingeniero IA",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
   {
@@ -507,6 +571,8 @@
     "nombre": "Sofi",
     "cargo": "Desarrollador",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
   {
@@ -514,6 +580,8 @@
     "nombre": "Mateo",
     "cargo": "Desarrollador",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
   {
@@ -521,6 +589,8 @@
     "nombre": "Ramón",
     "cargo": "Desarrollador",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
     {
@@ -528,6 +598,8 @@
     "nombre": "Román",
     "cargo": "Desarrollador",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
   {
@@ -535,6 +607,8 @@
     "nombre": "Ramiro",
     "cargo": "Desarrollador",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
   {
@@ -542,6 +616,8 @@
     "nombre": "Yuri",
     "cargo": "Desarrollador",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
   {
@@ -549,6 +625,8 @@
     "nombre": "Leny",
     "cargo": "Desarrollador",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
   {
@@ -556,6 +634,8 @@
     "nombre": "Guti",
     "cargo": "Desarrollador",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
   {
@@ -563,6 +643,8 @@
     "nombre": "Andrea",
     "cargo": "Jefe Electrónica",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho2",
     "reportaA": "Ops1"
   },
   {
@@ -570,6 +652,8 @@
     "nombre": "Felipe",
     "cargo": "Redes satelitales",
     "equipo": "Electronica",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho2",
     "reportaA": "Ops5"
   },
   {
@@ -577,6 +661,8 @@
     "nombre": "Andrés",
     "cargo": "Laboratorio Electrónica",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho2",
     "reportaA": "Ops5"
   },
   {
@@ -584,6 +670,8 @@
     "nombre": "Andrés",
     "cargo": "Sensores y monitoreo",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho2",
     "reportaA": "Ops5"
   },
     {
@@ -591,6 +679,8 @@
     "nombre": "Jaime",
     "cargo": "Monitoreo de Energía",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho2",
     "reportaA": "Ops5"
   },
   {
@@ -598,6 +688,8 @@
     "nombre": "Elías",
     "cargo": "Supervisor TI",
     "equipo": "Informaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Ops4"
   },
   {
@@ -605,6 +697,8 @@
     "nombre": "Juanito",
     "cargo": "Admin DB",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
     {
@@ -612,6 +706,8 @@
     "nombre": "Esteban",
     "cargo": "Soporte TI Valdivia",
     "equipo": "Informaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ops4"
   },
   {
@@ -619,6 +715,8 @@
     "nombre": "Valdi",
     "cargo": "Jefe Logística",
     "equipo": "Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Ops1"
   },
   {
@@ -626,6 +724,8 @@
     "nombre": "Antoine",
     "cargo": "Forecasting",
     "equipo": "Logística",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Ops6"
   },
   {
@@ -633,6 +733,8 @@
     "nombre": "Anto",
     "cargo": "Compras extranjera",
     "equipo": "Logística",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Ops6"
   },
   {
@@ -640,6 +742,8 @@
     "nombre": "Jerry",
     "cargo": "Abastecimiento",
     "equipo": "Logística",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Ops6"
   },
   {
@@ -647,6 +751,8 @@
     "nombre": "Ulises",
     "cargo": "Materiales compuestos",
     "equipo": "Logística",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ops6"
   },
   {
@@ -654,6 +760,8 @@
     "nombre": "Rena",
     "cargo": "Despacho-trazabilidad",
     "equipo": "Logística",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Ops6"
   },
   {
@@ -661,27 +769,45 @@
     "nombre": "Gonazlo",
     "cargo": "Jefe Almacen",
     "equipo": "Logística",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Ops6"
   },
   {
     "id": "Log7",
     "nombre": "Balta",
-    "cargo": "Casa1 Valdivia",
+    "cargo": "Bodega Valdivia",
     "equipo": "Logística",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ops6"
   },
   {
     "id": "Log8",
     "nombre": "Martín",
+    "cargo": "Casa1 Valdivia",
+    "equipo": "Logística",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
+    "reportaA": "Ops6"
+  },
+  
+  {
+    "id": "Log8",
+    "nombre": "Milton",
     "cargo": "Casa2 Valdivia",
     "equipo": "Logística",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho2",
     "reportaA": "Ops6"
   },
   {
-    "id": "Log9",
+    "id": "Log10",
     "nombre": "Theo",
     "cargo": "Casa Matríz",
     "equipo": "Logística",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Ops6"
   },
   {
@@ -689,6 +815,8 @@
     "nombre": "Oscar",
     "cargo": "Jefe SSO",
     "equipo": "Seguridad",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "gg"
   },
   {
@@ -696,6 +824,8 @@
     "nombre": "Don Iván",
     "cargo": "Supervisor SSO",
     "equipo": "Seguridad",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Terreno",
     "reportaA": "SSO"
   },
   {
@@ -703,6 +833,8 @@
     "nombre": "Oscar",
     "cargo": "SSO Valdivia",
     "equipo": "Seguridad",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "SSO"
   },
   {
@@ -710,6 +842,8 @@
     "nombre": "Iñigo",
     "cargo": "SSO Pto. Montt",
     "equipo": "Seguridad",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Terreno",
     "reportaA": "SSO"
   },
   {
@@ -717,6 +851,8 @@
     "nombre": "Oscar",
     "cargo": "SSO Aysén-Magallanes",
     "equipo": "Seguridad",
+    "cluster": "Aysen",
+    "Ubicacion": "Terreno",
     "reportaA": "SSO"
   },
   {
@@ -724,6 +860,8 @@
     "nombre": "Lucas",
     "cargo": "Gerente Comercial",
     "equipo": "Comercial",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "gg"
   },
   {
@@ -731,6 +869,8 @@
     "nombre": "Piero",
     "cargo": "Subgerente Venta Nacional",
     "equipo": "Comercial",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Com1"
   },
   {
@@ -738,6 +878,8 @@
     "nombre": "Paulo",
     "cargo": "KAM y Nuevos productos",
     "equipo": "Comercial",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Com2"
   },
   {
@@ -745,6 +887,8 @@
     "nombre": "Karen",
     "cargo": "Enlace Bío Bío",
     "equipo": "Comercial",
+    "cluster": "Talcahuano",
+    "Ubicacion": "Terreno",
     "reportaA": "Com2"
   },
   {
@@ -752,6 +896,8 @@
     "nombre": "Lucho",
     "cargo": "Enlace Aysén",
     "equipo": "Comercial",
+    "cluster": "Aysen",
+    "Ubicacion": "Terreno",
     "reportaA": "Com2"
   },
   {
@@ -759,6 +905,8 @@
     "nombre": "Tito",
     "cargo": "Enlace Magallanes",
     "equipo": "Comercial",
+    "cluster": "Magallanes",
+    "Ubicacion": "Terreno",
     "reportaA": "Com2"
   },
   {
@@ -766,6 +914,8 @@
     "nombre": "Alfredo",
     "cargo": "Subgerente Exportaciones",
     "equipo": "Comercial",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Com1"
   },
   {
@@ -773,6 +923,8 @@
     "nombre": "Lautaro",
     "cargo": "Ventas Latam",
     "equipo": "Comercial",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Com4"
   },
   {
@@ -780,6 +932,8 @@
     "nombre": "Jerry",
     "cargo": "Ventas USA-Canadá",
     "equipo": "Comercial",
+    "cluster": "Canadá",
+    "Ubicacion": "New Scotland",
     "reportaA": "Com4"
   },
   {
@@ -787,6 +941,8 @@
     "nombre": "Jude",
     "cargo": "Ventas Euro",
     "equipo": "Comercial",
+    "cluster": "Alemania",
+    "Ubicacion": "Hamburg",
     "reportaA": "Com4"
   },
   {
@@ -794,6 +950,8 @@
     "nombre": "úrsula",
     "cargo": "Client Success Manager",
     "equipo": "Comercial",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Com1"
   },
   {
@@ -801,6 +959,8 @@
     "nombre": "Concha",
     "cargo": "Client Onboarding",
     "equipo": "Comercial",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Com5"
   },
   {
@@ -808,12 +968,16 @@
     "nombre": "Xime",
     "cargo": "Client Onboarding",
     "equipo": "Comercial",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Csm1"
   },  {
     "id": "Csm3",
     "nombre": "Helga",
     "cargo": "Client Onboarding",
     "equipo": "Comercial",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Csm1"
   },
   {
@@ -821,6 +985,8 @@
     "nombre": "Renzo",
     "cargo": "Operaciones Llanquihue",
     "equipo": "Comercial",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Csm1"
   },
   {
@@ -828,6 +994,8 @@
     "nombre": "Mago",
     "cargo": "Operaciones Magallanes",
     "equipo": "Comercial",
+    "cluster": "Magallanes",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Csm1"
   },
   {
@@ -835,6 +1003,8 @@
     "nombre": "Willy",
     "cargo": "Operaciones Bío-bío",
     "equipo": "Comercial",
+    "cluster": "Talchuano",
+    "Ubicacion": "Terreno",
     "reportaA": "Csm1"
   },
   {
@@ -842,6 +1012,8 @@
     "nombre": "Willy",
     "cargo": "Operaciones Aysén",
     "equipo": "Comercial",
+    "cluster": "Aysen",
+    "Ubicacion": "Terreno",
     "reportaA": "Csm1"
   },
   {
@@ -849,6 +1021,8 @@
     "nombre": "Antoine",
     "cargo": "Operaciones Norte",
     "equipo": "Comercial",
+    "cluster": "Antofagasta",
+    "Ubicacion": "Terreno",
     "reportaA": "Csm1"
   },
   {
@@ -856,6 +1030,8 @@
     "nombre": "Marcelo",
     "cargo": "Gerente Adm y Finanzas",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "gg"
   },
     {
@@ -863,6 +1039,8 @@
     "nombre": "Agustina",
     "cargo": "Planificación Financiera",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF1"
   },
   {
@@ -870,6 +1048,8 @@
     "nombre": "Caro",
     "cargo": "Subgerente Contabilidad",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF1"
   },
   {
@@ -878,6 +1058,8 @@
     "cargo": "Supervisor Riesgo",
     "equipo": "Finanzas",
     "reportaA": "AyF1",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "tipoVinculo": "pseudo"
   },
     {
@@ -885,6 +1067,8 @@
     "nombre": "Ángela",
     "cargo": "Jefa administración",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF1"
   },
   {
@@ -892,6 +1076,8 @@
     "nombre": "Pamela",
     "cargo": "Cuentas nacionales",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF2"
   },
   {
@@ -899,6 +1085,8 @@
     "nombre": "Carlos",
     "cargo": "Cuentas nacionales",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF2"
   },
   {
@@ -906,6 +1094,8 @@
     "nombre": "Julián",
     "cargo": "Cuentas nacionales",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF2"
   },
   {
@@ -913,6 +1103,8 @@
     "nombre": "Memo",
     "cargo": "Cuentas Internacionales",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF2"
   },
   {
@@ -920,6 +1112,8 @@
     "nombre": "Samuel",
     "cargo": "Cuentas Internacionales",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF2"
   },
   {
@@ -927,6 +1121,8 @@
     "nombre": "Angélica",
     "cargo": "Adm. Contratos",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF4"
   },
   {
@@ -934,6 +1130,8 @@
     "nombre": "Árlides",
     "cargo": "Cobranzas",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF2"
   },
   {
@@ -941,6 +1139,8 @@
     "nombre": "Angie",
     "cargo": "Adm. Contratos",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF4"
   },
   {
@@ -948,6 +1148,8 @@
     "nombre": "Ángel",
     "cargo": "Contratos Internacionales",
     "equipo": "Finanzas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF4"
   },
   {
@@ -955,6 +1157,8 @@
     "nombre": "Tami",
     "cargo": "Subgerente Personas",
     "equipo": "Personas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "AyF1"
   },
   {
@@ -962,6 +1166,8 @@
     "nombre": "Álvaro",
     "cargo": "Jefe Desarrollo Organizacional",
     "equipo": "Personas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Per1"
   },
   {
@@ -969,6 +1175,8 @@
     "nombre": "Claudia",
     "cargo": "Coordinador capacitación",
     "equipo": "Personas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Per2"
   },
   {
@@ -976,6 +1184,8 @@
     "nombre": "Javiera",
     "cargo": "Jefe Relaciones Laborales",
     "equipo": "Personas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Per1"
   },
   {
@@ -983,6 +1193,8 @@
     "nombre": "Javiera",
     "cargo": "Coordinador Remuneraciones",
     "equipo": "Personas",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Per2"
   },
     {
@@ -990,6 +1202,8 @@
     "nombre": "Javiera",
     "cargo": "Beneficios y convenios",
     "equipo": "Personas",
+      "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "Per2"
   },
   {
@@ -997,20 +1211,17 @@
     "nombre": "Jose",
     "cargo": "Enlace HR Valdivia",
     "equipo": "Personas",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble1",
     "reportaA": "Per1"
   },  
-  {
-    "id": "Per5",
-    "nombre": "Josué",
-    "cargo": "Enlace HR",
-    "equipo": "Personas",
-    "reportaA": "Per1"
-  },
   {
     "id": "Cyd1",
     "nombre": "Bárbara",
     "cargo": "Subgerente Comunicaciones",
     "equipo": "Comunicaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa1",
     "reportaA": "gg"
   },
   {
@@ -1018,6 +1229,8 @@
     "nombre": "Natalia",
     "cargo": "Periodista",
     "equipo": "Comunicaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Cyd1"
   },
   {
@@ -1025,6 +1238,8 @@
     "nombre": "Moisés",
     "cargo": "Jefe Diseño",
     "equipo": "Comunicaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Cyd1"
   },
   {
@@ -1032,6 +1247,8 @@
     "nombre": "Romi",
     "cargo": "Diseñadora multimedia",
     "equipo": "Comunicaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Cyd2"
   },
   {
@@ -1039,6 +1256,8 @@
     "nombre": "Orlando",
     "cargo": "Diseñador industrial",
     "equipo": "Comunicaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Cyd2"
   },
   {
@@ -1046,6 +1265,8 @@
     "nombre": "Aldo",
     "cargo": "Jefe Sustentabilidad",
     "equipo": "Sustentabilidad",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "gg"
   },
   {
@@ -1053,6 +1274,8 @@
     "nombre": "Pollo",
     "cargo": "Encargado Sustentabilidad",
     "equipo": "Sustentabilidad",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Sus1"
   },
   {
@@ -1060,6 +1283,8 @@
     "nombre": "Marta",
     "cargo": "Encargado Sustentabilidad",
     "equipo": "Sustentabilidad",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Sus1"
   }
 ]
