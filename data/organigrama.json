@@ -175,7 +175,6 @@
     "equipo": "Operaciones",
     "reportaA": "Ops2"
   },
-  
   {
     "id": "Inn4",
     "nombre": "Nato",
@@ -203,6 +202,125 @@
     "cargo": "Encargado Oceanografía",
     "equipo": "Operaciones",
     "reportaA": "Inn4"
+  },
+  {
+    "id": "Lnk1",
+    "nombre": "Rolo",
+    "cargo": "Coordinador enlace",
+    "equipo": "Operaciones",
+    "reportaA": "Ing1"
+  },
+  {
+    "id": "Lnk2",
+    "nombre": "Manolo",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk3",
+    "nombre": "Vera",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk4",
+    "nombre": "Fabri",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk5",
+    "nombre": "Vera",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk6",
+    "nombre": "Migue",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk7",
+    "nombre": "Santos",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk8",
+    "nombre": "Paul",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk9",
+    "nombre": "Tom",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk10",
+    "nombre": "Gabriel",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk11",
+    "nombre": "Silverio",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk12",
+    "nombre": "Jerson",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk13",
+    "nombre": "Jhanson",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk13",
+    "nombre": "Quispe",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk14",
+    "nombre": "Huenchu",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk15",
+    "nombre": "Huaiqui",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
+  },
+  {
+    "id": "Lnk16",
+    "nombre": "Rodolfo",
+    "cargo": "Tec. en terreno",
+    "equipo": "Operaciones",
+    "reportaA": "Lnk1"
   },
   {
     "id": "Ops4",
