@@ -152,7 +152,15 @@ const grafoClusters =
         clusters,
         conexiones
     );
-
+    
+    resolverLayoutClusters(
+        clusters,
+        grafoClusters,
+        clusterRaiz,
+        anchoMinimo,
+        altoMinimo
+    );
+    
     return {
         clusters,
         grafoClusters,
