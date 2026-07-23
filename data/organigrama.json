@@ -129,7 +129,14 @@
   },
   {
     "id": "Ing3",
-    "nombre": "Hugo",
+    "nombre": "Carmen",
+    "cargo": "Sismografía",
+    "equipo": "Operaciones",
+    "reportaA": "Ing1"
+  },
+  {
+    "id": "Ing13",
+    "nombre": "Gloria",
     "cargo": "Sismografía",
     "equipo": "Operaciones",
     "reportaA": "Ing1"
