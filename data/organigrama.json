@@ -190,6 +190,55 @@
     "equipo": "Operaciones",
     "reportaA": "Ing1"
   },
+    {
+    "id": "ing11",
+    "nombre": "Marcial",
+    "cargo": "Jefe Ensamblaje",
+    "equipo": "Operaciones",
+    "reportaA": "Ing1"
+  },
+    {
+    "id": "Ens1",
+    "nombre": "Guido",
+    "cargo": "Maestro Ensamblaje",
+    "equipo": "Operaciones",
+    "reportaA": "Ing11"
+  },
+  {
+    "id": "Ens2",
+    "nombre": "Agüero",
+    "cargo": "Maestro Soldador",
+    "equipo": "Operaciones",
+    "reportaA": "Ing11"
+  },
+  {
+    "id": "Ens3",
+    "nombre": "David",
+    "cargo": "Laboratorio ensamblaje",
+    "equipo": "Operaciones",
+    "reportaA": "Ing11"
+  },
+  {
+    "id": "Ens4",
+    "nombre": "Alexis",
+    "cargo": "Maestro Ensamblaje",
+    "equipo": "Operaciones",
+    "reportaA": "Ing11"
+  },
+  {
+    "id": "Ens5",
+    "nombre": "Freddy",
+    "cargo": "Maestro Ensamblaje",
+    "equipo": "Operaciones",
+    "reportaA": "Ing11"
+  },
+  {
+    "id": "Ens6",
+    "nombre": "Don Rubén",
+    "cargo": "Maestro Ensamblaje",
+    "equipo": "Operaciones",
+    "reportaA": "Ing11"
+  },
   {
     "id": "Ops2",
     "nombre": "Mauro",
@@ -742,10 +791,17 @@
     "equipo": "Finanzas",
     "reportaA": "gg"
   },
+    {
+    "id": "AyF5",
+    "nombre": "Agustina",
+    "cargo": "Planificación Financiera",
+    "equipo": "Finanzas",
+    "reportaA": "AyF1"
+  },
   {
     "id": "AyF2",
     "nombre": "Caro",
-    "cargo": "Subgeremte Contabilidad",
+    "cargo": "Subgerente Contabilidad",
     "equipo": "Finanzas",
     "reportaA": "AyF1"
   },
@@ -800,7 +856,7 @@
     "reportaA": "AyF2"
   },
   {
-    "id": "Adm4",
+    "id": "Tra1",
     "nombre": "Angélica",
     "cargo": "Adm. Contratos",
     "equipo": "Finanzas",
@@ -814,9 +870,16 @@
     "reportaA": "AyF2"
   },
   {
-    "id": "Tra1",
+    "id": "Tra2",
     "nombre": "Angie",
     "cargo": "Adm. Contratos",
+    "equipo": "Finanzas",
+    "reportaA": "AyF4"
+  },
+  {
+    "id": "Tra3",
+    "nombre": "Ángel",
+    "cargo": "Contratos Internacionales",
     "equipo": "Finanzas",
     "reportaA": "AyF4"
   },
@@ -852,6 +915,13 @@
     "id": "ReL1",
     "nombre": "Javiera",
     "cargo": "Coordinador Remuneraciones",
+    "equipo": "Personas",
+    "reportaA": "Per2"
+  },
+    {
+    "id": "ReL2",
+    "nombre": "Javiera",
+    "cargo": "Beneficios y convenios",
     "equipo": "Personas",
     "reportaA": "Per2"
   },
