@@ -848,44 +848,6 @@ function dibujarRed(
   });
 }
 
-function validarDatos(personas) {
-  if (!Array.isArray(personas) || personas.length === 0) {
-    throw new Error("El archivo no contiene personas.");
-  }
-
-  const ids = new Set();
-
-  personas.forEach(persona => {
-    if (!persona.id || !persona.nombre) {
-      throw new Error("Cada persona necesita id y nombre.");
-    }
-
-    if (ids.has(persona.id)) {
-      throw new Error(`ID duplicado: ${persona.id}`);
-    }
-
-    ids.add(persona.id);
-  });
-
-  personas.forEach(persona => {
-    if (persona.reportaA && !ids.has(persona.reportaA)) {
-      throw new Error(
-        `${persona.nombre} reporta a un ID inexistente: ${persona.reportaA}`
-      );
-    }
-  });
-
-  const raices = personas.filter(
-    persona => persona.reportaA === null
-  );
-
-  if (raices.length !== 1) {
-    throw new Error(
-      `Se esperaba una jerarquía principal, pero se encontraron ${raices.length}.`
-    );
-  }
-}
-
 function crearEtiquetaNodo(contenedor) {
   const etiqueta = document.createElement("div");
 
@@ -929,3 +891,42 @@ function mostrarEtiquetaNodo(
     8
   }px`;
  }
+
+function validarDatos(personas) {
+  if (!Array.isArray(personas) || personas.length === 0) {
+    throw new Error("El archivo no contiene personas.");
+  }
+
+  const ids = new Set();
+
+  personas.forEach(persona => {
+    if (!persona.id || !persona.nombre) {
+      throw new Error("Cada persona necesita id y nombre.");
+    }
+
+    if (ids.has(persona.id)) {
+      throw new Error(`ID duplicado: ${persona.id}`);
+    }
+
+    ids.add(persona.id);
+  });
+
+  personas.forEach(persona => {
+    if (persona.reportaA && !ids.has(persona.reportaA)) {
+      throw new Error(
+        `${persona.nombre} reporta a un ID inexistente: ${persona.reportaA}`
+      );
+    }
+  });
+
+  const raices = personas.filter(
+    persona => persona.reportaA === null
+  );
+
+  if (raices.length !== 1) {
+    throw new Error(
+      `Se esperaba una jerarquía principal, pero se encontraron ${raices.length}.`
+    );
+  }
+}
+
