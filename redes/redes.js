@@ -71,22 +71,6 @@ function calcularLayout(personas, ancho, alto) {
     }
   });
 
-  asignarProfundidades(raiz, 0);
-  calcularTamanoRama(raiz);
-
-  asignarSectores(
-    raiz,
-    0,
-    Math.PI * 2
-  );
-
-  asignarPosiciones(
-    nodos,
-    raiz,
-    ancho,
-    alto
-  );
-
   const conexiones = nodos
     .filter(nodo => nodo.reportaA)
     .map(nodo => ({
