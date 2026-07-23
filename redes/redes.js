@@ -102,17 +102,7 @@ function calcularLayout(personas, anchoMinimo, altoMinimo) {
     );
 
     calcularDimensionesInternas(clusters);
-
-    clusters.forEach(cluster => {
-        asignarCentrosUbicaciones(cluster);
-
-        cluster.ubicaciones.forEach(ubicacion => {
-            posicionarUbicacion(
-                ubicacion,
-                personasPorId
-            );
-        });
-    });
+    };
 
     const nodos =
         Array.from(personasPorId.values());
