@@ -141,8 +141,8 @@ const clusterRaiz =
         clusters,
         nodos,
         conexiones,
-        ancho: dimensiones.ancho,
-        alto: dimensiones.alto
+        ancho: dimensiones.anchoMinimo,
+        alto: dimensiones.altoMinimo
     };
 }
 
