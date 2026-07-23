@@ -761,8 +761,8 @@ function dibujarRed(
   const etiqueta = crearEtiquetaNodo(contenedor);
       
   dibujarConexiones(
-    conexiones,
-    capaConexiones
+    capaConexiones,
+    conexiones
   );
 
   dibujarNodos(
