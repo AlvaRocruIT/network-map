@@ -99,53 +99,53 @@
     "reportaA": "Min1"
   },
   {
-    "id": "I+D",
-    "nombre": "Nicky",
-    "cargo": "Jef Ingeniería",
+    "id": "Ing1",
+    "nombre": "Nico",
+    "cargo": "Jefe Ingeniería",
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
   {
-    "id": "I+D1",
+    "id": "Ing2",
     "nombre": "Nicole",
     "cargo": "Monit. agua salada",
     "equipo": "Operaciones",
-    "reportaA": "I+D"
+    "reportaA": "Ing1"
   },
   {
-    "id": "I+D2",
+    "id": "Ing3",
     "nombre": "Hugo",
     "cargo": "Sismografía",
     "equipo": "Operaciones",
-    "reportaA": "I+D"
+    "reportaA": "Ing1"
   },
   {
-    "id": "I+D3",
+    "id": "Ing4",
     "nombre": "Diego",
     "cargo": "Monit. humedales",
     "equipo": "Operaciones",
-    "reportaA": "I+D"
+    "reportaA": "Ing1"
   },
   {
-    "id": "I+D4",
+    "id": "Ing5",
     "nombre": "Axel",
     "cargo": "Automation Lead",
     "equipo": "Operaciones",
-    "reportaA": "I+D"
-  },
+    "reportaA": "Ing1"
+   },
    {
-    "id": "I+D5",
+    "id": "Ing6",
     "nombre": "Alex",
     "cargo": "Automation y control industrial",
     "equipo": "Operaciones",
-    "reportaA": "Ing1"
+    "reportaA": "Ing5"
   },
    {
     "id": "ing7",
     "nombre": "Alexa",
     "cargo": "Automation y control industrial",
     "equipo": "Operaciones",
-    "reportaA": "Ing1"
+    "reportaA": "Ing5"
   },
   {
     "id": "ing8",
@@ -166,7 +166,7 @@
     "nombre": "Mane",
     "cargo": "Monitoreo e Iteración",
     "equipo": "Operaciones",
-    "reportaA": "Ops2"
+    "reportaA": "Ops3"
   },
   {
     "id": "Inn2",
@@ -188,7 +188,7 @@
     "nombre": "Nato",
     "cargo": "Líder Oceanografía",
     "equipo": "Operaciones",
-    "reportaA": "Ops3"
+    "reportaA": "Ing1"
   },
   {
     "id": "Inn5",
@@ -435,7 +435,6 @@
     "equipo": "Seguridad",
     "reportaA": "Ops7"
   },
-  
   {
     "id": "SSO3",
     "nombre": "Oscar",
@@ -576,27 +575,6 @@
     "reportaA": "Csm1"
   },
   {
-    "id": "Csm9",
-    "nombre": "Michele",
-    "cargo": "Operaciones Latam",
-    "equipo": "Comercial",
-    "reportaA": "Csm1"
-  },
-  {
-    "id": "Csm10",
-    "nombre": "Fede",
-    "cargo": "Operaciones USA-Canadá",
-    "equipo": "Comercial",
-    "reportaA": "Csm1"
-  },
-  {
-    "id": "Csm11",
-    "nombre": "Felo",
-    "cargo": "Operaciones Euro",
-    "equipo": "Comercial",
-    "reportaA": "Csm1"
-  },
-  {
     "id": "AyF1",
     "nombre": "Marcelo",
     "cargo": "Gerente Adm y Finanzas",
@@ -641,7 +619,21 @@
   },
   {
     "id": "Con3",
+    "nombre": "Julián",
+    "cargo": "Cuentas nacionales",
+    "equipo": "Finanzas",
+    "reportaA": "AyF2"
+  },
+  {
+    "id": "Con4",
     "nombre": "Memo",
+    "cargo": "Cuentas Internacionales",
+    "equipo": "Finanzas",
+    "reportaA": "AyF2"
+  },
+  {
+    "id": "Con4",
+    "nombre": "Samuel",
     "cargo": "Cuentas Internacionales",
     "equipo": "Finanzas",
     "reportaA": "AyF2"
@@ -653,7 +645,7 @@
     "equipo": "Finanzas",
     "reportaA": "AyF4"
   },
-    {
+  {
     "id": "Cob1",
     "nombre": "Árlides",
     "cargo": "Cobranzas",
@@ -723,7 +715,6 @@
     "equipo": "Comunicaciones",
     "reportaA": "gg"
   },
-  
   {
     "id": "Cyd2",
     "nombre": "Natalia",
