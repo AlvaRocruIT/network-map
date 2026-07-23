@@ -348,7 +348,7 @@ cluster.centroX =
             inicioY +
             fila * tamanoCelda +
             tamanoCelda / 2;
-    });
+    };
 
     return {
         ancho,
