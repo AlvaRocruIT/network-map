@@ -173,6 +173,12 @@ const grafoClusters =
         anchoMinimo,
         altoMinimo
     );
+
+    resolverLayoutPersonas(
+        clusters,
+        personasPorId,
+        nodoRaiz
+    );
     
     return {
         clusters,
