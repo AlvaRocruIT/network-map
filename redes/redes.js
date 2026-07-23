@@ -2,6 +2,28 @@ document.addEventListener("DOMContentLoaded", cargarRed);
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
+const CONFIG_LAYOUT = {
+    margenExterior: 100,
+
+    cluster: {
+        radioMinimo: 160,
+        padding: 80,
+        separacionGrid: 140
+    },
+
+    ubicacion: {
+        radioBase: 45,
+        factorCrecimiento: 24,
+        separacion: 30
+    },
+
+    arbol: {
+        radioBase: 28,
+        factorCrecimiento: 18,
+        distanciaNivel: 55
+    }
+};
+
 async function cargarRed() {
   const contenedor = document.getElementById("redes");
 
