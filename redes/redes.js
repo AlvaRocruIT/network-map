@@ -463,65 +463,6 @@ function posicionarUbicacion(
     );
 }
   
-function dibujarRed(
-  contenedor,
-  nodos,
-  conexiones,
-  ancho,
-  alto
-) {
-  contenedor.innerHTML = "";
-
-  const svg = document.createElementNS(SVG_NS, "svg");
-  svg.classList.add("red-svg");
-
-  svg.setAttribute(
-    "viewBox",
-    `0 0 ${ancho} ${alto}`
-  );
-
-  svg.setAttribute("role", "img");
-  svg.setAttribute(
-    "aria-label",
-    "Mapa de relaciones organizacionales"
-  );
-
-  const capaConexiones =
-    document.createElementNS(SVG_NS, "g");
-
-  capaConexiones.classList.add("capa-conexiones");
-
-  const capaNodos =
-    document.createElementNS(SVG_NS, "g");
-
-  capaNodos.classList.add("capa-nodos");
-
-  svg.appendChild(capaConexiones);
-  svg.appendChild(capaNodos);
-
-  contenedor.appendChild(svg);
-
-  const etiqueta = crearEtiquetaNodo(contenedor);
-      
-  dibujarConexiones(
-    conexiones,
-    capaConexiones
-  );
-
-  dibujarNodos(
-  nodos,
-  capaNodos,
-  contenedor,
-  etiqueta
-);
-
-    svg.addEventListener("click", evento => {
-  if (evento.target === svg) {
-    etiqueta.hidden = true;
-  }
-});
-}
-
   function obtenerDescendientesLocales(
     raizId,
     hijosPorId,
@@ -711,6 +652,121 @@ function dibujarRed(
     }
 
     return niveles;
+}
+
+function dibujarRed(
+  contenedor,
+  nodos,
+  conexiones,
+  ancho,
+  alto
+) {
+  contenedor.innerHTML = "";
+
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.classList.add("red-svg");
+
+  svg.setAttribute(
+    "viewBox",
+    `0 0 ${ancho} ${alto}`
+  );
+
+  svg.setAttribute("role", "img");
+  svg.setAttribute(
+    "aria-label",
+    "Mapa de relaciones organizacionales"
+  );
+
+  const capaConexiones =
+    document.createElementNS(SVG_NS, "g");
+
+  capaConexiones.classList.add("capa-conexiones");
+
+  const capaNodos =
+    document.createElementNS(SVG_NS, "g");
+
+  capaNodos.classList.add("capa-nodos");
+
+  svg.appendChild(capaConexiones);
+  svg.appendChild(capaNodos);
+
+  contenedor.appendChild(svg);
+
+  const etiqueta = crearEtiquetaNodo(contenedor);
+      
+  dibujarConexiones(
+    conexiones,
+    capaConexiones
+  );
+
+  dibujarNodos(
+  nodos,
+  capaNodos,
+  contenedor,
+  etiqueta
+);
+
+    svg.addEventListener("click", evento => {
+  if (evento.target === svg) {
+    etiqueta.hidden = true;
+  }
+});
+}
+
+  function dibujarConexiones(
+    capaConexiones,
+    conexiones
+) {
+    conexiones.forEach(conexion => {
+        const linea =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+            );
+
+        linea.setAttribute(
+            "x1",
+            conexion.origen.x
+        );
+
+        linea.setAttribute(
+            "y1",
+            conexion.origen.y
+        );
+
+        linea.setAttribute(
+            "x2",
+            conexion.destino.x
+        );
+
+        linea.setAttribute(
+            "y2",
+            conexion.destino.y
+        );
+
+        linea.classList.add(
+            "conexion",
+            `conexion-${conexion.tipoVinculo}`
+        );
+
+        if (conexion.esInterCluster) {
+            linea.classList.add(
+                "conexion-intercluster"
+            );
+        } else if (
+            conexion.esInterUbicacion
+        ) {
+            linea.classList.add(
+                "conexion-interubicacion"
+            );
+        } else {
+            linea.classList.add(
+                "conexion-interna"
+            );
+        }
+
+        capaConexiones.appendChild(linea);
+    });
 }
   
  function dibujarNodos(
