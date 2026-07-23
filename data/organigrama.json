@@ -57,13 +57,6 @@
     "reportaA": "gg"
   },
   {
-    "id": "Ops2",
-    "nombre": "Nico",
-    "cargo": "Jefe Ingeniería",
-    "equipo": "Operaciones",
-    "reportaA": "Ops1"
-  },
-  {
     "id": "Min1",
     "nombre": "Gero",
     "cargo": "Gerente minería",
@@ -155,32 +148,32 @@
     "reportaA": "Ing1"
   },
   {
-    "id": "Ops3",
+    "id": "Ops2",
     "nombre": "Mauro",
     "cargo": "Jefe Innovación",
     "equipo": "Operaciones",
-    "reportaA": "Ops2"
+    "reportaA": "Ops1"
   },
   {
     "id": "Inn1",
     "nombre": "Mane",
     "cargo": "Monitoreo e Iteración",
     "equipo": "Operaciones",
-    "reportaA": "Ops3"
+    "reportaA": "Ops2"
   },
   {
     "id": "Inn2",
     "nombre": "Bea",
     "cargo": "Vínculos academia",
     "equipo": "Operaciones",
-    "reportaA": "Ops3"
+    "reportaA": "Ops2"
   },
   {
     "id": "Inn3",
     "nombre": "Elo",
     "cargo": "Desarrollo científico",
     "equipo": "Operaciones",
-    "reportaA": "Ops3"
+    "reportaA": "Ops2"
   },
   
   {
