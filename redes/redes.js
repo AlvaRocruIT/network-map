@@ -284,6 +284,23 @@ function calcularRadioCluster(ubicaciones) {
     );
 }
 
+function calcularCentroClusterRaiz(
+    clusterRaiz,
+    ancho,
+    alto
+) {
+    if (!clusterRaiz) {
+        throw new Error(
+            "No se encontró el cluster raíz."
+        );
+    }
+
+    clusterRaiz.centroX = ancho / 2;
+    clusterRaiz.centroY = alto / 2;
+
+    return clusterRaiz;
+}
+
 function crearConexiones(personasPorId) {
     const conexiones = [];
 
