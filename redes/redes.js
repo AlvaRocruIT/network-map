@@ -697,6 +697,547 @@ function resolverLayoutClusters(
     return clusters;
 }
 
+function resolverLayoutPersonas(
+    clusters,
+    personasPorId,
+    nodoRaiz
+) {
+    const config =
+        CONFIG_LAYOUT.fuerzasPersona;
+
+    const personas =
+        Array.from(personasPorId.values());
+
+    const clusterPorNombre = new Map(
+        clusters.map(cluster => [
+            cluster.nombre,
+            cluster
+        ])
+    );
+
+    /*
+     * Calcula la profundidad jerárquica.
+     * Los niveles superiores reciben mayor atracción
+     * hacia el centro de su ubicación.
+     */
+    const profundidadPorId = new Map();
+
+    function obtenerProfundidad(persona) {
+        if (profundidadPorId.has(persona.id)) {
+            return profundidadPorId.get(persona.id);
+        }
+
+        if (!persona.reportaA) {
+            profundidadPorId.set(persona.id, 0);
+            return 0;
+        }
+
+        const superior =
+            personasPorId.get(persona.reportaA);
+
+        const profundidad =
+            superior
+                ? obtenerProfundidad(superior) + 1
+                : 1;
+
+        profundidadPorId.set(
+            persona.id,
+            profundidad
+        );
+
+        return profundidad;
+    }
+
+    personas.forEach(obtenerProfundidad);
+
+    /*
+     * Posiciona los centros invisibles
+     * de las ubicaciones dentro de cada cluster.
+     */
+    clusters.forEach(cluster => {
+        const ubicaciones =
+            [...cluster.ubicaciones].sort(
+                (a, b) =>
+                    a.nombre.localeCompare(b.nombre)
+            );
+
+        const ubicacionRaiz =
+            ubicaciones.find(ubicacion =>
+                ubicacion.personas.includes(
+                    nodoRaiz
+                )
+            );
+
+        if (ubicaciones.length === 1) {
+            ubicaciones[0].centroX =
+                cluster.centroX;
+
+            ubicaciones[0].centroY =
+                cluster.centroY;
+
+            return;
+        }
+
+        const ubicacionesMoviles =
+            ubicacionRaiz
+                ? ubicaciones.filter(
+                    ubicacion =>
+                        ubicacion !== ubicacionRaiz
+                )
+                : ubicaciones;
+
+        if (ubicacionRaiz) {
+            ubicacionRaiz.centroX =
+                cluster.centroX;
+
+            ubicacionRaiz.centroY =
+                cluster.centroY;
+        }
+
+        const radioMayor =
+            Math.max(
+                ...ubicacionesMoviles.map(
+                    ubicacion => ubicacion.radio
+                )
+            );
+
+        const radioOrbita =
+            Math.max(
+                30,
+                cluster.radio -
+                    radioMayor -
+                    config.separacionUbicaciones
+            );
+
+        ubicacionesMoviles.forEach(
+            (ubicacion, indice) => {
+                const angulo =
+                    (Math.PI * 2 * indice) /
+                    ubicacionesMoviles.length;
+
+                ubicacion.centroX =
+                    cluster.centroX +
+                    Math.cos(angulo) *
+                    radioOrbita;
+
+                ubicacion.centroY =
+                    cluster.centroY +
+                    Math.sin(angulo) *
+                    radioOrbita;
+            }
+        );
+    });
+
+    /*
+     * Posiciones iniciales deterministas
+     * alrededor de cada ubicación.
+     */
+    clusters.forEach(cluster => {
+        cluster.ubicaciones.forEach(
+            ubicacion => {
+                const personasUbicacion =
+                    [...ubicacion.personas].sort(
+                        (a, b) =>
+                            a.id.localeCompare(b.id)
+                    );
+
+                const personasMoviles =
+                    personasUbicacion.filter(
+                        persona =>
+                            persona !== nodoRaiz
+                    );
+
+                if (
+                    personasUbicacion.includes(
+                        nodoRaiz
+                    )
+                ) {
+                    nodoRaiz.x =
+                        cluster.centroX;
+
+                    nodoRaiz.y =
+                        cluster.centroY;
+
+                    nodoRaiz.fijo = true;
+                }
+
+                if (
+                    personasMoviles.length === 1 &&
+                    !personasUbicacion.includes(
+                        nodoRaiz
+                    )
+                ) {
+                    personasMoviles[0].x =
+                        ubicacion.centroX;
+
+                    personasMoviles[0].y =
+                        ubicacion.centroY;
+
+                    return;
+                }
+
+                const radioInicial =
+                    Math.max(
+                        16,
+                        Math.min(
+                            ubicacion.radio * 0.55,
+                            70
+                        )
+                    );
+
+                personasMoviles.forEach(
+                    (persona, indice) => {
+                        const angulo =
+                            (Math.PI * 2 * indice) /
+                            Math.max(
+                                personasMoviles.length,
+                                1
+                            );
+
+                        persona.x =
+                            ubicacion.centroX +
+                            Math.cos(angulo) *
+                            radioInicial;
+
+                        persona.y =
+                            ubicacion.centroY +
+                            Math.sin(angulo) *
+                            radioInicial;
+                    }
+                );
+            }
+        );
+    });
+
+    let iteracionesEstables = 0;
+
+    for (
+        let iteracion = 0;
+        iteracion <
+            config.iteracionesMaximas;
+        iteracion += 1
+    ) {
+        const fuerzas = new Map(
+            personas.map(persona => [
+                persona,
+                { x: 0, y: 0 }
+            ])
+        );
+
+        /*
+         * Atracción hacia la ubicación.
+         * Los niveles superiores tienden más al centro,
+         * sin abandonar su cluster ni ubicación.
+         */
+        clusters.forEach(cluster => {
+            cluster.ubicaciones.forEach(
+                ubicacion => {
+                    ubicacion.personas.forEach(
+                        persona => {
+                            if (persona === nodoRaiz) {
+                                return;
+                            }
+
+                            const profundidad =
+                                obtenerProfundidad(
+                                    persona
+                                );
+
+                            const factorJerarquico =
+                                1 +
+                                1 /
+                                    Math.max(
+                                        profundidad,
+                                        1
+                                    );
+
+                            fuerzas.get(persona).x +=
+                                (
+                                    ubicacion.centroX -
+                                    persona.x
+                                ) *
+                                (
+                                    config.atraccionUbicacion +
+                                    config
+                                        .atraccionCentroJerarquico *
+                                        factorJerarquico
+                                );
+
+                            fuerzas.get(persona).y +=
+                                (
+                                    ubicacion.centroY -
+                                    persona.y
+                                ) *
+                                (
+                                    config.atraccionUbicacion +
+                                    config
+                                        .atraccionCentroJerarquico *
+                                        factorJerarquico
+                                );
+                        }
+                    );
+                }
+            );
+        });
+
+        /*
+         * Atracción hacia el superior.
+         *
+         * La fuerza disminuye cuando superior y
+         * subordinado están en ubicaciones o clusters
+         * diferentes: la geografía prima.
+         */
+        personas.forEach(persona => {
+            if (
+                persona === nodoRaiz ||
+                !persona.reportaA
+            ) {
+                return;
+            }
+
+            const superior =
+                personasPorId.get(
+                    persona.reportaA
+                );
+
+            if (!superior) {
+                return;
+            }
+
+            const mismoCluster =
+                superior.cluster ===
+                persona.cluster;
+
+            const mismaUbicacion =
+                mismoCluster &&
+                superior.ubicacion ===
+                    persona.ubicacion;
+
+            let factorGeografico;
+
+            if (mismaUbicacion) {
+                factorGeografico = 1;
+            } else if (mismoCluster) {
+                factorGeografico = 0.18;
+            } else {
+                factorGeografico = 0.03;
+            }
+
+            const fuerza =
+                config.atraccionJerarquia *
+                factorGeografico;
+
+            fuerzas.get(persona).x +=
+                (superior.x - persona.x) *
+                fuerza;
+
+            fuerzas.get(persona).y +=
+                (superior.y - persona.y) *
+                fuerza;
+        });
+
+        /*
+         * Repulsión entre personas del mismo cluster.
+         */
+        for (
+            let i = 0;
+            i < personas.length;
+            i += 1
+        ) {
+            for (
+                let j = i + 1;
+                j < personas.length;
+                j += 1
+            ) {
+                const personaA = personas[i];
+                const personaB = personas[j];
+
+                if (
+                    personaA.cluster !==
+                    personaB.cluster
+                ) {
+                    continue;
+                }
+
+                let dx =
+                    personaB.x -
+                    personaA.x;
+
+                let dy =
+                    personaB.y -
+                    personaA.y;
+
+                if (dx === 0 && dy === 0) {
+                    dx = 0.01;
+                    dy = 0.01;
+                }
+
+                const distancia =
+                    Math.max(
+                        Math.hypot(dx, dy),
+                        0.001
+                    );
+
+                if (
+                    distancia >
+                    config.distanciaMinima * 3
+                ) {
+                    continue;
+                }
+
+                let intensidad =
+                    config.repulsion /
+                    Math.pow(distancia, 2);
+
+                if (
+                    distancia <
+                    config.distanciaMinima
+                ) {
+                    intensidad +=
+                        (
+                            config.distanciaMinima -
+                            distancia
+                        ) * 0.45;
+                }
+
+                const fuerzaX =
+                    (dx / distancia) *
+                    intensidad;
+
+                const fuerzaY =
+                    (dy / distancia) *
+                    intensidad;
+
+                if (personaA !== nodoRaiz) {
+                    fuerzas.get(personaA).x -=
+                        fuerzaX;
+
+                    fuerzas.get(personaA).y -=
+                        fuerzaY;
+                }
+
+                if (personaB !== nodoRaiz) {
+                    fuerzas.get(personaB).x +=
+                        fuerzaX;
+
+                    fuerzas.get(personaB).y +=
+                        fuerzaY;
+                }
+            }
+        }
+
+        const enfriamiento =
+            1 -
+            iteracion /
+                config.iteracionesMaximas;
+
+        let movimientoMayor = 0;
+
+        personas.forEach(persona => {
+            if (persona === nodoRaiz) {
+                return;
+            }
+
+            const fuerza =
+                fuerzas.get(persona);
+
+            const movimientoX =
+                Math.max(
+                    -config.movimientoMaximo,
+                    Math.min(
+                        config.movimientoMaximo,
+                        fuerza.x * enfriamiento
+                    )
+                );
+
+            const movimientoY =
+                Math.max(
+                    -config.movimientoMaximo,
+                    Math.min(
+                        config.movimientoMaximo,
+                        fuerza.y * enfriamiento
+                    )
+                );
+
+            persona.x += movimientoX;
+            persona.y += movimientoY;
+
+            /*
+             * Restricción dura:
+             * la persona no puede abandonar su cluster.
+             */
+            const cluster =
+                clusterPorNombre.get(
+                    persona.cluster
+                );
+
+            const dx =
+                persona.x -
+                cluster.centroX;
+
+            const dy =
+                persona.y -
+                cluster.centroY;
+
+            const distancia =
+                Math.hypot(dx, dy);
+
+            const radioMaximo =
+                Math.max(
+                    1,
+                    cluster.radio -
+                        config.margenCluster
+                );
+
+            if (distancia > radioMaximo) {
+                persona.x =
+                    cluster.centroX +
+                    (dx / distancia) *
+                        radioMaximo;
+
+                persona.y =
+                    cluster.centroY +
+                    (dy / distancia) *
+                        radioMaximo;
+            }
+
+            movimientoMayor =
+                Math.max(
+                    movimientoMayor,
+                    Math.hypot(
+                        movimientoX,
+                        movimientoY
+                    )
+                );
+        });
+
+        nodoRaiz.x =
+            clusterPorNombre.get(
+                nodoRaiz.cluster
+            ).centroX;
+
+        nodoRaiz.y =
+            clusterPorNombre.get(
+                nodoRaiz.cluster
+            ).centroY;
+
+        if (
+            movimientoMayor <
+            config.umbralConvergencia
+        ) {
+            iteracionesEstables += 1;
+
+            if (iteracionesEstables >= 10) {
+                break;
+            }
+        } else {
+            iteracionesEstables = 0;
+        }
+    }
+
+    return personas;
+}
+
 function crearConexiones(personasPorId) {
     const conexiones = [];
 
