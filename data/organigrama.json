@@ -20,7 +20,20 @@
     "cargo": "Secretaria Gerencia",
     "equipo": "Dirección",
     "reportaA": "gg",
-    "tipoVinculo": "pseudo"
+  },
+  {
+    "id": "Adm1",
+    "nombre": "Maca",
+    "cargo": "Asistente Administrativo",
+    "equipo": "Dirección",
+    "reportaA": "s-gg",
+  },
+  {
+    "id": "Adm1",
+    "nombre": "Maca",
+    "cargo": "Asistente Admin Valdivia",
+    "equipo": "Dirección",
+    "reportaA": "s-gg",
   },
   {
     "id": "cal1",
