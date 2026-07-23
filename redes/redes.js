@@ -97,12 +97,34 @@ function calcularLayout(personas, anchoMinimo, altoMinimo) {
         ])
     );
 
-    const clusters = agruparPorClusterYUbicacion(
-        Array.from(personasPorId.values())
+   const personasArray =
+    Array.from(personasPorId.values());
+
+const nodoRaiz =
+    personasArray.find(
+        persona => persona.reportaA === null
     );
 
-    calcularDimensionesInternas(clusters);
+if (!nodoRaiz) {
+    throw new Error(
+        "No se encontró el nodo raíz."
+    );
+}
 
+nodoRaiz.fijo = true;
+
+const clusters =
+    agruparPorClusterYUbicacion(
+        personasArray
+    );
+
+const clusterRaiz =
+    clusters.find(
+        cluster =>
+            cluster.nombre === nodoRaiz.cluster
+    );
+
+calcularDimensionesInternas(clusters);
     const nodos =
         Array.from(personasPorId.values());
 
