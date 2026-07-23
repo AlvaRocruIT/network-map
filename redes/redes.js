@@ -314,6 +314,63 @@ function calcularCentroClusterRaiz(
     return clusterRaiz;
 }
 
+function construirGrafoClusters(
+    clusters,
+    conexiones
+) {
+    const clustersPorNombre = new Map(
+        clusters.map(cluster => [
+            cluster.nombre,
+            cluster
+        ])
+    );
+
+    const relacionesPorClave = new Map();
+
+    conexiones.forEach(conexion => {
+        if (!conexion.esInterCluster) {
+            return;
+        }
+
+        const nombreOrigen =
+            conexion.origen.cluster;
+
+        const nombreDestino =
+            conexion.destino.cluster;
+
+        const origen =
+            clustersPorNombre.get(nombreOrigen);
+
+        const destino =
+            clustersPorNombre.get(nombreDestino);
+
+        if (!origen || !destino) {
+            return;
+        }
+
+        const clave = [
+            nombreOrigen,
+            nombreDestino
+        ]
+            .sort()
+            .join("::");
+
+        if (!relacionesPorClave.has(clave)) {
+            relacionesPorClave.set(clave, {
+                origen,
+                destino,
+                peso: 0
+            });
+        }
+
+        relacionesPorClave.get(clave).peso += 1;
+    });
+
+    return Array.from(
+        relacionesPorClave.values()
+    );
+}
+
 function crearConexiones(personasPorId) {
     const conexiones = [];
 
