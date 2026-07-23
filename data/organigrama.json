@@ -23,14 +23,14 @@
   },
   {
     "id": "Adm1",
-    "nombre": "Maca",
+    "nombre": "Junior",
     "cargo": "Asistente Administrativo",
     "equipo": "Dirección",
     "reportaA": "s-gg"
   },
   {
-    "id": "Adm1",
-    "nombre": "Maca",
+    "id": "Adm2",
+    "nombre": "Jimmy",
     "cargo": "Asistente Admin Valdivia",
     "equipo": "Dirección",
     "reportaA": "s-gg"
