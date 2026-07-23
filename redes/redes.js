@@ -31,58 +31,56 @@ dibujarRed(
     layout.alto
 );
 
-function calcularLayout(personas, ancho, alto) {
-  const nodos = personas.map(persona => ({
-    ...persona,
-    hijos: [],
-    tamanoRama: 1,
-    profundidad: 0,
-    anguloInicio: 0,
-    anguloFin: Math.PI * 2,
-    x: 0,
-    y: 0,
-    fijo: false
-  }));
-
-  const nodosPorId = new Map(
-    nodos.map(nodo => [nodo.id, nodo])
-  );
-
-  const raiz = nodos.find(
-    nodo => nodo.reportaA === null
-  );
-
-  if (!raiz) {
-    throw new Error(
-      "No se encontró una jerarquía principal."
+function calcularLayout(personas, anchoMinimo, altoMinimo) {
+    const personasPorId = new Map(
+        personas.map(persona => [
+            persona.id,
+            {
+                ...persona,
+                tipoVinculo:
+                    persona.tipoVinculo ?? "dependencia",
+                x: 0,
+                y: 0
+            }
+        ])
     );
-  }
 
-  nodos.forEach(nodo => {
-    if (!nodo.reportaA) {
-      return;
-    }
+    const clusters = agruparPorClusterYUbicacion(
+        Array.from(personasPorId.values())
+    );
 
-    const superior =
-      nodosPorId.get(nodo.reportaA);
+    calcularDimensionesInternas(clusters);
 
-    if (superior) {
-      superior.hijos.push(nodo);
-    }
-  });
+    const dimensiones = asignarCentrosClusters(
+        clusters,
+        anchoMinimo,
+        altoMinimo
+    );
 
-  const conexiones = nodos
-    .filter(nodo => nodo.reportaA)
-    .map(nodo => ({
-      source: nodosPorId.get(nodo.reportaA),
-      target: nodo
-    }))
-    .filter(conexion => conexion.source);
+    clusters.forEach(cluster => {
+        asignarCentrosUbicaciones(cluster);
 
-  return {
-    nodos,
-    conexiones
-  };
+        cluster.ubicaciones.forEach(ubicacion => {
+            posicionarUbicacion(
+                ubicacion,
+                personasPorId
+            );
+        });
+    });
+
+    const nodos =
+        Array.from(personasPorId.values());
+
+    const conexiones =
+        crearConexiones(personasPorId);
+
+    return {
+        clusters,
+        nodos,
+        conexiones,
+        ancho: dimensiones.ancho,
+        alto: dimensiones.alto
+    };
 }
 
 function asignarProfundidades(
