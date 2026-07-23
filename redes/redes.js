@@ -307,16 +307,6 @@ function asignarCentrosClusters(
     const tamanoCelda =
         radioMaximo * 2 + separacion;
 
-    const columnas =
-        Math.ceil(
-            Math.sqrt(clusters.length)
-        );
-
-    const filas =
-        Math.ceil(
-            clusters.length / columnas
-        );
-
     const anchoCalculado =
         margen * 2 +
         columnas * tamanoCelda;
@@ -348,15 +338,8 @@ function asignarCentrosClusters(
 
     const inicioY =
         (alto - altoGrid) / 2;
-
-    clusters.forEach((cluster, indice) => {
-        const columna =
-            indice % columnas;
-
-        const fila =
-            Math.floor(indice / columnas);
-
-        cluster.centroX =
+    
+cluster.centroX =
             inicioX +
             columna * tamanoCelda +
             tamanoCelda / 2;
