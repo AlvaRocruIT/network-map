@@ -381,6 +381,301 @@ function construirGrafoClusters(
     );
 }
 
+function resolverLayoutClusters(
+    clusters,
+    grafoClusters,
+    clusterRaiz,
+    ancho,
+    alto
+) {
+    const config =
+        CONFIG_LAYOUT.fuerzasCluster;
+
+    const margen =
+        CONFIG_LAYOUT.margenExterior;
+
+    const clustersMoviles =
+        clusters.filter(
+            cluster => cluster !== clusterRaiz
+        );
+
+    if (clustersMoviles.length === 0) {
+        return clusters;
+    }
+
+    /*
+     * Posiciones iniciales deterministas.
+     * Solo sirven como punto de partida para las fuerzas.
+     */
+    const radioInicial =
+        Math.max(
+            clusterRaiz.radio * 2,
+            Math.min(ancho, alto) * 0.3
+        );
+
+    clustersMoviles
+        .sort((a, b) =>
+            a.nombre.localeCompare(b.nombre)
+        )
+        .forEach((cluster, indice) => {
+            const angulo =
+                (Math.PI * 2 * indice) /
+                clustersMoviles.length;
+
+            cluster.centroX =
+                clusterRaiz.centroX +
+                Math.cos(angulo) *
+                radioInicial;
+
+            cluster.centroY =
+                clusterRaiz.centroY +
+                Math.sin(angulo) *
+                radioInicial;
+        });
+
+    let iteracionesEstables = 0;
+
+    for (
+        let iteracion = 0;
+        iteracion < config.iteracionesMaximas;
+        iteracion += 1
+    ) {
+        const fuerzas = new Map(
+            clusters.map(cluster => [
+                cluster,
+                { x: 0, y: 0 }
+            ])
+        );
+
+        /*
+         * Atracción jerárquica entre clusters.
+         */
+        grafoClusters.forEach(relacion => {
+            const origen = relacion.origen;
+            const destino = relacion.destino;
+
+            const dx =
+                destino.centroX -
+                origen.centroX;
+
+            const dy =
+                destino.centroY -
+                origen.centroY;
+
+            const distancia =
+                Math.max(
+                    Math.hypot(dx, dy),
+                    0.001
+                );
+
+            const distanciaDeseada =
+                origen.radio +
+                destino.radio +
+                config.separacion;
+
+            const intensidad =
+                (distancia - distanciaDeseada) *
+                config.atraccionEnlaces *
+                (1 + Math.log1p(relacion.peso));
+
+            const fuerzaX =
+                (dx / distancia) *
+                intensidad;
+
+            const fuerzaY =
+                (dy / distancia) *
+                intensidad;
+
+            if (origen !== clusterRaiz) {
+                fuerzas.get(origen).x += fuerzaX;
+                fuerzas.get(origen).y += fuerzaY;
+            }
+
+            if (destino !== clusterRaiz) {
+                fuerzas.get(destino).x -= fuerzaX;
+                fuerzas.get(destino).y -= fuerzaY;
+            }
+        });
+
+        /*
+         * Repulsión entre todos los clusters.
+         */
+        for (
+            let i = 0;
+            i < clusters.length;
+            i += 1
+        ) {
+            for (
+                let j = i + 1;
+                j < clusters.length;
+                j += 1
+            ) {
+                const clusterA = clusters[i];
+                const clusterB = clusters[j];
+
+                let dx =
+                    clusterB.centroX -
+                    clusterA.centroX;
+
+                let dy =
+                    clusterB.centroY -
+                    clusterA.centroY;
+
+                if (dx === 0 && dy === 0) {
+                    dx = 0.01;
+                    dy = 0.01;
+                }
+
+                const distancia =
+                    Math.max(
+                        Math.hypot(dx, dy),
+                        0.001
+                    );
+
+                const distanciaMinima =
+                    clusterA.radio +
+                    clusterB.radio +
+                    config.separacion;
+
+                let intensidad =
+                    config.repulsion /
+                    Math.pow(distancia, 2);
+
+                if (distancia < distanciaMinima) {
+                    intensidad +=
+                        (distanciaMinima - distancia) *
+                        0.35;
+                }
+
+                const fuerzaX =
+                    (dx / distancia) *
+                    intensidad;
+
+                const fuerzaY =
+                    (dy / distancia) *
+                    intensidad;
+
+                if (clusterA !== clusterRaiz) {
+                    fuerzas.get(clusterA).x -= fuerzaX;
+                    fuerzas.get(clusterA).y -= fuerzaY;
+                }
+
+                if (clusterB !== clusterRaiz) {
+                    fuerzas.get(clusterB).x += fuerzaX;
+                    fuerzas.get(clusterB).y += fuerzaY;
+                }
+            }
+        }
+
+        /*
+         * Atracción suave hacia el cluster raíz.
+         * Mantiene los clusters orbitando el centro.
+         */
+        clustersMoviles.forEach(cluster => {
+            const dx =
+                clusterRaiz.centroX -
+                cluster.centroX;
+
+            const dy =
+                clusterRaiz.centroY -
+                cluster.centroY;
+
+            fuerzas.get(cluster).x +=
+                dx * config.atraccionCentro;
+
+            fuerzas.get(cluster).y +=
+                dy * config.atraccionCentro;
+        });
+
+        const enfriamiento =
+            1 - iteracion /
+            config.iteracionesMaximas;
+
+        let movimientoMayor = 0;
+
+        clustersMoviles.forEach(cluster => {
+            const fuerza =
+                fuerzas.get(cluster);
+
+            const movimientoX =
+                Math.max(
+                    -config.movimientoMaximo,
+                    Math.min(
+                        config.movimientoMaximo,
+                        fuerza.x * enfriamiento
+                    )
+                );
+
+            const movimientoY =
+                Math.max(
+                    -config.movimientoMaximo,
+                    Math.min(
+                        config.movimientoMaximo,
+                        fuerza.y * enfriamiento
+                    )
+                );
+
+            cluster.centroX += movimientoX;
+            cluster.centroY += movimientoY;
+
+            /*
+             * Evita que el cluster salga del canvas.
+             */
+            cluster.centroX =
+                Math.max(
+                    margen + cluster.radio,
+                    Math.min(
+                        ancho -
+                            margen -
+                            cluster.radio,
+                        cluster.centroX
+                    )
+                );
+
+            cluster.centroY =
+                Math.max(
+                    margen + cluster.radio,
+                    Math.min(
+                        alto -
+                            margen -
+                            cluster.radio,
+                        cluster.centroY
+                    )
+                );
+
+            movimientoMayor =
+                Math.max(
+                    movimientoMayor,
+                    Math.hypot(
+                        movimientoX,
+                        movimientoY
+                    )
+                );
+        });
+
+        /*
+         * El cluster raíz permanece fijo.
+         */
+        clusterRaiz.centroX = ancho / 2;
+        clusterRaiz.centroY = alto / 2;
+
+        if (
+            movimientoMayor <
+            config.umbralConvergencia
+        ) {
+            iteracionesEstables += 1;
+
+            if (iteracionesEstables >= 10) {
+                break;
+            }
+        } else {
+            iteracionesEstables = 0;
+        }
+    }
+
+    return clusters;
+}
+
 function crearConexiones(personasPorId) {
     const conexiones = [];
 
