@@ -4,6 +4,8 @@
     "nombre": "Pato",
     "cargo": "Gerente General",
     "equipo": "Dirección",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Central",
     "reportaA": null
   },
   {
@@ -11,6 +13,8 @@
     "nombre": "Don Benito",
     "cargo": "Presidente Directorio",
     "equipo": "Dirección",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Central",
     "reportaA": "gg",
     "tipoVinculo": "pseudo"
   },  
@@ -19,6 +23,8 @@
     "nombre": "Pablo",
     "cargo": "Dirección Técnica",
     "equipo": "Dirección",
+    "cluster": "Alemania",
+    "Ubicacion": "Hamburg",
     "reportaA": "gg",
     "tipoVinculo": "pseudo"
   },
@@ -27,6 +33,8 @@
     "nombre": "Maca",
     "cargo": "Secretaria Gerencia",
     "equipo": "Dirección",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Central",
     "reportaA": "gg"
   },
   {
@@ -34,6 +42,8 @@
     "nombre": "Junior",
     "cargo": "Asistente Administrativo",
     "equipo": "Dirección",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Central",
     "reportaA": "s-gg"
   },
   {
@@ -41,6 +51,8 @@
     "nombre": "Jimmy",
     "cargo": "Asistente Admin Valdivia",
     "equipo": "Dirección",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble 1",
     "reportaA": "s-gg"
   },
   {
@@ -48,6 +60,8 @@
     "nombre": "Giovanni",
     "cargo": "Jefe Planificación",
     "equipo": "Dirección",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Central",
     "reportaA": "gg"
   },
   {
@@ -55,6 +69,8 @@
     "nombre": "Marco",
     "cargo": "Subgerente Calidad",
     "equipo": "Calidad",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Central",
     "reportaA": "gg"
   },
   {
@@ -62,12 +78,16 @@
     "nombre": "Norma",
     "cargo": "Biblioteca técnica",
     "equipo": "Calidad",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Central",
     "reportaA": "cal1"
   },
   {
     "id": "Ops1",
     "nombre": "Gonzalo",
     "cargo": "Gerente Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Central",
     "equipo": "Operaciones",
     "reportaA": "gg"
   },
@@ -75,6 +95,8 @@
     "id": "Ops3",
     "nombre": "Gerardo",
     "cargo": "Planificación Operacional",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa Central",
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
@@ -82,6 +104,8 @@
     "id": "Min1",
     "nombre": "Gero",
     "cargo": "Gerente minería",
+    "cluster": "Antofagasta",
+    "Ubicacion": "UCN",
     "equipo": "Minería",
     "reportaA": "gg"
   },
@@ -90,6 +114,8 @@
     "nombre": "Gus",
     "cargo": "Cell minería",
     "equipo": "Minería",
+    "cluster": "Antofagasta",
+    "Ubicacion": "UCN",
     "reportaA": "Min1"
   },
   {
@@ -97,6 +123,8 @@
     "nombre": "Vale",
     "cargo": "Cell minería",
     "equipo": "Minería",
+    "cluster": "Antofagasta",
+    "Ubicacion": "UCN",
     "reportaA": "Min1"
   },
   {
@@ -104,6 +132,8 @@
     "nombre": "Valeria",
     "cargo": "Cell minería",
     "equipo": "Minería",
+    "cluster": "Antofagasta",
+    "Ubicacion": "UCN",
     "reportaA": "Min1"
   },
   {
@@ -111,6 +141,8 @@
     "nombre": "Pepe",
     "cargo": "Cell minería",
     "equipo": "Minería",
+    "cluster": "Antofagasta",
+    "Ubicacion": "UCN",
     "reportaA": "Min1"
   },
   {
@@ -118,6 +150,8 @@
     "nombre": "Nico",
     "cargo": "Jefe Ingeniería",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble1",
     "reportaA": "Ops1"
   },
   {
@@ -125,6 +159,8 @@
     "nombre": "Nicole",
     "cargo": "Monit. agua salada",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing1"
   },
   {
@@ -132,6 +168,8 @@
     "nombre": "Carmen",
     "cargo": "Sismografía",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing1"
   },
   {
@@ -139,6 +177,8 @@
     "nombre": "Gloria",
     "cargo": "Sismografía",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing1"
   },
   {
@@ -146,6 +186,8 @@
     "nombre": "Diego",
     "cargo": "Monit. humedales",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble2",
     "reportaA": "Ing1"
   },
   {
@@ -153,6 +195,8 @@
     "nombre": "Axel",
     "cargo": "Automation Lead",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ing1"
    },
    {
@@ -160,6 +204,8 @@
     "nombre": "Alex",
     "cargo": "Automation y control industrial",
     "equipo": "Operaciones",
+     "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ing5"
   },
    {
@@ -167,6 +213,8 @@
     "nombre": "Alexa",
     "cargo": "Automation y control industrial",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ing5"
   },
   {
@@ -174,6 +222,8 @@
     "nombre": "Claudio",
     "cargo": "Data Analyst",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ing5"
   },
   {
@@ -181,6 +231,8 @@
     "nombre": "Claudia",
     "cargo": "Data Scientist",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ing5"
   },
   {
@@ -188,6 +240,8 @@
     "nombre": "Claude",
     "cargo": "Data Scientist",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Helecho1",
     "reportaA": "Ing5"
   },
   {
@@ -195,6 +249,8 @@
     "nombre": "Leonor",
     "cargo": "Estándares Piscicultura",
     "equipo": "Operaciones",
+    "cluster": "Pto. Montt",
+    "Ubicacion": "Casa2",
     "reportaA": "Ing1"
   },
     {
@@ -202,6 +258,8 @@
     "nombre": "Marcial",
     "cargo": "Jefe Ensamblaje",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble1",
     "reportaA": "Ing1"
   },
     {
@@ -209,6 +267,8 @@
     "nombre": "Guido",
     "cargo": "Maestro Ensamblaje",
     "equipo": "Operaciones",
+    "cluster": "Valdivia",
+    "Ubicacion": "Roble1",
     "reportaA": "Ing11"
   },
   {
