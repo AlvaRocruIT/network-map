@@ -5,8 +5,16 @@
     "cargo": "Gerente General",
     "equipo": "Dirección",
     "reportaA": null
-    },
-    {
+  },
+  {
+    "id": "Dir",
+    "nombre": "Don Benito",
+    "cargo": "Presidente Directorio",
+    "equipo": "Dirección",
+    "reportaA": "gg",
+    "tipoVinculo": "pseudo"
+  },  
+  {
     "id": "TechLead",
     "nombre": "Pablo",
     "cargo": "Dirección Técnica",
