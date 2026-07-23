@@ -124,7 +124,13 @@ const clusterRaiz =
             cluster.nombre === nodoRaiz.cluster
     );
 
-calcularDimensionesInternas(clusters);
+    calcularDimensionesInternas(clusters);
+    calcularCentroClusterRaiz(
+    clusterRaiz,
+    anchoMinimo,
+    altoMinimo
+    );
+    
     const nodos =
         Array.from(personasPorId.values());
 
