@@ -66,9 +66,9 @@
   {
     "id": "Min1",
     "nombre": "Gero",
-    "cargo": "lead cell minería",
+    "cargo": "Gerente minería",
     "equipo": "Minería",
-    "reportaA": "Ops2"
+    "reportaA": "gg"
   },
   {
     "id": "Min2",
@@ -99,42 +99,42 @@
     "reportaA": "Min1"
   },
   {
-    "id": "Ing1",
-    "nombre": "Nico",
+    "id": "I+D",
+    "nombre": "Nicky",
     "cargo": "Jef Ingeniería",
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
   {
-    "id": "ing2",
+    "id": "I+D1",
     "nombre": "Nicole",
     "cargo": "Monit. agua salada",
     "equipo": "Operaciones",
-    "reportaA": "Ing1"
+    "reportaA": "I+D"
   },
   {
-    "id": "ing3",
+    "id": "I+D2",
     "nombre": "Hugo",
     "cargo": "Sismografía",
     "equipo": "Operaciones",
-    "reportaA": "Ing1"
+    "reportaA": "I+D"
   },
   {
-    "id": "ing4",
+    "id": "I+D3",
     "nombre": "Diego",
     "cargo": "Monit. humedales",
     "equipo": "Operaciones",
-    "reportaA": "Ing1"
+    "reportaA": "I+D"
   },
   {
-    "id": "ing5",
+    "id": "I+D4",
     "nombre": "Axel",
     "cargo": "Automation Lead",
     "equipo": "Operaciones",
-    "reportaA": "Ing1"
+    "reportaA": "I+D"
   },
    {
-    "id": "ing6",
+    "id": "I+D5",
     "nombre": "Alex",
     "cargo": "Automation y control industrial",
     "equipo": "Operaciones",
@@ -421,7 +421,6 @@
     "equipo": "Seguridad",
     "reportaA": "Ops7"
   },
-
   {
     "id": "SSO1",
     "nombre": "Oscar",
@@ -492,6 +491,27 @@
     "cargo": "Subgerente Exportaciones",
     "equipo": "Comercial",
     "reportaA": "Com1"
+  },
+  {
+    "id": "Exp1",
+    "nombre": "Lautaro",
+    "cargo": "Ventas Latam",
+    "equipo": "Comercial",
+    "reportaA": "Com4"
+  },
+  {
+    "id": "Exp2",
+    "nombre": "Jerry",
+    "cargo": "Ventas USA-Canadá",
+    "equipo": "Comercial",
+    "reportaA": "Com4"
+  },
+  {
+    "id": "Exp3",
+    "nombre": "Jude",
+    "cargo": "Ventas Euro",
+    "equipo": "Comercial",
+    "reportaA": "Com4"
   },
   {
     "id": "Com5",
@@ -682,10 +702,17 @@
     "equipo": "Personas",
     "reportaA": "Per2"
   },
-    {
+  {
     "id": "Per4",
     "nombre": "Jose",
-    "cargo": "Coordinador células",
+    "cargo": "Enlace HR Valdivia",
+    "equipo": "Personas",
+    "reportaA": "Per1"
+  },  
+  {
+    "id": "Per5",
+    "nombre": "Josué",
+    "cargo": "Enlace HR",
     "equipo": "Personas",
     "reportaA": "Per1"
   },
