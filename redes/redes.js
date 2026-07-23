@@ -865,6 +865,49 @@ function dibujarRed(
   });
 }
 
+function crearConexiones(personasPorId) {
+    const conexiones = [];
+
+    personasPorId.forEach(persona => {
+        if (!persona.reportaA) {
+            return;
+        }
+
+        const superior =
+            personasPorId.get(
+                persona.reportaA
+            );
+
+        if (!superior) {
+            console.warn(
+                `No se encontró el superior "${persona.reportaA}" de "${persona.id}".`
+            );
+
+            return;
+        }
+
+        conexiones.push({
+            origen: superior,
+            destino: persona,
+            tipoVinculo:
+                persona.tipoVinculo ??
+                "dependencia",
+
+            esInterCluster:
+                superior.cluster !==
+                persona.cluster,
+
+            esInterUbicacion:
+                superior.cluster ===
+                    persona.cluster &&
+                superior.ubicacion !==
+                    persona.ubicacion
+        });
+    });
+
+    return conexiones;
+}
+  
 function dibujarConexiones(conexiones, capa) {
   conexiones.forEach(conexion => {
     const linea = document.createElementNS(SVG_NS, "line");
