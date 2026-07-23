@@ -186,6 +186,12 @@ const grafoClusters =
         personasPorId,
         nodoRaiz
     );
+
+    resolverColisiones(
+        clusters,
+        personasPorId,
+        nodoRaiz
+    );
     
     return {
         clusters,
