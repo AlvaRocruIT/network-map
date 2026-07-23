@@ -378,17 +378,6 @@ function asignarCentrosUbicaciones(cluster) {
     );
 }
 
-function calcularTamanoRama(nodo) {
-  nodo.tamanoRama = 1;
-
-  nodo.hijos.forEach(hijo => {
-    nodo.tamanoRama +=
-      calcularTamanoRama(hijo);
-  });
-
-  return nodo.tamanoRama;
-}
-
 function asignarSectores(
   nodo,
   anguloInicio,
