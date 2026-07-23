@@ -302,6 +302,13 @@
     "equipo": "Operaciones",
     "reportaA": "Ops4"
   },
+    {
+    "id": "TI3",
+    "nombre": "Esteban",
+    "cargo": "Soporte TI Valdivia",
+    "equipo": "Informaciones",
+    "reportaA": "Ops4"
+  },
   {
     "id": "Ops6",
     "nombre": "Valdi",
@@ -586,6 +593,13 @@
     "reportaA": "AyF4"
   },
     {
+    "id": "Cob1",
+    "nombre": "Árlides",
+    "cargo": "Cobranzas",
+    "equipo": "Finanzas",
+    "reportaA": "AyF2"
+  },
+  {
     "id": "Tra1",
     "nombre": "Angie",
     "cargo": "Adm. Contratos",
