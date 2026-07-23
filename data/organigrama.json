@@ -148,6 +148,13 @@
     "equipo": "Operaciones",
     "reportaA": "Ops3"
   },
+    {
+    "id": "Inn4",
+    "nombre": "Nato",
+    "cargo": "Encargada Oceanografía",
+    "equipo": "Operaciones",
+    "reportaA": "Ops3"
+  },
   {
     "id": "Ops4",
     "nombre": "Mati",
@@ -155,10 +162,16 @@
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
-  
   {
-    "id": "Sof4",
+    "id": "Sof5",
     "nombre": "Paula",
+    "cargo": "Ingeniero IA",
+    "equipo": "Operaciones",
+    "reportaA": "Ops4"
+  },
+    {
+    "id": "Sof6",
+    "nombre": "Joaco",
     "cargo": "Ingeniero IA",
     "equipo": "Operaciones",
     "reportaA": "Ops4"
@@ -258,25 +271,32 @@
     "id": "Log4",
     "nombre": "Rena",
     "cargo": "Despacho-trazabilidad",
-    "equipo": "Materiales compuestos",
+    "equipo": "Logística",
     "reportaA": "Ops6"
   },
   {
     "id": "Log5",
+    "nombre": "Gonazlo",
+    "cargo": "Jefe Almacen",
+    "equipo": "Logística",
+    "reportaA": "Ops6"
+  },
+  {
+    "id": "Log6",
     "nombre": "Balta",
     "cargo": "Casa1 Valdivia",
     "equipo": "Logística",
     "reportaA": "Ops6"
   },
   {
-    "id": "Log6",
+    "id": "Log7",
     "nombre": "Martín",
     "cargo": "Casa2 Valdivia",
     "equipo": "Logística",
     "reportaA": "Ops6"
   },
   {
-    "id": "Log7",
+    "id": "Log8",
     "nombre": "Theo",
     "cargo": "Casa Matríz",
     "equipo": "Logística",
@@ -497,28 +517,50 @@
     "id": "Cyd1",
     "nombre": "Bárbara",
     "cargo": "Subgerente Comunicaciones",
-    "equipo": "Personas",
+    "equipo": "Comunicaciones",
     "reportaA": "gg"
   },
+  
   {
     "id": "Cyd2",
-    "nombre": "Moisés",
-    "cargo": "Jefe Diseño",
-    "equipo": "Personas",
+    "nombre": "Natalia",
+    "cargo": "Periodista",
+    "equipo": "Comunicaciones",
     "reportaA": "Cyd1"
   },
   {
     "id": "Cyd3",
-    "nombre": "Romi",
-    "cargo": "Diseñadora multimedia",
-    "equipo": "Personas",
+    "nombre": "Moisés",
+    "cargo": "Jefe Diseño",
+    "equipo": "Comunicaciones",
     "reportaA": "Cyd1"
   },
   {
     "id": "Cyd4",
+    "nombre": "Romi",
+    "cargo": "Diseñadora multimedia",
+    "equipo": "Comunicaciones",
+    "reportaA": "Cyd2"
+  },
+  {
+    "id": "Cyd5",
     "nombre": "Orlando",
     "cargo": "Diseñador industrial",
-    "equipo": "Personas",
-    "reportaA": "Cyd1"
-  }
+    "equipo": "Comunicaciones",
+    "reportaA": "Cyd2"
+  },
+  {
+    "id": "Sus1",
+    "nombre": "Aldo",
+    "cargo": "Jefe Sustentabilidad",
+    "equipo": "Sustentabilidad",
+    "reportaA": "gg"
+  },
+  {
+    "id": "Sus1",
+    "nombre": "Pollo",
+    "cargo": "Encargado Sustentabilidad",
+    "equipo": "Sustentabilidad",
+    "reportaA": "gg"
+  },
 ]
