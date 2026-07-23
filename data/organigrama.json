@@ -225,6 +225,13 @@
     "equipo": "Operaciones",
     "reportaA": "Ops5"
   },
+    {
+    "id": "Ele4",
+    "nombre": "Jaime",
+    "cargo": "Monitoreo de Energía",
+    "equipo": "Operaciones",
+    "reportaA": "Ops5"
+  },
   {
     "id": "TI1",
     "nombre": "Elías",
@@ -301,6 +308,43 @@
     "cargo": "Casa Matríz",
     "equipo": "Logística",
     "reportaA": "Ops6"
+  },
+  {
+    "id": "Ops7",
+    "nombre": "Oscar",
+    "cargo": "Jefe SSO",
+    "equipo": "Seguridad",
+    "reportaA": "Ops1"
+  },
+  {
+    "id": "SSO",
+    "nombre": "Don Iván",
+    "cargo": "Supervisor SSO",
+    "equipo": "Seguridad",
+    "reportaA": "Ops7"
+  },
+
+  {
+    "id": "SSO1",
+    "nombre": "Oscar",
+    "cargo": "SSO Valdivia",
+    "equipo": "Seguridad",
+    "reportaA": "Ops7"
+  },
+  {
+    "id": "SSO2",
+    "nombre": "Iñigo",
+    "cargo": "SSO Pto. Montt",
+    "equipo": "Seguridad",
+    "reportaA": "Ops7"
+  },
+  
+  {
+    "id": "SSO1",
+    "nombre": "Oscar",
+    "cargo": "SSO Aysén-Magallanes",
+    "equipo": "Seguridad",
+    "reportaA": "Ops7"
   },
   {
     "id": "Com1",
