@@ -148,12 +148,34 @@
     "equipo": "Operaciones",
     "reportaA": "Ops3"
   },
-    {
+  
+  {
     "id": "Inn4",
     "nombre": "Nato",
-    "cargo": "Encargada Oceanografía",
+    "cargo": "Líder Oceanografía",
     "equipo": "Operaciones",
     "reportaA": "Ops3"
+  },
+  {
+    "id": "Inn5",
+    "nombre": "Sotito",
+    "cargo": "Encargado Oceanografía",
+    "equipo": "Operaciones",
+    "reportaA": "Inn4"
+  },
+  {
+    "id": "Inn6",
+    "nombre": "Delfina",
+    "cargo": "Encargado Oceanografía",
+    "equipo": "Operaciones",
+    "reportaA": "Inn4"
+  },
+  {
+    "id": "Inn7",
+    "nombre": "Marina",
+    "cargo": "Encargado Oceanografía",
+    "equipo": "Operaciones",
+    "reportaA": "Inn4"
   },
   {
     "id": "Ops4",
@@ -340,7 +362,7 @@
   },
   
   {
-    "id": "SSO1",
+    "id": "SSO3",
     "nombre": "Oscar",
     "cargo": "SSO Aysén-Magallanes",
     "equipo": "Seguridad",
