@@ -21,6 +21,19 @@ const CONFIG_LAYOUT = {
         umbralConvergencia: 0.08
     },
 
+    fuerzasPersona: {
+        iteracionesMaximas: 450,
+        atraccionUbicacion: 0.045,
+        atraccionJerarquia: 0.02,
+        atraccionCentroJerarquico: 0.012,
+        repulsion: 550,
+        distanciaMinima: 18,
+        movimientoMaximo: 8,
+        umbralConvergencia: 0.05,
+        margenCluster: 14,
+        separacionUbicaciones: 24
+    },
+
     ubicacion: {
         radioBase: 45,
         factorCrecimiento: 24,
