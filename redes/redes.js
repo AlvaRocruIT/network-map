@@ -654,6 +654,49 @@ function posicionarUbicacion(
     return niveles;
 }
 
+function crearConexiones(personasPorId) {
+    const conexiones = [];
+
+    personasPorId.forEach(persona => {
+        if (!persona.reportaA) {
+            return;
+        }
+
+        const superior =
+            personasPorId.get(
+                persona.reportaA
+            );
+
+        if (!superior) {
+            console.warn(
+                `No se encontró el superior "${persona.reportaA}" de "${persona.id}".`
+            );
+
+            return;
+        }
+
+        conexiones.push({
+            origen: superior,
+            destino: persona,
+            tipoVinculo:
+                persona.tipoVinculo ??
+                "dependencia",
+
+            esInterCluster:
+                superior.cluster !==
+                persona.cluster,
+
+            esInterUbicacion:
+                superior.cluster ===
+                    persona.cluster &&
+                superior.ubicacion !==
+                    persona.ubicacion
+        });
+    });
+
+    return conexiones;
+}
+  
 function dibujarRed(
   contenedor,
   nodos,
@@ -803,71 +846,6 @@ function dibujarRed(
 
     capa.appendChild(circulo);
   });
-}
-
-function crearConexiones(personasPorId) {
-    const conexiones = [];
-
-    personasPorId.forEach(persona => {
-        if (!persona.reportaA) {
-            return;
-        }
-
-        const superior =
-            personasPorId.get(
-                persona.reportaA
-            );
-
-        if (!superior) {
-            console.warn(
-                `No se encontró el superior "${persona.reportaA}" de "${persona.id}".`
-            );
-
-            return;
-        }
-
-        conexiones.push({
-            origen: superior,
-            destino: persona,
-            tipoVinculo:
-                persona.tipoVinculo ??
-                "dependencia",
-
-            esInterCluster:
-                superior.cluster !==
-                persona.cluster,
-
-            esInterUbicacion:
-                superior.cluster ===
-                    persona.cluster &&
-                superior.ubicacion !==
-                    persona.ubicacion
-        });
-    });
-
-    return conexiones;
-}
-  
-function dibujarConexiones(conexiones, capa) {
-  conexiones.forEach(conexion => {
-    const linea = document.createElementNS(SVG_NS, "line");
-
-    linea.classList.add("conexion-red");
-
-    linea.setAttribute("x1", conexion.source.x);
-    linea.setAttribute("y1", conexion.source.y);
-    linea.setAttribute("x2", conexion.target.x);
-    linea.setAttribute("y2", conexion.target.y);
-
-    capa.appendChild(linea);
-  });
-}
-
-function obtenerDimensiones(contenedor) {
-  return {
-    ancho: contenedor.clientWidth || 1000,
-    alto: contenedor.clientHeight || 700
-  };
 }
 
 function validarDatos(personas) {
