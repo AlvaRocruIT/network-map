@@ -97,6 +97,301 @@ function asignarProfundidades(
   });
 }
 
+function agruparPorClusterYUbicacion(personas) {
+    const clustersPorNombre = new Map();
+
+    personas.forEach(persona => {
+        const nombreCluster =
+            normalizarAgrupacion(
+                persona.cluster,
+                "Sin cluster"
+            );
+
+        const nombreUbicacion =
+            normalizarAgrupacion(
+                persona.ubicacion,
+                "Sin ubicación"
+            );
+
+        if (!clustersPorNombre.has(nombreCluster)) {
+            clustersPorNombre.set(nombreCluster, {
+                id: nombreCluster,
+                nombre: nombreCluster,
+                ubicacionesPorNombre: new Map(),
+                ubicaciones: [],
+                personas: [],
+                centroX: 0,
+                centroY: 0,
+                radio: 0
+            });
+        }
+
+        const cluster =
+            clustersPorNombre.get(nombreCluster);
+
+        if (
+            !cluster.ubicacionesPorNombre.has(
+                nombreUbicacion
+            )
+        ) {
+            cluster.ubicacionesPorNombre.set(
+                nombreUbicacion,
+                {
+                    id: `${nombreCluster}-${nombreUbicacion}`,
+                    nombre: nombreUbicacion,
+                    cluster: nombreCluster,
+                    personas: [],
+                    centroX: 0,
+                    centroY: 0,
+                    radio: 0
+                }
+            );
+        }
+
+        const ubicacion =
+            cluster.ubicacionesPorNombre.get(
+                nombreUbicacion
+            );
+
+        cluster.personas.push(persona);
+        ubicacion.personas.push(persona);
+    });
+
+    const clusters =
+        Array.from(clustersPorNombre.values());
+
+    clusters.forEach(cluster => {
+        cluster.ubicaciones =
+            Array.from(
+                cluster.ubicacionesPorNombre.values()
+            );
+
+        delete cluster.ubicacionesPorNombre;
+    });
+
+    return clusters;
+}
+
+function normalizarAgrupacion(valor, fallback) {
+    if (
+        typeof valor !== "string" ||
+        valor.trim() === ""
+    ) {
+        return fallback;
+    }
+
+    return valor.trim();
+}
+
+function calcularDimensionesInternas(clusters) {
+    clusters.forEach(cluster => {
+        cluster.ubicaciones.forEach(ubicacion => {
+            ubicacion.radio =
+                calcularRadioUbicacion(
+                    ubicacion.personas.length
+                );
+        });
+
+        cluster.radio =
+            calcularRadioCluster(
+                cluster.ubicaciones
+            );
+    });
+}
+
+function calcularRadioUbicacion(cantidadPersonas) {
+    const { radioBase, factorCrecimiento } =
+        CONFIG_LAYOUT.ubicacion;
+
+    return (
+        radioBase +
+        Math.sqrt(
+            Math.max(cantidadPersonas, 1)
+        ) * factorCrecimiento
+    );
+}
+
+function calcularRadioCluster(ubicaciones) {
+    const { radioMinimo, padding } =
+        CONFIG_LAYOUT.cluster;
+
+    if (ubicaciones.length === 1) {
+        return Math.max(
+            radioMinimo,
+            ubicaciones[0].radio + padding
+        );
+    }
+
+    const superficieCombinada =
+        ubicaciones.reduce(
+            (total, ubicacion) =>
+                total +
+                Math.pow(ubicacion.radio, 2),
+            0
+        );
+
+    const radioCalculado =
+        Math.sqrt(superficieCombinada) *
+        1.45 +
+        padding;
+
+    return Math.max(
+        radioMinimo,
+        radioCalculado
+    );
+}
+
+function asignarCentrosClusters(
+    clusters,
+    anchoMinimo,
+    altoMinimo
+) {
+    if (clusters.length === 0) {
+        return {
+            ancho: anchoMinimo,
+            alto: altoMinimo
+        };
+    }
+
+    const margen =
+        CONFIG_LAYOUT.margenExterior;
+
+    const separacion =
+        CONFIG_LAYOUT.cluster.separacionGrid;
+
+    const radioMaximo =
+        Math.max(
+            ...clusters.map(
+                cluster => cluster.radio
+            )
+        );
+
+    const tamanoCelda =
+        radioMaximo * 2 + separacion;
+
+    const columnas =
+        Math.ceil(
+            Math.sqrt(clusters.length)
+        );
+
+    const filas =
+        Math.ceil(
+            clusters.length / columnas
+        );
+
+    const anchoCalculado =
+        margen * 2 +
+        columnas * tamanoCelda;
+
+    const altoCalculado =
+        margen * 2 +
+        filas * tamanoCelda;
+
+    const ancho =
+        Math.max(
+            anchoMinimo,
+            anchoCalculado
+        );
+
+    const alto =
+        Math.max(
+            altoMinimo,
+            altoCalculado
+        );
+
+    const anchoGrid =
+        columnas * tamanoCelda;
+
+    const altoGrid =
+        filas * tamanoCelda;
+
+    const inicioX =
+        (ancho - anchoGrid) / 2;
+
+    const inicioY =
+        (alto - altoGrid) / 2;
+
+    clusters.forEach((cluster, indice) => {
+        const columna =
+            indice % columnas;
+
+        const fila =
+            Math.floor(indice / columnas);
+
+        cluster.centroX =
+            inicioX +
+            columna * tamanoCelda +
+            tamanoCelda / 2;
+
+        cluster.centroY =
+            inicioY +
+            fila * tamanoCelda +
+            tamanoCelda / 2;
+    });
+
+    return {
+        ancho,
+        alto
+    };
+}
+
+function asignarCentrosUbicaciones(cluster) {
+    const ubicaciones =
+        cluster.ubicaciones;
+
+    if (ubicaciones.length === 0) {
+        return;
+    }
+
+    if (ubicaciones.length === 1) {
+        ubicaciones[0].centroX =
+            cluster.centroX;
+
+        ubicaciones[0].centroY =
+            cluster.centroY;
+
+        return;
+    }
+
+    const radioUbicacionMaximo =
+        Math.max(
+            ...ubicaciones.map(
+                ubicacion => ubicacion.radio
+            )
+        );
+
+    const radioOrbita =
+        Math.max(
+            30,
+            cluster.radio -
+            radioUbicacionMaximo -
+            CONFIG_LAYOUT.ubicacion.separacion
+        );
+
+    ubicaciones.forEach(
+        (ubicacion, indice) => {
+            const angulo =
+                -Math.PI / 2 +
+                (
+                    indice /
+                    ubicaciones.length
+                ) *
+                Math.PI *
+                2;
+
+            ubicacion.centroX =
+                cluster.centroX +
+                Math.cos(angulo) *
+                radioOrbita;
+
+            ubicacion.centroY =
+                cluster.centroY +
+                Math.sin(angulo) *
+                radioOrbita;
+        }
+    );
+}
+
 function calcularTamanoRama(nodo) {
   nodo.tamanoRama = 1;
 
@@ -199,6 +494,91 @@ function asignarPosiciones(
   });
 }
 
+function posicionarUbicacion(
+    ubicacion,
+    personasPorId
+) {
+    const personas =
+        ubicacion.personas;
+
+    if (personas.length === 0) {
+        return;
+    }
+
+    const idsUbicacion =
+        new Set(
+            personas.map(persona => persona.id)
+        );
+
+    const hijosPorId = new Map();
+
+    personas.forEach(persona => {
+        hijosPorId.set(persona.id, []);
+    });
+
+    personas.forEach(persona => {
+        if (
+            persona.reportaA &&
+            idsUbicacion.has(persona.reportaA)
+        ) {
+            hijosPorId
+                .get(persona.reportaA)
+                .push(persona.id);
+        }
+    });
+
+    let raices =
+        personas.filter(persona => {
+            return (
+                !persona.reportaA ||
+                !idsUbicacion.has(persona.reportaA)
+            );
+        });
+
+    if (raices.length === 0) {
+        raices = [personas[0]];
+    }
+
+    const visitados = new Set();
+
+    const arboles = raices.map(raiz => {
+        const ids =
+            obtenerDescendientesLocales(
+                raiz.id,
+                hijosPorId,
+                visitados
+            );
+
+        return {
+            raizId: raiz.id,
+            ids
+        };
+    });
+
+    personas.forEach(persona => {
+        if (!visitados.has(persona.id)) {
+            const ids =
+                obtenerDescendientesLocales(
+                    persona.id,
+                    hijosPorId,
+                    visitados
+                );
+
+            arboles.push({
+                raizId: persona.id,
+                ids
+            });
+        }
+    });
+
+    posicionarArbolesEnUbicacion(
+        arboles,
+        ubicacion,
+        personasPorId,
+        hijosPorId
+    );
+}
+  
 function dibujarRed(
   contenedor,
   nodos,
@@ -258,6 +638,197 @@ function dibujarRed(
 });
 }
 
+  function obtenerDescendientesLocales(
+    raizId,
+    hijosPorId,
+    visitados
+) {
+    const resultado = [];
+    const pendientes = [raizId];
+
+    while (pendientes.length > 0) {
+        const idActual =
+            pendientes.shift();
+
+        if (visitados.has(idActual)) {
+            continue;
+        }
+
+        visitados.add(idActual);
+        resultado.push(idActual);
+
+        const hijos =
+            hijosPorId.get(idActual) ?? [];
+
+        pendientes.push(...hijos);
+    }
+
+    return resultado;
+}
+
+  function posicionarArbolesEnUbicacion(
+    arboles,
+    ubicacion,
+    personasPorId,
+    hijosPorId
+) {
+    if (arboles.length === 1) {
+        posicionarArbolLocal(
+            arboles[0],
+            ubicacion.centroX,
+            ubicacion.centroY,
+            personasPorId,
+            hijosPorId
+        );
+
+        return;
+    }
+
+    const radioOrbita =
+        Math.max(
+            35,
+            ubicacion.radio * 0.48
+        );
+
+    arboles.forEach((arbol, indice) => {
+        const angulo =
+            -Math.PI / 2 +
+            (
+                indice /
+                arboles.length
+            ) *
+            Math.PI *
+            2;
+
+        const centroX =
+            ubicacion.centroX +
+            Math.cos(angulo) *
+            radioOrbita;
+
+        const centroY =
+            ubicacion.centroY +
+            Math.sin(angulo) *
+            radioOrbita;
+
+        posicionarArbolLocal(
+            arbol,
+            centroX,
+            centroY,
+            personasPorId,
+            hijosPorId
+        );
+    });
+}
+
+  function posicionarArbolLocal(
+    arbol,
+    centroX,
+    centroY,
+    personasPorId,
+    hijosPorId
+) {
+    const idsPermitidos =
+        new Set(arbol.ids);
+
+    const niveles =
+        obtenerNivelesArbol(
+            arbol.raizId,
+            idsPermitidos,
+            hijosPorId
+        );
+
+    niveles.forEach((idsNivel, profundidad) => {
+        if (profundidad === 0) {
+            const raiz =
+                personasPorId.get(idsNivel[0]);
+
+            raiz.x = centroX;
+            raiz.y = centroY;
+
+            return;
+        }
+
+        const radio =
+            profundidad *
+            CONFIG_LAYOUT.arbol.distanciaNivel;
+
+        idsNivel.forEach((id, indice) => {
+            const angulo =
+                -Math.PI / 2 +
+                (
+                    indice /
+                    idsNivel.length
+                ) *
+                Math.PI *
+                2;
+
+            const persona =
+                personasPorId.get(id);
+
+            persona.x =
+                centroX +
+                Math.cos(angulo) *
+                radio;
+
+            persona.y =
+                centroY +
+                Math.sin(angulo) *
+                radio;
+        });
+    });
+}
+
+  function obtenerNivelesArbol(
+    raizId,
+    idsPermitidos,
+    hijosPorId
+) {
+    const niveles = [];
+    const visitados = new Set();
+
+    const pendientes = [
+        {
+            id: raizId,
+            profundidad: 0
+        }
+    ];
+
+    while (pendientes.length > 0) {
+        const actual =
+            pendientes.shift();
+
+        if (
+            visitados.has(actual.id) ||
+            !idsPermitidos.has(actual.id)
+        ) {
+            continue;
+        }
+
+        visitados.add(actual.id);
+
+        if (!niveles[actual.profundidad]) {
+            niveles[actual.profundidad] = [];
+        }
+
+        niveles[actual.profundidad].push(
+            actual.id
+        );
+
+        const hijos =
+            hijosPorId.get(actual.id) ?? [];
+
+        hijos.forEach(hijoId => {
+            pendientes.push({
+                id: hijoId,
+                profundidad:
+                    actual.profundidad + 1
+            });
+        });
+    }
+
+    return niveles;
+}
+  
  function dibujarNodos(
   nodos,
   capa,
