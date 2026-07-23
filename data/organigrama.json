@@ -253,6 +253,41 @@
     "equipo": "Operaciones",
     "reportaA": "Ops4"
   },
+    {
+    "id": "Sof4",
+    "nombre": "Román",
+    "cargo": "Desarrollador",
+    "equipo": "Operaciones",
+    "reportaA": "Ops4"
+  },
+  {
+    "id": "Sof5",
+    "nombre": "Ramiro",
+    "cargo": "Desarrollador",
+    "equipo": "Operaciones",
+    "reportaA": "Ops4"
+  },
+  {
+    "id": "Sof6",
+    "nombre": "Yuri",
+    "cargo": "Desarrollador",
+    "equipo": "Operaciones",
+    "reportaA": "Ops4"
+  },
+  {
+    "id": "Sof7",
+    "nombre": "Leny",
+    "cargo": "Desarrollador",
+    "equipo": "Operaciones",
+    "reportaA": "Ops4"
+  },
+  {
+    "id": "Sof8",
+    "nombre": "Guti",
+    "cargo": "Desarrollador",
+    "equipo": "Operaciones",
+    "reportaA": "Ops4"
+  },
   {
     "id": "Ops5",
     "nombre": "Andrea",
@@ -478,6 +513,12 @@
     "cargo": "Client Onboarding",
     "equipo": "Comercial",
     "reportaA": "Csm1"
+  },  {
+    "id": "Csm3",
+    "nombre": "Helga",
+    "cargo": "Client Onboarding",
+    "equipo": "Comercial",
+    "reportaA": "Csm1"
   },
   {
     "id": "Csm3",
@@ -694,6 +735,13 @@
   {
     "id": "Sus2",
     "nombre": "Pollo",
+    "cargo": "Encargado Sustentabilidad",
+    "equipo": "Sustentabilidad",
+    "reportaA": "Sus1"
+  }
+  {
+    "id": "Sus3",
+    "nombre": "Marta",
     "cargo": "Encargado Sustentabilidad",
     "equipo": "Sustentabilidad",
     "reportaA": "Sus1"
