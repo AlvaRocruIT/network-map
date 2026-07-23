@@ -128,6 +128,27 @@
   },
   {
     "id": "ing5",
+    "nombre": "Axel",
+    "cargo": "Automation Lead",
+    "equipo": "Operaciones",
+    "reportaA": "Ing1"
+  },
+   {
+    "id": "ing5",
+    "nombre": "Alex",
+    "cargo": "Automation y control industrial",
+    "equipo": "Operaciones",
+    "reportaA": "Ing1"
+  },
+   {
+    "id": "ing5",
+    "nombre": "Alexa",
+    "cargo": "Automation y control industrial",
+    "equipo": "Operaciones",
+    "reportaA": "Ing1"
+  },
+  {
+    "id": "ing6",
     "nombre": "Leonor",
     "cargo": "Estándares Piscicultura",
     "equipo": "Operaciones",
@@ -529,6 +550,13 @@
     "reportaA": "AyF1",
     "tipoVinculo": "pseudo"
   },
+    {
+    "id": "AyF4",
+    "nombre": "Ángela",
+    "cargo": "Jefa administración",
+    "equipo": "Finanzas",
+    "reportaA": "AyF1",
+  },
   {
     "id": "Con1",
     "nombre": "Pamela",
@@ -549,6 +577,20 @@
     "cargo": "Cuentas Internacionales",
     "equipo": "Finanzas",
     "reportaA": "AyF2"
+  },
+  {
+    "id": "Adm4",
+    "nombre": "Angélica",
+    "cargo": "Adm. Contratos",
+    "equipo": "Finanzas",
+    "reportaA": "AyF4"
+  },
+    {
+    "id": "Adm1",
+    "nombre": "Angie",
+    "cargo": "Adm. Contratos",
+    "equipo": "Finanzas",
+    "reportaA": "AyF4"
   },
   {
     "id": "Per1",
