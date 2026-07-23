@@ -25,33 +25,62 @@ const CONFIG_LAYOUT = {
 };
 
 async function cargarRed() {
-  const contenedor = document.getElementById("redes");
+  const contenedor =
+    document.getElementById("redes");
 
   if (!contenedor) {
-    throw new Error('No existe un elemento con id="redes".');
+    console.error(
+      'No existe un elemento con id="redes".'
+    );
+    return;
   }
 
+  try {
   const respuesta = await fetch("../data/organigrama.json");
-  const personas = await respuesta.json();
+  if (!respuesta.ok) {
+      throw new Error(
+        `No se pudo cargar el JSON: ${respuesta.status}`
+      );
+    }
 
-  validarDatos(personas);
+    const personas =
+      await respuesta.json();
 
-const dimensionesBase =
-    obtenerDimensiones(contenedor);
+    validarDatos(personas);
 
-const layout = calcularLayout(
-    personas,
-    dimensionesBase.ancho,
-    dimensionesBase.alto
-);
+    const dimensionesBase =
+      obtenerDimensiones(contenedor);
 
-dibujarRed(
-    contenedor,
-    layout.nodos,
-    layout.conexiones,
-    layout.ancho,
-    layout.alto
-);
+    const layout = calcularLayout(
+      personas,
+      dimensionesBase.ancho,
+      dimensionesBase.alto
+    );
+
+    console.table(
+      layout.clusters.map(cluster => ({
+        cluster: cluster.nombre,
+        personas: cluster.personas.length,
+        ubicaciones: cluster.ubicaciones.length,
+        radio: Math.round(cluster.radio),
+        x: Math.round(cluster.centroX),
+        y: Math.round(cluster.centroY)
+      }))
+    );
+
+    dibujarRed(
+      contenedor,
+      layout.nodos,
+      layout.conexiones,
+      layout.ancho,
+      layout.alto
+    );
+  } catch (error) {
+    console.error("Error al cargar la red:", error);
+
+    contenedor.textContent =
+      `No fue posible cargar la red: ${error.message}`;
+  }
 }
 
 function calcularLayout(personas, anchoMinimo, altoMinimo) {
