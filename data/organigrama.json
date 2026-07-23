@@ -44,6 +44,13 @@
     "reportaA": "s-gg"
   },
   {
+    "id": "plan",
+    "nombre": "Giovanni",
+    "cargo": "Jefe Planificación",
+    "equipo": "Dirección",
+    "reportaA": "gg"
+  },
+  {
     "id": "cal1",
     "nombre": "Marco",
     "cargo": "Subgerente Calidad",
@@ -63,6 +70,13 @@
     "cargo": "Gerente Operaciones",
     "equipo": "Operaciones",
     "reportaA": "gg"
+  },
+  {
+    "id": "Ops3",
+    "nombre": "Gerardo",
+    "cargo": "Planificación Operacional",
+    "equipo": "Operaciones",
+    "reportaA": "Ops1"
   },
   {
     "id": "Min1",
@@ -150,6 +164,27 @@
   },
   {
     "id": "ing8",
+    "nombre": "Claudio",
+    "cargo": "Data Analyst",
+    "equipo": "Operaciones",
+    "reportaA": "Ing5"
+  },
+  {
+    "id": "ing9",
+    "nombre": "Claudia",
+    "cargo": "Data Scientist",
+    "equipo": "Operaciones",
+    "reportaA": "Ing5"
+  },
+  {
+    "id": "ing10",
+    "nombre": "Claude",
+    "cargo": "Data Scientist",
+    "equipo": "Operaciones",
+    "reportaA": "Ing5"
+  },
+  {
+    "id": "ing11",
     "nombre": "Leonor",
     "cargo": "Estándares Piscicultura",
     "equipo": "Operaciones",
@@ -472,55 +507,62 @@
   },
   {
     "id": "Log1",
+    "nombre": "Antoine",
+    "cargo": "Forecasting",
+    "equipo": "Logística",
+    "reportaA": "Ops6"
+  },
+  {
+    "id": "Log2",
     "nombre": "Anto",
     "cargo": "Compras extranjera",
     "equipo": "Logística",
     "reportaA": "Ops6"
   },
   {
-    "id": "Log2",
+    "id": "Log3",
     "nombre": "Jerry",
     "cargo": "Abastecimiento",
     "equipo": "Logística",
     "reportaA": "Ops6"
   },
   {
-    "id": "Log3",
+    "id": "Log4",
     "nombre": "Ulises",
     "cargo": "Materiales compuestos",
     "equipo": "Logística",
     "reportaA": "Ops6"
   },
   {
-    "id": "Log4",
+    "id": "Log5",
     "nombre": "Rena",
     "cargo": "Despacho-trazabilidad",
     "equipo": "Logística",
     "reportaA": "Ops6"
   },
   {
-    "id": "Log5",
+    "id": "Log6",
     "nombre": "Gonazlo",
     "cargo": "Jefe Almacen",
     "equipo": "Logística",
     "reportaA": "Ops6"
   },
   {
-    "id": "Log6",
+    "id": "Log7",
     "nombre": "Balta",
     "cargo": "Casa1 Valdivia",
     "equipo": "Logística",
     "reportaA": "Ops6"
   },
   {
-    "id": "Log7",
+    "id": "Log8",
     "nombre": "Martín",
     "cargo": "Casa2 Valdivia",
     "equipo": "Logística",
     "reportaA": "Ops6"
   },
   {
-    "id": "Log8",
+    "id": "Log9",
     "nombre": "Theo",
     "cargo": "Casa Matríz",
     "equipo": "Logística",
