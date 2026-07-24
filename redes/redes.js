@@ -654,14 +654,6 @@ function calcularLayout(modelo) {
 }
 
     /* ---------------LAYOUT DE UBICACIONES--------------- */
-function resolverLayoutUbicaciones(modelo) {
-    modelo.ubicaciones.forEach(ubicacion => {
-        resolverLayoutUbicacion(
-            ubicacion
-        );
-    });
-}
-
 function resolverLayoutUbicacion(ubicacion) {
     const lideres =
         ubicacion.lideresLocales;
@@ -708,6 +700,154 @@ function resolverLayoutUbicacion(ubicacion) {
             }
         );
     }
+    calcularRadioUbicacion(
+        ubicacion
+    );
+}
+
+function distribuirLideres(lideres) {
+    const radio =
+        CONFIG_LAYOUT
+            .DISTANCIAS
+            .anilloLideres;
+    const paso =
+
+        (Math.PI * 2)
+        /
+        lideres.length;
+    lideres.forEach(
+        (lider, indice) => {
+            const angulo =
+                indice
+                *
+                paso;
+            lider.xLocal =
+                Math.cos(angulo)
+                *
+                radio;
+            lider.yLocal =
+                Math.sin(angulo)
+                *
+                radio;
+            lider.angulo =
+                angulo;
+        }
+    );
+}
+
+function distribuirRamaLocal(
+    nodo,
+    anguloBase,
+    aperturaDisponible
+) {
+    const hijos =
+        nodo.subordinados.filter(
+            hijo =>
+                hijo.ubicacionRef ===
+                nodo.ubicacionRef
+        );
+    if (
+        hijos.length === 0
+    ) {
+        return;
+    }
+    const pesos =
+        hijos.map(
+            hijo =>
+                Math.max(
+                    1,
+                    calcularPesoRamaLocal(hijo)
+                )
+        );
+    const pesoTotal =
+        pesos.reduce(
+            (total, peso) =>
+                total + peso,
+            0
+        );
+    let anguloCursor =
+        anguloBase
+        -
+        aperturaDisponible / 2;
+    hijos.forEach(
+        (hijo, indice) => {
+            const proporcion =
+                pesos[indice]
+                /
+                pesoTotal;
+            const aperturaHijo =
+                Math.max(
+                    0.22,
+                    aperturaDisponible
+                    *
+                    proporcion
+                );
+            const anguloHijo =
+                anguloCursor
+                +
+                aperturaHijo / 2;
+            const distancia =
+                CONFIG_LAYOUT
+                    .DISTANCIAS
+                    .jerarquiaLocal
+                +
+                Math.sqrt(
+                    pesos[indice]
+                )
+                *
+                CONFIG_LAYOUT
+                    .DISTANCIAS
+                    .separacionRamas;
+            hijo.angulo =
+                anguloHijo;
+            hijo.xLocal =
+                nodo.xLocal
+                +
+                Math.cos(
+                    anguloHijo
+                )
+                *
+                distancia;
+            hijo.yLocal =
+                nodo.yLocal
+                +
+                Math.sin(
+                    anguloHijo
+                )
+                *
+                distancia;
+            distribuirRamaLocal(
+                hijo,
+                anguloHijo,
+                aperturaHijo * 0.88
+            );
+            anguloCursor +=
+                aperturaHijo;
+        }
+    );
+}
+
+function calcularPesoRamaLocal(nodo) {
+    const hijosLocales =
+        nodo.subordinados.filter(
+            hijo =>
+                hijo.ubicacionRef ===
+                nodo.ubicacionRef
+        );
+    if (
+        hijosLocales.length === 0
+    ) {
+        return 1;
+    }
+    return 1 +
+        hijosLocales.reduce(
+            (total, hijo) =>
+                total
+                +
+                calcularPesoRamaLocal(hijo),
+            0
+        );
+}
     calcularRadioUbicacion(
         ubicacion
     );
