@@ -888,24 +888,46 @@ function calcularRadioCluster(
 function distribuirClusters(
     clusters
 ) {
+    const clusterCentral =
+        clusters.find(
+            cluster =>
+                cluster.nodos.some(
+                    nodo =>
+                        nodo.esRaizGlobal
+                )
+        );
+    const clustersPerifericos =
+        clusters.filter(
+            cluster =>
+                cluster !== clusterCentral
+        );
+    if (clusterCentral) {
+        clusterCentral.x = 0;
+        clusterCentral.y = 0;
+    }
+    if (
+        clustersPerifericos.length === 0
+    ) {
+        return;
+    }
     const paso =
         (Math.PI * 2)
         /
-        clusters.length;
+        clustersPerifericos.length;
     let radio = 0;
-    clusters.forEach(
+    clustersPerifericos.forEach(
         cluster => {
             radio +=
                 cluster.radio;
         }
     );
     radio /=
-        clusters.length;
+        clustersPerifericos.length;
     radio +=
         CONFIG_LAYOUT
             .DISTANCIAS
             .separacionClusters;
-    clusters.forEach(
+    clustersPerifericos.forEach(
         (cluster, indice) => {
             const angulo =
                 indice * paso;
@@ -946,6 +968,13 @@ function resolverLayoutPersonas(modelo) {
         }
     );
 }
+if (modelo.raiz) {
+        modelo.raiz.xBase = 0;
+        modelo.raiz.yBase = 0;
+        modelo.raiz.x = 0;
+        modelo.raiz.y = 0;
+    }
+
 
     /* ---------------SIMULACIÓN POR FUERZAS--------------- */
 function simularLayout(modelo) {
