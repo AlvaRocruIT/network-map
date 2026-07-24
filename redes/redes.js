@@ -224,7 +224,7 @@ function construirModelo(personas) {
     };
 }
 
-    /* ---------------PREPARACIÓN DE NODOS--------------- *//
+    /* ---------------PREPARACIÓN DE NODOS--------------- */
 function prepararNodos(personas) {
     return personas.map(persona => ({
         id: String(persona.id),
@@ -271,7 +271,7 @@ function crearIndiceNodos(nodos) {
     );
 }
 
-    /* ---------------JERARQUÍA--------------- *//
+    /* ---------------JERARQUÍA--------------- */
 function vincularJerarquia(
     nodos,
     indice
@@ -410,7 +410,7 @@ function calcularPesoRama(nodo) {
     return peso;
 }
 
-    /* ---------------CLUSTERS--------------- *//
+    /* ---------------CLUSTERS--------------- */
 function construirClusters(nodos) {
     const mapa =
         new Map();
@@ -450,7 +450,7 @@ function construirClusters(nodos) {
     return [...mapa.values()];
 }
 
-    /* ---------------UBICACIONES--------------- *//
+    /* ---------------UBICACIONES--------------- */
 function construirUbicaciones(cluster) {
     const mapa =
         new Map();
@@ -596,7 +596,7 @@ function recorrerJerarquiaLocal(
     );
 }
 
-    /* ---------------PREPARACIÓN SVG--------------- *//
+    /* ---------------PREPARACIÓN SVG--------------- */
 function prepararSVG(modelo) {
     const contenedor =
         document.querySelector(
@@ -652,7 +652,7 @@ function prepararSVG(modelo) {
     };
 }
 
-    /* ---------------CÁLCULO DEL LAYOUT--------------- *//
+    /* ---------------CÁLCULO DEL LAYOUT--------------- */
 function calcularLayout(modelo) {
     resolverLayoutUbicaciones(modelo);
     resolverLayoutClusters(modelo);
@@ -662,7 +662,7 @@ function calcularLayout(modelo) {
     normalizarMapa(modelo);
 }
 
-    /* ---------------LAYOUT DE UBICACIONES--------------- *//
+    /* ---------------LAYOUT DE UBICACIONES--------------- */
 function resolverLayoutUbicaciones(modelo) {
     modelo.ubicaciones.forEach(ubicacion => {
         resolverLayoutUbicacion(
@@ -805,7 +805,7 @@ function calcularRadioUbicacion(
             .crecimientoUbicacion;
 }
 
-    /* ---------------LAYOUT DE CLUSTERS--------------- *//
+    /* ---------------LAYOUT DE CLUSTERS--------------- */
 function resolverLayoutClusters(modelo) {
     modelo.clusters.forEach(
         cluster => {
@@ -928,7 +928,7 @@ function distribuirClusters(
     );
 }
 
-    /* ---------------POSICIÓN GLOBAL DE NODOS--------------- *//
+    /* ---------------POSICIÓN GLOBAL DE NODOS--------------- */
 function resolverLayoutPersonas(modelo) {
     modelo.clusters.forEach(
         cluster => {
@@ -956,7 +956,7 @@ function resolverLayoutPersonas(modelo) {
     );
 }
 
-    /* ---------------SIMULACIÓN POR FUERZAS--------------- *//
+    /* ---------------SIMULACIÓN POR FUERZAS--------------- */
 function simularLayout(modelo) {
     let intensidad =
         CONFIG_LAYOUT
@@ -1023,7 +1023,7 @@ function crearMapaDesplazamientos(nodos) {
     return mapa;
 }
 
-    /* ---------------FUERZA: PERMANECER EN UBICACIÓN--------------- *//
+    /* ---------------FUERZA: PERMANECER EN UBICACIÓN--------------- */
 function aplicarFuerzaUbicacion(
     modelo,
     desplazamientos
@@ -1081,7 +1081,7 @@ function obtenerCentroUbicacion(
     };
 }
 
-    /* ---------------FUERZA: PERMANECER EN CLUSTER--------------- *//
+    /* ---------------FUERZA: PERMANECER EN CLUSTER--------------- */
 function aplicarFuerzaCluster(
     modelo,
     desplazamientos
@@ -1114,7 +1114,7 @@ function aplicarFuerzaCluster(
     );
 }
 
-    /* ---------------FUERZA: MANTENER JERARQUÍA--------------- *//
+    /* ---------------FUERZA: MANTENER JERARQUÍA--------------- */
 function aplicarFuerzaJerarquia(
     modelo,
     desplazamientos
@@ -1152,7 +1152,7 @@ function aplicarFuerzaJerarquia(
     );
 }
 
-    /* ---------------FUERZA: ACERCARSE AL SUPERIOR--------------- *//
+    /* ---------------FUERZA: ACERCARSE AL SUPERIOR--------------- */
 function aplicarFuerzaSuperior(
     modelo,
     desplazamientos
@@ -1185,7 +1185,7 @@ function aplicarFuerzaSuperior(
     );
 }
 
-    /* ---------------FUERZA: COLISIONES--------------- *//
+    /* ---------------FUERZA: COLISIONES--------------- */
 function aplicarFuerzaColision(
     modelo,
     desplazamientos
@@ -1294,7 +1294,7 @@ function separarParNodos(
         uy * fuerza;
 }
 
-    /* ---------------RESORTE JERÁRQUICO--------------- *//
+    /* ---------------RESORTE JERÁRQUICO--------------- */
 function aplicarResorte(
     a,
     b,
@@ -1344,7 +1344,7 @@ function aplicarResorte(
         uy * fuerza;
 }
 
-    /* ---------------APLICACIÓN DE DESPLAZAMIENTOS--------------- *//
+    /* ---------------APLICACIÓN DE DESPLAZAMIENTOS--------------- */
 function aplicarDesplazamientos(
     nodos,
     desplazamientos,
@@ -1381,7 +1381,7 @@ function aplicarDesplazamientos(
     );
 }
 
-    /* ---------------PASADA FINAL DE COLISIONES--------------- *//
+    /* ---------------PASADA FINAL DE COLISIONES--------------- */
 function resolverColisiones(
     modelo
 ) {
@@ -1410,7 +1410,7 @@ function resolverColisiones(
     }
 }
 
-    /* ---------------NORMALIZACIÓN--------------- *//
+    /* ---------------NORMALIZACIÓN--------------- */
 function normalizarMapa(modelo) {
     const limites =
         calcularLimites(modelo.nodos);
@@ -1489,13 +1489,13 @@ function calcularLimites(nodos) {
     };
 }
 
-    /* ---------------RENDERIZADO--------------- *//
+    /* ---------------RENDERIZADO--------------- */
 function dibujarMapa(modelo) {
     dibujarConexiones(modelo);
     dibujarNodos(modelo);
 }
 
- /* ---------------CONEXIONES--------------- *//
+ /* ---------------CONEXIONES--------------- */
 function dibujarConexiones(modelo) {
     const fragmento =
         document.createDocumentFragment();
@@ -1527,7 +1527,7 @@ function dibujarConexiones(modelo) {
         .append(fragmento);
 }
 
- /* ---------------NODOS--------------- *//
+ /* ---------------NODOS--------------- */
 function dibujarNodos(modelo) {
     const fragmento =
         document.createDocumentFragment();
@@ -1606,7 +1606,7 @@ function construirTituloNodo(nodo) {
     return partes.join(" · ");
 }
 
- /* ---------------ERRORES--------------- *//
+ /* ---------------ERRORES--------------- */
 function mostrarError(error) {
     const contenedor = document.querySelector(
             CONFIG_LAYOUT
@@ -1624,7 +1624,7 @@ function mostrarError(error) {
     contenedor.replaceChildren(mensaje);
 }
 
- /* ---------------UTILIDADES SVG--------------- *//
+ /* ---------------UTILIDADES SVG--------------- */
      function crearSVG(
     etiqueta,
     atributos = {}
@@ -1650,7 +1650,7 @@ function mostrarError(error) {
     return elemento;
 }
 
- /* ---------------UTILIDADES GENERALES--------------- *//
+ /* ---------------UTILIDADES GENERALES--------------- */
 function slug(valor) {
     return String(valor)
         .normalize("NFD")
