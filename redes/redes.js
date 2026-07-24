@@ -110,12 +110,9 @@ async function cargarDatos(url) {
 
     /* ---------------VALIDACIONES--------------- */
 function validarConfiguracion() {
-
     const ruta = CONFIG_LAYOUT.VINCULOS.datos;
-
     if (!ruta) {
         throw new Error("Debes configurar la ruta del JSON.");
-    }
     }
     const suma = Object
         .values(CONFIG_LAYOUT.PESOS)
@@ -138,7 +135,6 @@ function validarPersonas(personas) {
             "El JSON debe contener un arreglo de personas."
         );
     }
-
     const ids = new Set();
     personas.forEach((persona, indice) => {
         const obligatorios = [
@@ -146,7 +142,6 @@ function validarPersonas(personas) {
             "cluster",
             "Ubicacion"
         ];
-
         obligatorios.forEach(campo => {
             if (
                 persona[campo] === undefined ||
@@ -158,9 +153,7 @@ function validarPersonas(personas) {
                 );
             }
         });
-        if (
-            ids.has(persona.id)
-        ) {
+        if (ids.has(persona.id)) {
             throw new Error(
                 `ID duplicado: ${persona.id}`
             );
