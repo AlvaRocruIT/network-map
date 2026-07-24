@@ -13,7 +13,7 @@
 ---------------------CONFIG--------------- */
 const CONFIG_LAYOUT = {
     VINCULOS: {
-        datos: "../data/organigrama.json"
+        datos: "/data/organigrama.json"
     },
     SELECTORES: {
         contenedor: "#redes"
@@ -111,7 +111,7 @@ async function cargarDatos(url) {
     /* ---------------VALIDACIONES--------------- */
 function validarConfiguracion() {
     if (
-        CONFIG_LAYOUT.VINCULOS.datos.includes("../data/organigrama.json")
+        CONFIG_LAYOUT.VINCULOS.datos.includes("/data/organigrama.json")
     ) {
         throw new Error(
             "Debes configurar el vínculo del JSON."
