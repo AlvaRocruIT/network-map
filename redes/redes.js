@@ -666,52 +666,57 @@ function resolverLayoutUbicacion(ubicacion) {
     const lideres =
         ubicacion.lideresLocales;
     if (
+        lideres.length === 0
+    ) {
+        return;
+    }
+    if (
         lideres.length === 1
     ) {
-        lideres[0].xLocal = 0;
-        lideres[0].yLocal = 0;
+        const lider =
+            lideres[0];
+        lider.xLocal = 0;
+        lider.yLocal = 0;
+        lider.angulo = -Math.PI / 2;
+        distribuirRamaLocal(
+            lider,
+            -Math.PI / 2,
+            Math.PI * 1.75
+        );
     }
     else {
         distribuirLideres(
             lideres
         );
+        const aperturaPorLider =
+            (Math.PI * 2)
+            /
+            lideres.length;
+        lideres.forEach(
+            (lider, indice) => {
+                const anguloBase =
+                    indice
+                    *
+                    aperturaPorLider;
+                lider.angulo =
+                    anguloBase;
+                distribuirRamaLocal(
+                    lider,
+                    anguloBase,
+                    aperturaPorLider * 0.82
+                );
+            }
+        );
     }
-    lideres.forEach(
-        lider =>
-            distribuirRamaLocal(
-                lider,
-                0
-            )
-    );
-    calcularRadioUbicacion(ubicacion);
-}
-
-function distribuirLideres(lideres) {
-    const radio =
-        CONFIG_LAYOUT
-            .DISTANCIAS
-            .anilloLideres;
-    const paso =
-        (Math.PI * 2)
-        /
-        lideres.length;
-    lideres.forEach(
-        (lider, indice) => {
-            const angulo =
-                indice * paso;
-            lider.xLocal =
-                Math.cos(angulo)
-                * radio;
-            lider.yLocal =
-                Math.sin(angulo)
-                * radio;
-        }
+    calcularRadioUbicacion(
+        ubicacion
     );
 }
 
 function distribuirRamaLocal(
     nodo,
-    anguloBase
+    anguloBase,
+    aperturaDisponible
 ) {
     const hijos =
         nodo.subordinados.filter(
@@ -724,50 +729,99 @@ function distribuirRamaLocal(
     ) {
         return;
     }
-    const apertura =
-        Math.PI * 0.90;
-    const inicio =
+    const pesos =
+        hijos.map(
+            hijo =>
+                Math.max(
+                    1,
+                    calcularPesoRamaLocal(hijo)
+                )
+        );
+    const pesoTotal =
+        pesos.reduce(
+            (total, peso) =>
+                total + peso,
+            0
+        );
+    let anguloCursor =
         anguloBase
         -
-        apertura / 2;
-    const paso =
-        hijos.length === 1
-            ? 0
-            : apertura
-            /
-            (hijos.length - 1);
+        aperturaDisponible / 2;
     hijos.forEach(
         (hijo, indice) => {
-            const angulo =
-                inicio
+            const proporcion =
+                pesos[indice]
+                /
+                pesoTotal;
+            const aperturaHijo =
+                Math.max(
+                    0.22,
+                    aperturaDisponible
+                    *
+                    proporcion
+                );
+            const anguloHijo =
+                anguloCursor
                 +
-                paso * indice;
+                aperturaHijo / 2;
             const distancia =
                 CONFIG_LAYOUT
                     .DISTANCIAS
                     .jerarquiaLocal
                 +
-                hijo.profundidadLocal
+                Math.sqrt(
+                    pesos[indice]
+                )
                 *
                 CONFIG_LAYOUT
                     .DISTANCIAS
                     .separacionRamas;
             hijo.angulo =
-                angulo;
+                anguloHijo;
             hijo.xLocal =
-                nodo.xLocal +
-                Math.cos(angulo)
-                * distancia;
+                nodo.xLocal
+                +
+                Math.cos(
+                    anguloHijo
+                )
+                *
+                distancia;
             hijo.yLocal =
-                nodo.yLocal +
-                Math.sin(angulo)
-                * distancia;
+                nodo.yLocal
+                +
+                Math.sin(
+                    anguloHijo
+                )
+                *
+                distancia;
             distribuirRamaLocal(
                 hijo,
-                angulo
+                anguloHijo,
+                aperturaHijo * 0.88
             );
+            anguloCursor +=
+                aperturaHijo;
         }
     );
+}
+
+function calcularPesoRamaLocal(
+    nodo
+) {
+    const hijosLocales =
+        nodo.subordinados.filter(
+            hijo =>
+                hijo.ubicacionRef ===
+                nodo.ubicacionRef
+        );
+    if (hijosLocales.length === 0) {
+        return 1;
+    }
+    return 1 +
+        hijosLocales.reduce(
+            (total, hijo) =>total + calcularPesoRamaLocal(hijo),
+            0
+        );
 }
 
 function calcularRadioUbicacion(
