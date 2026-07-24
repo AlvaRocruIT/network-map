@@ -847,7 +847,6 @@ function calcularPesoRamaLocal(nodo) {
                 calcularPesoRamaLocal(hijo),
             0
         );
-}
     calcularRadioUbicacion(
         ubicacion
     );
