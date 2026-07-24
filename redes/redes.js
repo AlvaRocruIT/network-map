@@ -654,6 +654,16 @@ function calcularLayout(modelo) {
 }
 
     /* ---------------LAYOUT DE UBICACIONES--------------- */
+
+function resolverLayoutUbicaciones(modelo) {
+    modelo.ubicaciones.forEach(
+        ubicacion => {
+            resolverLayoutUbicacion(
+                ubicacion
+            );
+        }
+    );
+}
 function resolverLayoutUbicacion(ubicacion) {
     const lideres =
         ubicacion.lideresLocales;
