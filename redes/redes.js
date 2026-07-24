@@ -1056,14 +1056,13 @@ function resolverLayoutPersonas(modelo) {
             );
         }
     );
-}
 if (modelo.raiz) {
         modelo.raiz.xBase = 0;
         modelo.raiz.yBase = 0;
         modelo.raiz.x = 0;
         modelo.raiz.y = 0;
     }
-
+}
 
     /* ---------------SIMULACIÓN POR FUERZAS--------------- */
 function simularLayout(modelo) {
