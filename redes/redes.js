@@ -1,1765 +1,1685 @@
-document.addEventListener("DOMContentLoaded", cargarRed);
-
-const SVG_NS = "http://www.w3.org/2000/svg";
-
+ /* ==========================================================================
+ * Arquitectura
+ *
+ * 1. Configuración
+ * 2. Inicialización
+ * 3. Carga y validación
+ * 4. Construcción del modelo
+ * 5. Jerarquía
+ * 6. Layout
+ * 7. Render SVG
+ * 8. Utilidades 
+ 
+---------------------CONFIG--------------- */
 const CONFIG_LAYOUT = {
-    margenExterior: 100,
-
-    cluster: {
-        radioMinimo: 160,
-        padding: 80,
-        separacionGrid: 140
+    VINCULOS: {
+        datos: "../data/organigrama.json"
+    },
+    SELECTORES: {
+        contenedor: "#redes"
     },
 
-    fuerzasCluster: {
-        iteracionesMaximas: 500,
-        atraccionEnlaces: 0.025,
-        atraccionCentro: 0.008,
-        repulsion: 90000,
-        separacion: 70,
-        movimientoMaximo: 18,
-        umbralConvergencia: 0.08
+    PESOS: {
+        permanecerEnUbicacion: 0.23,
+        permanecerEnCluster: 0.23,
+        mantenerJerarquia: 0.16,
+        evitarColisiones: 0.28,
+        acercarseAlSuperior: 0.10
+    },
+    
+    NODOS: {
+        radioNormal: 5,
+        radioRaiz: 8
     },
 
-    fuerzasPersona: {
-        iteracionesMaximas: 450,
-        atraccionUbicacion: 0.045,
-        atraccionJerarquia: 0.02,
-        atraccionCentroJerarquico: 0.012,
-        repulsion: 550,
-        distanciaMinima: 18,
-        movimientoMaximo: 8,
-        umbralConvergencia: 0.05,
-        margenCluster: 14,
-        separacionUbicaciones: 24
+    DISTANCIAS: {
+        jerarquiaLocal: 34,
+        anilloLideres: 22,
+        separacionRamas: 20,
+        separacionUbicaciones: 70,
+        separacionClusters: 150,
+        margenColision: 5,
+        margenMapa: 50
     },
 
-    colisiones: {
-        iteraciones: 12,
-        distanciaMinima: 18,
-        desplazamientoMaximo: 3,
-        margenCluster: 14
+    ESCALA: {
+        crecimientoCluster: 24,
+        crecimientoUbicacion: 18
     },
 
-    ubicacion: {
-        radioBase: 45,
-        factorCrecimiento: 24,
-        separacion: 30
+    FUERZAS: {
+        ubicacion: 0.05,
+        cluster: 0.025,
+        jerarquia: 0.045,
+        colision: 0.90,
+        superior: 0.018
     },
 
-    arbol: {
-        radioBase: 28,
-        factorCrecimiento: 18,
-        distanciaNivel: 55
+    SIMULACION: {
+        iteraciones: 260,
+        intensidadInicial: 1,
+        enfriamiento: 0.985,
+        iteracionesColisionFinal: 18
     }
 };
 
-async function cargarRed() {
-  const contenedor =
-    document.getElementById("redes");
-
-  if (!contenedor) {
-    console.error(
-      'No existe un elemento con id="redes".'
-    );
-    return;
-  }
-
-  try {
-  const respuesta = await fetch("../data/organigrama.json");
-  if (!respuesta.ok) {
-      throw new Error(
-        `No se pudo cargar el JSON: ${respuesta.status}`
-      );
-    }
-
-    const personas =
-      await respuesta.json();
-
-    validarDatos(personas);
-
-    const dimensionesBase =
-      obtenerDimensiones(contenedor);
-
-    const layout = calcularLayout(
-      personas,
-      dimensionesBase.ancho,
-      dimensionesBase.alto
-    );
-
-    console.table(
-      layout.clusters.map(cluster => ({
-        cluster: cluster.nombre,
-        personas: cluster.personas.length,
-        ubicaciones: cluster.ubicaciones.length,
-        radio: Math.round(cluster.radio),
-        x: Math.round(cluster.centroX),
-        y: Math.round(cluster.centroY)
-      }))
-    );
-
-    dibujarRed(
-      contenedor,
-      layout.nodos,
-      layout.conexiones,
-      layout.ancho,
-      layout.alto
-    );
-  } catch (error) {
-    console.error("Error al cargar la red:", error);
-
-    contenedor.textContent =
-      `No fue posible cargar la red: ${error.message}`;
-  }
-}
-
-function calcularLayout(personas, anchoMinimo, altoMinimo) {
-    const personasPorId = new Map(
-        personas.map(persona => [
-            persona.id,
-            {
-                ...persona,
-                tipoVinculo:
-                    persona.tipoVinculo ?? "dependencia",
-                x: 0,
-                y: 0
-            }
-        ])
-    );
-
-   const personasArray =
-    Array.from(personasPorId.values());
-
-const nodoRaiz =
-    personasArray.find(
-        persona => persona.reportaA === null
-    );
-
-if (!nodoRaiz) {
-    throw new Error(
-        "No se encontró el nodo raíz."
-    );
-}
-
-nodoRaiz.fijo = true;
-
-const clusters =
-    agruparPorClusterYUbicacion(
-        personasArray
-    );
-
-const clusterRaiz =
-    clusters.find(
-        cluster =>
-            cluster.nombre === nodoRaiz.cluster
-    );
-
-    calcularDimensionesInternas(clusters);
-    calcularCentroClusterRaiz(
-    clusterRaiz,
-    anchoMinimo,
-    altoMinimo
+    /* ---------------AQUÍ VAMOS--------------- */
+document.addEventListener(
+    "DOMContentLoaded",
+    iniciarMapa
 );
 
-const nodos =
-    Array.from(personasPorId.values());
+async function iniciarMapa() {
+    try {
+        validarConfiguracion();
+        const personas =
+            await cargarDatos(
+                CONFIG_LAYOUT.VINCULOS.datos
+            );
 
-const conexiones =
-    crearConexiones(personasPorId);
+        const modelo =
+            construirModelo(personas);
+        prepararSVG(modelo);
+        calcularLayout(modelo);
+        dibujarMapa(modelo);
+    }
+    catch (error) {
+        console.error(error);
+        mostrarError(error);
+    }
+}
 
-const grafoClusters =
-    construirGrafoClusters(
-        clusters,
-        conexiones
-    );
-    
-    resolverLayoutClusters(
-        clusters,
-        grafoClusters,
-        clusterRaiz,
-        anchoMinimo,
-        altoMinimo
-    );
+    /* ---------------CARGA DE DATOS--------------- */
+async function cargarDatos(url) {
+    const respuesta = await fetch(url);
+    if (!respuesta.ok) {
+        throw new Error(
+            `No fue posible cargar ${url}`
+        );
+    }
 
-    resolverLayoutPersonas(
-        clusters,
-        personasPorId,
-        nodoRaiz
-    );
+    const json =
+        await respuesta.json();
+    const personas =
+        Array.isArray(json)
+            ? json
+            : json.personas;
+    validarPersonas(personas);
+    return personas;
+}
 
-    resolverColisiones(
-        clusters,
-        personasPorId,
-        nodoRaiz
-    );
-    
-    return {
-        clusters,
-        grafoClusters,
+    /* ---------------VALIDACIONES--------------- */
+function validarConfiguracion() {
+    if (
+        CONFIG_LAYOUT.VINCULOS.datos.includes(
+            "../data/organigrama.json"
+        )
+    ) {
+        throw new Error(
+            "Debes configurar el vínculo del JSON."
+        );
+    }
+    const suma = Object
+        .values(CONFIG_LAYOUT.PESOS)
+        .reduce(
+            (a, b) => a + b,
+            0
+        );
+    if (
+        Math.abs(suma - 1) > 0.0001
+    ) {
+        throw new Error(
+            "Los pesos deben sumar 1."
+        );
+    }
+}
+
+function validarPersonas(personas) {
+    if (!Array.isArray(personas)) {
+        throw new Error(
+            "El JSON debe contener un arreglo de personas."
+        );
+    }
+
+    const ids = new Set();
+    personas.forEach((persona, indice) => {
+        const obligatorios = [
+            "id",
+            "cluster",
+            "Ubicacion"
+        ];
+
+        obligatorios.forEach(campo => {
+            if (
+                persona[campo] === undefined ||
+                persona[campo] === null ||
+                persona[campo] === ""
+            ) {
+                throw new Error(
+                    `Registro ${indice}: falta ${campo}`
+                );
+            }
+        });
+        if (
+            ids.has(persona.id)
+        ) {
+            throw new Error(
+                `ID duplicado: ${persona.id}`
+            );
+        }
+        ids.add(persona.id);
+    });
+}
+
+    /* ---------------CONSTRUCCION DEL MODELO--------------- */
+function construirModelo(personas) {
+    const nodos =
+        prepararNodos(personas);
+    const indice =
+        crearIndiceNodos(nodos);
+    vincularJerarquia(
         nodos,
+        indice
+    );
+    const conexiones =
+        prepararConexiones(nodos);
+    const clusters =
+        construirClusters(nodos);
+    const ubicaciones =
+        extraerUbicaciones(clusters);
+    const raices =
+        encontrarRaices(nodos);
+    const raiz =
+        seleccionarRaizGlobal(
+            raices,
+            nodos
+        );
+    calcularJerarquia(
+        raices
+    );
+    detectarLideresLocales(
+        ubicaciones
+    );
+    calcularJerarquiaLocal(
+        ubicaciones
+    );
+    if (raiz) {
+        raiz.esRaizGlobal = true;
+        raiz.radio =
+            CONFIG_LAYOUT
+                .NODOS
+                .radioRaiz;
+    }
+    return {
+        nodos,
+        indice,
         conexiones,
-        ancho: anchoMinimo,
-        alto: altoMinimo
+        clusters,
+        ubicaciones,
+        raices,
+        raiz,
+        svg: null,
+        viewport: null,
+        capas: null
     };
 }
 
-function agruparPorClusterYUbicacion(personas) {
-    const clustersPorNombre = new Map();
+    /* ---------------PREPARACIÓN DE NODOS--------------- *//
+function prepararNodos(personas) {
+    return personas.map(persona => ({
+        id: String(persona.id),
+        datos: {
+            nombre: persona.nombre ?? "",
+            cargo: persona.cargo ?? "",
+            equipo: persona.equipo ?? "",
+            cluster: String(persona.cluster),
+            ubicacion: String(persona.Ubicacion),
+            reportaA: persona.reportaA
+                    ? String(persona.reportaA)
+                    : null
+        },
+        superior: null,
+        subordinados: [],
+        clusterRef: null,
+        ubicacionRef: null,
+        profundidadGlobal: 0,
+        profundidadLocal: 0,
+        pesoRama: 1,
+        angulo: 0,
+        radio:
+            CONFIG_LAYOUT
+                .NODOS
+                .radioNormal,
+        esRaizGlobal: false,
+        x: 0,
+        y: 0,
+        xBase: 0,
+        yBase: 0,
+        xLocal: 0,
+        yLocal: 0
+    }));
+}
 
-    personas.forEach(persona => {
-        const nombreCluster =
-            normalizarAgrupacion(
-                persona.cluster,
-                "Sin cluster"
+function crearIndiceNodos(nodos) {
+    return new Map(
+        nodos.map(
+            nodo => [
+                nodo.id,
+                nodo
+            ]
+        )
+    );
+}
+
+    /* ---------------JERARQUÍA--------------- *//
+function vincularJerarquia(
+    nodos,
+    indice
+) {
+    nodos.forEach(nodo => {
+        if (!nodo.datos.reportaA)
+            return;
+        const superior =
+            indice.get(
+                nodo.datos.reportaA
             );
+        if (!superior)
+            return;
+        nodo.superior =
+            superior;
+        superior
+            .subordinados
+            .push(nodo);
+    });
+}
 
-        const nombreUbicacion =
-            normalizarAgrupacion(
-                persona.ubicacion,
-                "Sin ubicación"
-            );
+function prepararConexiones(
+    nodos
+) {
+    return nodos
+        .filter(nodo => nodo.superior)
+        .map(nodo => ({
+            id: `${nodo.superior.id}_${nodo.id}`,
+            superior: nodo.superior,
+            subordinado: nodo,
+            mismaUbicacion: nodo.superior
+                    .datos
+                    .cluster ===
+                nodo
+                    .datos
+                    .cluster
+                &&
+                nodo.superior
+                    .datos
+                    .ubicacion ===
+                nodo
+                    .datos
+                    .ubicacion
+        }));
+}
 
-        if (!clustersPorNombre.has(nombreCluster)) {
-            clustersPorNombre.set(nombreCluster, {
-                id: nombreCluster,
-                nombre: nombreCluster,
-                ubicacionesPorNombre: new Map(),
-                ubicaciones: [],
-                personas: [],
-                centroX: 0,
-                centroY: 0,
-                radio: 0
-            });
-        }
+function encontrarRaices(nodos) {
+    return nodos.filter(
+        nodo =>
+            nodo.superior === null
+    );
+}
 
-        const cluster =
-            clustersPorNombre.get(nombreCluster);
+function seleccionarRaizGlobal(
+    raices,
+    nodos
+) {
+    if (
+        raices.length === 1
+    ) {
+        return raices[0];
+    }
+    if (
+        raices.length > 1
+    ) {
+        return [...raices]
+            .sort(
+                (a, b) =>
+                    calcularPesoRama(b)
+                    -
+                    calcularPesoRama(a)
+            )[0];
+    }
+    return nodos[0];
+}
 
-        if (
-            !cluster.ubicacionesPorNombre.has(
-                nombreUbicacion
+function calcularJerarquia(raices) {
+    const visitados =
+        new Set();
+    raices.forEach(
+        raiz =>
+            recorrerJerarquia(
+                raiz,
+                0,
+                visitados
             )
+    );
+}
+
+function recorrerJerarquia(
+    nodo,
+    profundidad,
+    visitados
+) {
+    if (
+        visitados.has(
+            nodo.id
+        )
+    ) {
+        return;
+    }
+    visitados.add(
+        nodo.id
+    );
+    nodo.profundidadGlobal =
+        profundidad;
+    nodo.pesoRama =
+        calcularPesoRama(nodo);
+    nodo.subordinados.forEach(
+        hijo =>
+            recorrerJerarquia(
+                hijo,
+                profundidad + 1,
+                visitados
+            )
+    );
+}
+
+function calcularPesoRama(nodo) {
+    if (
+        nodo.subordinados.length === 0
+    ) {
+        return 1;
+    }
+    let peso = 1;
+    nodo.subordinados.forEach(
+        hijo => {
+            peso +=
+                calcularPesoRama(
+                    hijo
+                );
+        }
+    );
+    nodo.pesoRama =
+        peso;
+    return peso;
+}
+
+    /* ---------------CLUSTERS--------------- *//
+function construirClusters(nodos) {
+    const mapa =
+        new Map();
+    nodos.forEach(nodo => {
+        const nombre =
+            nodo
+                .datos
+                .cluster;
+        if (
+            !mapa.has(nombre)
         ) {
-            cluster.ubicacionesPorNombre.set(
-                nombreUbicacion,
+            mapa.set(
+                nombre,
                 {
-                    id: `${nombreCluster}-${nombreUbicacion}`,
-                    nombre: nombreUbicacion,
-                    cluster: nombreCluster,
-                    personas: [],
-                    centroX: 0,
-                    centroY: 0,
+                    nombre,
+                    id: slug(nombre),
+                    nodos: [],
+                    ubicaciones: [],
+                    x: 0,
+                    y: 0,
                     radio: 0
                 }
             );
         }
-
-        const ubicacion =
-            cluster.ubicacionesPorNombre.get(
-                nombreUbicacion
-            );
-
-        cluster.personas.push(persona);
-        ubicacion.personas.push(persona);
+        const cluster =
+            mapa.get(nombre);
+        cluster
+            .nodos
+            .push(nodo);
+        nodo.clusterRef =
+            cluster;
     });
-
-    const clusters =
-        Array.from(clustersPorNombre.values());
-
-    clusters.forEach(cluster => {
+    mapa.forEach(cluster => {
         cluster.ubicaciones =
-            Array.from(
-                cluster.ubicacionesPorNombre.values()
-            );
-
-        delete cluster.ubicacionesPorNombre;
+            construirUbicaciones(cluster);
     });
-
-    return clusters;
+    return [...mapa.values()];
 }
 
-function normalizarAgrupacion(valor, fallback) {
-    if (
-        typeof valor !== "string" ||
-        valor.trim() === ""
-    ) {
-        return fallback;
-    }
-
-    return valor.trim();
-}
-
-function calcularDimensionesInternas(clusters) {
-    clusters.forEach(cluster => {
-        cluster.ubicaciones.forEach(ubicacion => {
-            ubicacion.radio =
-                calcularRadioUbicacion(
-                    ubicacion.personas.length
-                );
-        });
-
-        cluster.radio =
-            calcularRadioCluster(
-                cluster.ubicaciones
-            );
-    });
-}
-
-function calcularRadioUbicacion(cantidadPersonas) {
-    const { radioBase, factorCrecimiento } =
-        CONFIG_LAYOUT.ubicacion;
-
-    return (
-        radioBase +
-        Math.sqrt(
-            Math.max(cantidadPersonas, 1)
-        ) * factorCrecimiento
-    );
-}
-
-function calcularRadioCluster(ubicaciones) {
-    const { radioMinimo, padding } =
-        CONFIG_LAYOUT.cluster;
-
-    if (ubicaciones.length === 1) {
-        return Math.max(
-            radioMinimo,
-            ubicaciones[0].radio + padding
-        );
-    }
-
-    const superficieCombinada =
-        ubicaciones.reduce(
-            (total, ubicacion) =>
-                total +
-                Math.pow(ubicacion.radio, 2),
-            0
-        );
-
-    const radioCalculado =
-        Math.sqrt(superficieCombinada) *
-        1.45 +
-        padding;
-
-    return Math.max(
-        radioMinimo,
-        radioCalculado
-    );
-}
-
-function calcularCentroClusterRaiz(
-    clusterRaiz,
-    ancho,
-    alto
-) {
-    if (!clusterRaiz) {
-        throw new Error(
-            "No se encontró el cluster raíz."
-        );
-    }
-
-    clusterRaiz.centroX = ancho / 2;
-    clusterRaiz.centroY = alto / 2;
-
-    return clusterRaiz;
-}
-
-function construirGrafoClusters(
-    clusters,
-    conexiones
-) {
-    const clustersPorNombre = new Map(
-        clusters.map(cluster => [
-            cluster.nombre,
-            cluster
-        ])
-    );
-
-    const relacionesPorClave = new Map();
-
-    conexiones.forEach(conexion => {
-        if (!conexion.esInterCluster) {
-            return;
-        }
-
-        const nombreOrigen =
-            conexion.origen.cluster;
-
-        const nombreDestino =
-            conexion.destino.cluster;
-
-        const origen =
-            clustersPorNombre.get(nombreOrigen);
-
-        const destino =
-            clustersPorNombre.get(nombreDestino);
-
-        if (!origen || !destino) {
-            return;
-        }
-
-        const clave = [
-            nombreOrigen,
-            nombreDestino
-        ]
-            .sort()
-            .join("::");
-
-        if (!relacionesPorClave.has(clave)) {
-            relacionesPorClave.set(clave, {
-                origen,
-                destino,
-                peso: 0
-            });
-        }
-
-        relacionesPorClave.get(clave).peso += 1;
-    });
-
-    return Array.from(
-        relacionesPorClave.values()
-    );
-}
-
-function resolverLayoutClusters(
-    clusters,
-    grafoClusters,
-    clusterRaiz,
-    ancho,
-    alto
-) {
-    const config =
-        CONFIG_LAYOUT.fuerzasCluster;
-
-    const margen =
-        CONFIG_LAYOUT.margenExterior;
-
-    const clustersMoviles =
-        clusters.filter(
-            cluster => cluster !== clusterRaiz
-        );
-
-    if (clustersMoviles.length === 0) {
-        return clusters;
-    }
-
-    /*
-     * Posiciones iniciales deterministas.
-     * Solo sirven como punto de partida para las fuerzas.
-     */
-    const radioInicial =
-        Math.max(
-            clusterRaiz.radio * 2,
-            Math.min(ancho, alto) * 0.3
-        );
-
-    clustersMoviles
-        .sort((a, b) =>
-            a.nombre.localeCompare(b.nombre)
-        )
-        .forEach((cluster, indice) => {
-            const angulo =
-                (Math.PI * 2 * indice) /
-                clustersMoviles.length;
-
-            cluster.centroX =
-                clusterRaiz.centroX +
-                Math.cos(angulo) *
-                radioInicial;
-
-            cluster.centroY =
-                clusterRaiz.centroY +
-                Math.sin(angulo) *
-                radioInicial;
-        });
-
-    let iteracionesEstables = 0;
-
-    for (
-        let iteracion = 0;
-        iteracion < config.iteracionesMaximas;
-        iteracion += 1
-    ) {
-        const fuerzas = new Map(
-            clusters.map(cluster => [
-                cluster,
-                { x: 0, y: 0 }
-            ])
-        );
-
-        /*
-         * Atracción jerárquica entre clusters.
-         */
-        grafoClusters.forEach(relacion => {
-            const origen = relacion.origen;
-            const destino = relacion.destino;
-
-            const dx =
-                destino.centroX -
-                origen.centroX;
-
-            const dy =
-                destino.centroY -
-                origen.centroY;
-
-            const distancia =
-                Math.max(
-                    Math.hypot(dx, dy),
-                    0.001
-                );
-
-            const distanciaDeseada =
-                origen.radio +
-                destino.radio +
-                config.separacion;
-
-            const intensidad =
-                (distancia - distanciaDeseada) *
-                config.atraccionEnlaces *
-                (1 + Math.log1p(relacion.peso));
-
-            const fuerzaX =
-                (dx / distancia) *
-                intensidad;
-
-            const fuerzaY =
-                (dy / distancia) *
-                intensidad;
-
-            if (origen !== clusterRaiz) {
-                fuerzas.get(origen).x += fuerzaX;
-                fuerzas.get(origen).y += fuerzaY;
-            }
-
-            if (destino !== clusterRaiz) {
-                fuerzas.get(destino).x -= fuerzaX;
-                fuerzas.get(destino).y -= fuerzaY;
-            }
-        });
-
-        /*
-         * Repulsión entre todos los clusters.
-         */
-        for (
-            let i = 0;
-            i < clusters.length;
-            i += 1
-        ) {
-            for (
-                let j = i + 1;
-                j < clusters.length;
-                j += 1
-            ) {
-                const clusterA = clusters[i];
-                const clusterB = clusters[j];
-
-                let dx =
-                    clusterB.centroX -
-                    clusterA.centroX;
-
-                let dy =
-                    clusterB.centroY -
-                    clusterA.centroY;
-
-                if (dx === 0 && dy === 0) {
-                    dx = 0.01;
-                    dy = 0.01;
-                }
-
-                const distancia =
-                    Math.max(
-                        Math.hypot(dx, dy),
-                        0.001
-                    );
-
-                const distanciaMinima =
-                    clusterA.radio +
-                    clusterB.radio +
-                    config.separacion;
-
-                let intensidad =
-                    config.repulsion /
-                    Math.pow(distancia, 2);
-
-                if (distancia < distanciaMinima) {
-                    intensidad +=
-                        (distanciaMinima - distancia) *
-                        0.35;
-                }
-
-                const fuerzaX =
-                    (dx / distancia) *
-                    intensidad;
-
-                const fuerzaY =
-                    (dy / distancia) *
-                    intensidad;
-
-                if (clusterA !== clusterRaiz) {
-                    fuerzas.get(clusterA).x -= fuerzaX;
-                    fuerzas.get(clusterA).y -= fuerzaY;
-                }
-
-                if (clusterB !== clusterRaiz) {
-                    fuerzas.get(clusterB).x += fuerzaX;
-                    fuerzas.get(clusterB).y += fuerzaY;
-                }
-            }
-        }
-
-        /*
-         * Atracción suave hacia el cluster raíz.
-         * Mantiene los clusters orbitando el centro.
-         */
-        clustersMoviles.forEach(cluster => {
-            const dx =
-                clusterRaiz.centroX -
-                cluster.centroX;
-
-            const dy =
-                clusterRaiz.centroY -
-                cluster.centroY;
-
-            fuerzas.get(cluster).x +=
-                dx * config.atraccionCentro;
-
-            fuerzas.get(cluster).y +=
-                dy * config.atraccionCentro;
-        });
-
-        const enfriamiento =
-            1 - iteracion /
-            config.iteracionesMaximas;
-
-        let movimientoMayor = 0;
-
-        clustersMoviles.forEach(cluster => {
-            const fuerza =
-                fuerzas.get(cluster);
-
-            const movimientoX =
-                Math.max(
-                    -config.movimientoMaximo,
-                    Math.min(
-                        config.movimientoMaximo,
-                        fuerza.x * enfriamiento
-                    )
-                );
-
-            const movimientoY =
-                Math.max(
-                    -config.movimientoMaximo,
-                    Math.min(
-                        config.movimientoMaximo,
-                        fuerza.y * enfriamiento
-                    )
-                );
-
-            cluster.centroX += movimientoX;
-            cluster.centroY += movimientoY;
-
-            /*
-             * Evita que el cluster salga del canvas.
-             */
-            cluster.centroX =
-                Math.max(
-                    margen + cluster.radio,
-                    Math.min(
-                        ancho -
-                            margen -
-                            cluster.radio,
-                        cluster.centroX
-                    )
-                );
-
-            cluster.centroY =
-                Math.max(
-                    margen + cluster.radio,
-                    Math.min(
-                        alto -
-                            margen -
-                            cluster.radio,
-                        cluster.centroY
-                    )
-                );
-
-            movimientoMayor =
-                Math.max(
-                    movimientoMayor,
-                    Math.hypot(
-                        movimientoX,
-                        movimientoY
-                    )
-                );
-        });
-
-        /*
-         * El cluster raíz permanece fijo.
-         */
-        clusterRaiz.centroX = ancho / 2;
-        clusterRaiz.centroY = alto / 2;
-
+    /* ---------------UBICACIONES--------------- *//
+function construirUbicaciones(cluster) {
+    const mapa =
+        new Map();
+    cluster.nodos.forEach(nodo => {
+        const nombre =
+            nodo
+                .datos
+                .ubicacion;
         if (
-            movimientoMayor <
-            config.umbralConvergencia
+            !mapa.has(nombre)
         ) {
-            iteracionesEstables += 1;
-
-            if (iteracionesEstables >= 10) {
-                break;
-            }
-        } else {
-            iteracionesEstables = 0;
+            mapa.set(
+                nombre,
+                {
+                    id:
+                        cluster.id +
+                        "_" +
+                        slug(nombre),
+                    nombre,
+                    cluster,
+                    nodos: [],
+                    lideresLocales: [],
+                    radio: 0,
+                    xLocal: 0,
+                    yLocal: 0
+                }
+            );
         }
-    }
-
-    return clusters;
+        const ubicacion =
+            mapa.get(nombre);
+        ubicacion
+            .nodos
+            .push(
+                nodo
+            );
+        nodo.ubicacionRef =
+            ubicacion;
+    });
+    return [...mapa.values()];
 }
 
-function resolverLayoutPersonas(
-    clusters,
-    personasPorId,
-    nodoRaiz
-) {
-    const config =
-        CONFIG_LAYOUT.fuerzasPersona;
-
-    const personas =
-        Array.from(personasPorId.values());
-
-    const clusterPorNombre = new Map(
-        clusters.map(cluster => [
-            cluster.nombre,
-            cluster
-        ])
+function extraerUbicaciones(clusters) {
+    return clusters.flatMap(
+        cluster =>
+            cluster.ubicaciones
     );
+}
 
-    /*
-     * Calcula la profundidad jerárquica.
-     * Los niveles superiores reciben mayor atracción
-     * hacia el centro de su ubicación.
-     */
-    const profundidadPorId = new Map();
-
-    function resolverColisiones(
-    clusters,
-    personasPorId,
-    nodoRaiz
+function detectarLideresLocales(
+    ubicaciones
 ) {
-    const config =
-        CONFIG_LAYOUT.colisiones;
-
-    const personas =
-        Array.from(personasPorId.values());
-
-    const clusterPorNombre = new Map(
-        clusters.map(cluster => [
-            cluster.nombre,
-            cluster
-        ])
-    );
-
-    for (
-        let iteracion = 0;
-        iteracion < config.iteraciones;
-        iteracion += 1
-    ) {
-        let huboAjustes = false;
-
-        for (
-            let i = 0;
-            i < personas.length;
-            i += 1
-        ) {
-            for (
-                let j = i + 1;
-                j < personas.length;
-                j += 1
+    ubicaciones.forEach(
+        ubicacion => {
+            const ids =
+                new Set(
+                    ubicacion
+                        .nodos
+                        .map(
+                            n => n.id
+                        )
+                );
+            ubicacion.lideresLocales =
+                ubicacion.nodos.filter(
+                    nodo =>
+                        !nodo.superior ||
+                        !ids.has(
+                         nodo
+                                .superior
+                                .id
+                        )
+                );
+            if (
+                ubicacion
+                    .lideresLocales
+                    .length === 0
             ) {
-                const personaA = personas[i];
-                const personaB = personas[j];
-
-                /*
-                 * Solo corrige colisiones dentro
-                 * del mismo cluster.
-                 */
-                if (
-                    personaA.cluster !==
-                    personaB.cluster
-                ) {
-                    continue;
-                }
-
-                let dx =
-                    personaB.x -
-                    personaA.x;
-
-                let dy =
-                    personaB.y -
-                    personaA.y;
-
-                let distancia =
-                    Math.hypot(dx, dy);
-
-                if (
-                    distancia >=
-                    config.distanciaMinima
-                ) {
-                    continue;
-                }
-
-                /*
-                 * Evita una dirección indefinida
-                 * cuando ambos nodos coinciden.
-                 */
-                if (distancia < 0.001) {
-                    const angulo =
-                        (
-                            (
-                                i * 37 +
-                                j * 17
-                            ) %
-                            360
-                        ) *
-                        Math.PI /
-                        180;
-
-                    dx = Math.cos(angulo);
-                    dy = Math.sin(angulo);
-                    distancia = 1;
-                }
-
-                const solapamiento =
-                    config.distanciaMinima -
-                    distancia;
-
-                const desplazamiento =
-                    Math.min(
-                        solapamiento / 2,
-                        config.desplazamientoMaximo
+                ubicacion
+                    .lideresLocales
+                    .push(
+                        ubicacion
+                            .nodos[0]
                     );
-
-                const unidadX =
-                    dx / distancia;
-
-                const unidadY =
-                    dy / distancia;
-
-                /*
-                 * El nodo raíz permanece fijo.
-                 */
-                if (personaA === nodoRaiz) {
-                    desplazarPersonaDentroCluster(
-                        personaB,
-                        unidadX *
-                            desplazamiento *
-                            2,
-                        unidadY *
-                            desplazamiento *
-                            2,
-                        clusterPorNombre,
-                        config.margenCluster
-                    );
-                } else if (
-                    personaB === nodoRaiz
-                ) {
-                    desplazarPersonaDentroCluster(
-                        personaA,
-                        -unidadX *
-                            desplazamiento *
-                            2,
-                        -unidadY *
-                            desplazamiento *
-                            2,
-                        clusterPorNombre,
-                        config.margenCluster
-                    );
-                } else {
-                    desplazarPersonaDentroCluster(
-                        personaA,
-                        -unidadX *
-                            desplazamiento,
-                        -unidadY *
-                            desplazamiento,
-                        clusterPorNombre,
-                        config.margenCluster
-                    );
-
-                    desplazarPersonaDentroCluster(
-                        personaB,
-                        unidadX *
-                            desplazamiento,
-                        unidadY *
-                            desplazamiento,
-                        clusterPorNombre,
-                        config.margenCluster
-                    );
-                }
-
-                huboAjustes = true;
             }
         }
-
-        if (!huboAjustes) {
-            break;
-        }
-    }
-
-    return personas;
+    );
 }
 
-    function desplazarPersonaDentroCluster(
-    persona,
-    desplazamientoX,
-    desplazamientoY,
-    clusterPorNombre,
-    margenCluster
+function calcularJerarquiaLocal(
+    ubicaciones
 ) {
-    const cluster =
-        clusterPorNombre.get(
-            persona.cluster
-        );
+    ubicaciones.forEach(
+        ubicacion => {
+            const visitados =
+                new Set();
+            ubicacion
+                .lideresLocales
+                .forEach(
+                    lider =>
+                        recorrerJerarquiaLocal(
+                            lider,
+                            ubicacion,
+                            0,
+                            visitados
+                        )
+                );
+        }
+    );
+}
 
-    if (!cluster) {
+function recorrerJerarquiaLocal(
+    nodo,
+    ubicacion,
+    profundidad,
+    visitados
+) {
+    if (
+        visitados.has(
+            nodo.id
+        )
+    ) {
         return;
     }
-
-    persona.x += desplazamientoX;
-    persona.y += desplazamientoY;
-
-    const dx =
-        persona.x -
-        cluster.centroX;
-
-    const dy =
-        persona.y -
-        cluster.centroY;
-
-    const distancia =
-        Math.hypot(dx, dy);
-
-    const radioMaximo =
-        Math.max(
-            1,
-            cluster.radio -
-                margenCluster
-        );
-
-    if (distancia > radioMaximo) {
-        persona.x =
-            cluster.centroX +
-            (
-                dx /
-                Math.max(distancia, 0.001)
-            ) *
-            radioMaximo;
-
-        persona.y =
-            cluster.centroY +
-            (
-                dy /
-                Math.max(distancia, 0.001)
-            ) *
-            radioMaximo;
+    if (
+        nodo
+            .ubicacionRef !==
+        ubicacion
+    ) {
+        return;
     }
+    visitados.add(
+        nodo.id
+    );
+    nodo.profundidadLocal =
+        profundidad;
+    nodo.subordinados.forEach(
+        hijo =>
+            recorrerJerarquiaLocal(
+                hijo,
+                ubicacion,
+                profundidad + 1,
+                visitados
+            )
+    );
 }
-    
-    function obtenerProfundidad(persona) {
-        if (profundidadPorId.has(persona.id)) {
-            return profundidadPorId.get(persona.id);
-        }
 
-        if (!persona.reportaA) {
-            profundidadPorId.set(persona.id, 0);
-            return 0;
-        }
-
-        const superior =
-            personasPorId.get(persona.reportaA);
-
-        const profundidad =
-            superior
-                ? obtenerProfundidad(superior) + 1
-                : 1;
-
-        profundidadPorId.set(
-            persona.id,
-            profundidad
+    /* ---------------PREPARACIÓN SVG--------------- *//
+function prepararSVG(modelo) {
+    const contenedor =
+        document.querySelector(
+            CONFIG_LAYOUT
+                .SELECTORES
+                .contenedor
         );
-
-        return profundidad;
+    if (!contenedor) {
+        throw new Error(
+            "No existe el contenedor del mapa."
+        );
     }
+    contenedor.replaceChildren();
+    const svg =
+        crearSVG(
+            "svg",
+            {
+                class:"mapa-redes"
+            }
+        );
+    const viewport =
+        crearSVG(
+            "g",
+            {
+                class: "mapa-redes__viewport"
+            }
+        );
+    const conexiones =
+        crearSVG(
+            "g",
+            {
+                class: "mapa-redes__conexiones"
+            }
+        );
+    const nodos =
+        crearSVG(
+            "g",
+            {
+                class: "mapa-redes__nodos"
+            }
+        );
+    viewport.append(
+        conexiones,
+        nodos
+    );
+    svg.append(viewport);
+    contenedor.append(svg);
+    modelo.svg = svg;
+    modelo.viewport = viewport;
+    modelo.capas = {
+        conexiones,
+        nodos
+    };
+}
 
-    personas.forEach(obtenerProfundidad);
+    /* ---------------CÁLCULO DEL LAYOUT--------------- *//
+function calcularLayout(modelo) {
+    resolverLayoutUbicaciones(modelo);
+    resolverLayoutClusters(modelo);
+    resolverLayoutPersonas(modelo);
+    simularLayout(modelo);
+    resolverColisiones(modelo);
+    normalizarMapa(modelo);
+}
 
-    /*
-     * Posiciona los centros invisibles
-     * de las ubicaciones dentro de cada cluster.
-     */
-    clusters.forEach(cluster => {
-        const ubicaciones =
-            [...cluster.ubicaciones].sort(
-                (a, b) =>
-                    a.nombre.localeCompare(b.nombre)
-            );
+    /* ---------------LAYOUT DE UBICACIONES--------------- *//
+function resolverLayoutUbicaciones(modelo) {
+    modelo.ubicaciones.forEach(ubicacion => {
+        resolverLayoutUbicacion(
+            ubicacion
+        );
+    });
+}
 
-        const ubicacionRaiz =
-            ubicaciones.find(ubicacion =>
-                ubicacion.personas.includes(
-                    nodoRaiz
-                )
-            );
+function resolverLayoutUbicacion(ubicacion) {
+    const lideres =
+        ubicacion.lideresLocales;
+    if (
+        lideres.length === 1
+    ) {
+        lideres[0].xLocal = 0;
+        lideres[0].yLocal = 0;
+    }
+    else {
+        distribuirLideres(
+            lideres
+        );
+    }
+    lideres.forEach(
+        lider =>
+            distribuirRamaLocal(
+                lider,
+                0
+            )
+    );
+    calcularRadioUbicacion(ubicacion);
+}
 
-        if (ubicaciones.length === 1) {
-            ubicaciones[0].centroX =
-                cluster.centroX;
-
-            ubicaciones[0].centroY =
-                cluster.centroY;
-
-            return;
+function distribuirLideres(lideres) {
+    const radio =
+        CONFIG_LAYOUT
+            .DISTANCIAS
+            .anilloLideres;
+    const paso =
+        (Math.PI * 2)
+        /
+        lideres.length;
+    lideres.forEach(
+        (lider, indice) => {
+            const angulo =
+                indice * paso;
+            lider.xLocal =
+                Math.cos(angulo)
+                * radio;
+            lider.yLocal =
+                Math.sin(angulo)
+                * radio;
         }
+    );
+}
 
-        const ubicacionesMoviles =
-            ubicacionRaiz
-                ? ubicaciones.filter(
-                    ubicacion =>
-                        ubicacion !== ubicacionRaiz
-                )
-                : ubicaciones;
-
-        if (ubicacionRaiz) {
-            ubicacionRaiz.centroX =
-                cluster.centroX;
-
-            ubicacionRaiz.centroY =
-                cluster.centroY;
+function distribuirRamaLocal(
+    nodo,
+    anguloBase
+) {
+    const hijos =
+        nodo.subordinados.filter(
+            hijo =>
+                hijo.ubicacionRef ===
+                nodo.ubicacionRef
+        );
+    if (
+        hijos.length === 0
+    ) {
+        return;
+    }
+    const apertura =
+        Math.PI * 0.90;
+    const inicio =
+        anguloBase
+        -
+        apertura / 2;
+    const paso =
+        hijos.length === 1
+            ? 0
+            : apertura
+            /
+            (hijos.length - 1);
+    hijos.forEach(
+        (hijo, indice) => {
+            const angulo =
+                inicio
+                +
+                paso * indice;
+            const distancia =
+                CONFIG_LAYOUT
+                    .DISTANCIAS
+                    .jerarquiaLocal
+                +
+                hijo.profundidadLocal
+                *
+                CONFIG_LAYOUT
+                    .DISTANCIAS
+                    .separacionRamas;
+            hijo.angulo =
+                angulo;
+            hijo.xLocal =
+                nodo.xLocal +
+                Math.cos(angulo)
+                * distancia;
+            hijo.yLocal =
+                nodo.yLocal +
+                Math.sin(angulo)
+                * distancia;
+            distribuirRamaLocal(
+                hijo,
+                angulo
+            );
         }
+    );
+}
 
-        const radioMayor =
-            Math.max(
-                ...ubicacionesMoviles.map(
-                    ubicacion => ubicacion.radio
-                )
+function calcularRadioUbicacion(
+    ubicacion
+) {
+    let radio = 0;
+    ubicacion.nodos.forEach(
+        nodo => {
+            const distancia =
+                Math.hypot(
+                    nodo.xLocal,
+                    nodo.yLocal
+                );
+            radio =
+                Math.max(
+                    radio,
+                    distancia
+                );
+        }
+    );
+    ubicacion.radio =
+        radio
+        +
+        CONFIG_LAYOUT
+            .ESCALA
+            .crecimientoUbicacion;
+}
+
+    /* ---------------LAYOUT DE CLUSTERS--------------- *//
+function resolverLayoutClusters(modelo) {
+    modelo.clusters.forEach(
+        cluster => {
+            resolverLayoutCluster(
+                cluster
             );
+        }
+    );
+    distribuirClusters(
+        modelo.clusters
+    );
+}
 
-        const radioOrbita =
-            Math.max(
-                30,
-                cluster.radio -
-                    radioMayor -
-                    config.separacionUbicaciones
-            );
-
-        ubicacionesMoviles.forEach(
+function resolverLayoutCluster(
+    cluster
+) {
+    const ubicaciones =
+        cluster.ubicaciones;
+    if (
+        ubicaciones.length === 1
+    ) {
+        ubicaciones[0].xLocal = 0;
+        ubicaciones[0].yLocal = 0;
+    }
+    else {
+        const paso =
+            (Math.PI * 2)
+            /
+            ubicaciones.length;
+        let radio = 0;
+        ubicaciones.forEach(
+            u => {
+                radio +=
+                    u.radio;
+            }
+        );
+        radio /=
+            ubicaciones.length;
+        radio +=
+            CONFIG_LAYOUT
+                .DISTANCIAS
+                .separacionUbicaciones;
+        ubicaciones.forEach(
             (ubicacion, indice) => {
                 const angulo =
-                    (Math.PI * 2 * indice) /
-                    ubicacionesMoviles.length;
-
-                ubicacion.centroX =
-                    cluster.centroX +
-                    Math.cos(angulo) *
-                    radioOrbita;
-
-                ubicacion.centroY =
-                    cluster.centroY +
-                    Math.sin(angulo) *
-                    radioOrbita;
+                    indice * paso;
+                ubicacion.xLocal =
+                    Math.cos(angulo)
+                    * radio;
+                ubicacion.yLocal =
+                    Math.sin(angulo)
+                    * radio;
             }
         );
-    });
+    }
+    calcularRadioCluster(
+        cluster
+    );
+}
 
-    /*
-     * Posiciones iniciales deterministas
-     * alrededor de cada ubicación.
-     */
-    clusters.forEach(cluster => {
-        cluster.ubicaciones.forEach(
-            ubicacion => {
-                const personasUbicacion =
-                    [...ubicacion.personas].sort(
-                        (a, b) =>
-                            a.id.localeCompare(b.id)
-                    );
-
-                const personasMoviles =
-                    personasUbicacion.filter(
-                        persona =>
-                            persona !== nodoRaiz
-                    );
-
-                if (
-                    personasUbicacion.includes(
-                        nodoRaiz
-                    )
-                ) {
-                    nodoRaiz.x =
-                        cluster.centroX;
-
-                    nodoRaiz.y =
-                        cluster.centroY;
-
-                    nodoRaiz.fijo = true;
-                }
-
-                if (
-                    personasMoviles.length === 1 &&
-                    !personasUbicacion.includes(
-                        nodoRaiz
-                    )
-                ) {
-                    personasMoviles[0].x =
-                        ubicacion.centroX;
-
-                    personasMoviles[0].y =
-                        ubicacion.centroY;
-
-                    return;
-                }
-
-                const radioInicial =
-                    Math.max(
-                        16,
-                        Math.min(
-                            ubicacion.radio * 0.55,
-                            70
-                        )
-                    );
-
-                personasMoviles.forEach(
-                    (persona, indice) => {
-                        const angulo =
-                            (Math.PI * 2 * indice) /
-                            Math.max(
-                                personasMoviles.length,
-                                1
-                            );
-
-                        persona.x =
-                            ubicacion.centroX +
-                            Math.cos(angulo) *
-                            radioInicial;
-
-                        persona.y =
-                            ubicacion.centroY +
-                            Math.sin(angulo) *
-                            radioInicial;
-                    }
+function calcularRadioCluster(
+    cluster
+) {
+    let radio = 0;
+    cluster.ubicaciones.forEach(
+        ubicacion => {
+            const distancia =
+                Math.hypot(
+                    ubicacion.xLocal,
+                    ubicacion.yLocal
+                )
+                +
+                ubicacion.radio;
+            radio =
+                Math.max(
+                    radio,
+                    distancia
                 );
-            }
-        );
-    });
+        }
+    );
+    cluster.radio =
+        radio
+        +
+        CONFIG_LAYOUT
+            .ESCALA
+            .crecimientoCluster;
+}
 
-    let iteracionesEstables = 0;
+function distribuirClusters(
+    clusters
+) {
+    const paso =
+        (Math.PI * 2)
+        /
+        clusters.length;
+    let radio = 0;
+    clusters.forEach(
+        cluster => {
+            radio +=
+                cluster.radio;
+        }
+    );
+    radio /=
+        clusters.length;
+    radio +=
+        CONFIG_LAYOUT
+            .DISTANCIAS
+            .separacionClusters;
+    clusters.forEach(
+        (cluster, indice) => {
+            const angulo =
+                indice * paso;
+            cluster.x =
+                Math.cos(angulo)
+                * radio;
+            cluster.y =
+                Math.sin(angulo)
+                * radio;
+        }
+    );
+}
 
-    for (
-        let iteracion = 0;
-        iteracion <
-            config.iteracionesMaximas;
-        iteracion += 1
-    ) {
-        const fuerzas = new Map(
-            personas.map(persona => [
-                persona,
-                { x: 0, y: 0 }
-            ])
-        );
-
-        /*
-         * Atracción hacia la ubicación.
-         * Los niveles superiores tienden más al centro,
-         * sin abandonar su cluster ni ubicación.
-         */
-        clusters.forEach(cluster => {
+    /* ---------------POSICIÓN GLOBAL DE NODOS--------------- *//
+function resolverLayoutPersonas(modelo) {
+    modelo.clusters.forEach(
+        cluster => {
             cluster.ubicaciones.forEach(
                 ubicacion => {
-                    ubicacion.personas.forEach(
-                        persona => {
-                            if (persona === nodoRaiz) {
-                                return;
-                            }
-
-                            const profundidad =
-                                obtenerProfundidad(
-                                    persona
-                                );
-
-                            const factorJerarquico =
-                                1 +
-                                1 /
-                                    Math.max(
-                                        profundidad,
-                                        1
-                                    );
-
-                            fuerzas.get(persona).x +=
-                                (
-                                    ubicacion.centroX -
-                                    persona.x
-                                ) *
-                                (
-                                    config.atraccionUbicacion +
-                                    config
-                                        .atraccionCentroJerarquico *
-                                        factorJerarquico
-                                );
-
-                            fuerzas.get(persona).y +=
-                                (
-                                    ubicacion.centroY -
-                                    persona.y
-                                ) *
-                                (
-                                    config.atraccionUbicacion +
-                                    config
-                                        .atraccionCentroJerarquico *
-                                        factorJerarquico
-                                );
+                    ubicacion.nodos.forEach(
+                        nodo => {
+                            nodo.xBase =
+                                cluster.x +
+                                ubicacion.xLocal +
+                                nodo.xLocal;
+                            nodo.yBase =
+                                cluster.y +
+                                ubicacion.yLocal +
+                                nodo.yLocal;
+                            nodo.x =
+                                nodo.xBase;
+                            nodo.y =
+                                nodo.yBase;
                         }
                     );
                 }
             );
-        });
-
-        /*
-         * Atracción hacia el superior.
-         *
-         * La fuerza disminuye cuando superior y
-         * subordinado están en ubicaciones o clusters
-         * diferentes: la geografía prima.
-         */
-        personas.forEach(persona => {
-            if (
-                persona === nodoRaiz ||
-                !persona.reportaA
-            ) {
-                return;
-            }
-
-            const superior =
-                personasPorId.get(
-                    persona.reportaA
-                );
-
-            if (!superior) {
-                return;
-            }
-
-            const mismoCluster =
-                superior.cluster ===
-                persona.cluster;
-
-            const mismaUbicacion =
-                mismoCluster &&
-                superior.ubicacion ===
-                    persona.ubicacion;
-
-            let factorGeografico;
-
-            if (mismaUbicacion) {
-                factorGeografico = 1;
-            } else if (mismoCluster) {
-                factorGeografico = 0.18;
-            } else {
-                factorGeografico = 0.03;
-            }
-
-            const fuerza =
-                config.atraccionJerarquia *
-                factorGeografico;
-
-            fuerzas.get(persona).x +=
-                (superior.x - persona.x) *
-                fuerza;
-
-            fuerzas.get(persona).y +=
-                (superior.y - persona.y) *
-                fuerza;
-        });
-
-        /*
-         * Repulsión entre personas del mismo cluster.
-         */
-        for (
-            let i = 0;
-            i < personas.length;
-            i += 1
-        ) {
-            for (
-                let j = i + 1;
-                j < personas.length;
-                j += 1
-            ) {
-                const personaA = personas[i];
-                const personaB = personas[j];
-
-                if (
-                    personaA.cluster !==
-                    personaB.cluster
-                ) {
-                    continue;
-                }
-
-                let dx =
-                    personaB.x -
-                    personaA.x;
-
-                let dy =
-                    personaB.y -
-                    personaA.y;
-
-                if (dx === 0 && dy === 0) {
-                    dx = 0.01;
-                    dy = 0.01;
-                }
-
-                const distancia =
-                    Math.max(
-                        Math.hypot(dx, dy),
-                        0.001
-                    );
-
-                if (
-                    distancia >
-                    config.distanciaMinima * 3
-                ) {
-                    continue;
-                }
-
-                let intensidad =
-                    config.repulsion /
-                    Math.pow(distancia, 2);
-
-                if (
-                    distancia <
-                    config.distanciaMinima
-                ) {
-                    intensidad +=
-                        (
-                            config.distanciaMinima -
-                            distancia
-                        ) * 0.45;
-                }
-
-                const fuerzaX =
-                    (dx / distancia) *
-                    intensidad;
-
-                const fuerzaY =
-                    (dy / distancia) *
-                    intensidad;
-
-                if (personaA !== nodoRaiz) {
-                    fuerzas.get(personaA).x -=
-                        fuerzaX;
-
-                    fuerzas.get(personaA).y -=
-                        fuerzaY;
-                }
-
-                if (personaB !== nodoRaiz) {
-                    fuerzas.get(personaB).x +=
-                        fuerzaX;
-
-                    fuerzas.get(personaB).y +=
-                        fuerzaY;
-                }
-            }
         }
+    );
+}
 
-        const enfriamiento =
-            1 -
-            iteracion /
-                config.iteracionesMaximas;
+    /* ---------------SIMULACIÓN POR FUERZAS--------------- *//
+function simularLayout(modelo) {
+    let intensidad =
+        CONFIG_LAYOUT
+            .SIMULACION
+            .intensidadInicial;
+    for (
+        let iteracion = 0;
+        iteracion <
+        CONFIG_LAYOUT
+            .SIMULACION
+            .iteraciones;
+        iteracion++
+    ) {
+        const desplazamientos =
+            crearMapaDesplazamientos(
+                modelo.nodos
+            );
+        aplicarFuerzaUbicacion(
+            modelo,
+            desplazamientos
+        );
+        aplicarFuerzaCluster(
+            modelo,
+            desplazamientos
+        );
+        aplicarFuerzaJerarquia(
+            modelo,
+            desplazamientos
+        );
+        aplicarFuerzaSuperior(
+            modelo,
+            desplazamientos
+        );
+        aplicarFuerzaColision(
+            modelo,
+            desplazamientos
+        );
+        aplicarDesplazamientos(
+            modelo.nodos,
+            desplazamientos,
+            intensidad
+        );
+        intensidad *=
+            CONFIG_LAYOUT
+                .SIMULACION
+                .enfriamiento;
+    }
+}
 
-        let movimientoMayor = 0;
+function crearMapaDesplazamientos(nodos) {
+    const mapa =
+        new Map();
+    nodos.forEach(
+        nodo => {
+            mapa.set(
+                nodo.id,
+                {
+                    x: 0,
+                    y: 0
+                }
+            );
+        }
+    );
+    return mapa;
+}
 
-        personas.forEach(persona => {
-            if (persona === nodoRaiz) {
-                return;
-            }
-
-            const fuerza =
-                fuerzas.get(persona);
-
-            const movimientoX =
-                Math.max(
-                    -config.movimientoMaximo,
-                    Math.min(
-                        config.movimientoMaximo,
-                        fuerza.x * enfriamiento
-                    )
+    /* ---------------FUERZA: PERMANECER EN UBICACIÓN--------------- *//
+function aplicarFuerzaUbicacion(
+    modelo,
+    desplazamientos
+) {
+    const peso =
+        CONFIG_LAYOUT
+            .PESOS
+            .permanecerEnUbicacion
+        *
+        CONFIG_LAYOUT
+            .FUERZAS
+            .ubicacion;
+    modelo.nodos.forEach(
+        nodo => {
+            const centro =
+                obtenerCentroUbicacion(
+                    nodo
                 );
-
-            const movimientoY =
-                Math.max(
-                    -config.movimientoMaximo,
-                    Math.min(
-                        config.movimientoMaximo,
-                        fuerza.y * enfriamiento
-                    )
-                );
-
-            persona.x += movimientoX;
-            persona.y += movimientoY;
-
-            /*
-             * Restricción dura:
-             * la persona no puede abandonar su cluster.
-             */
-            const cluster =
-                clusterPorNombre.get(
-                    persona.cluster
-                );
-
             const dx =
-                persona.x -
-                cluster.centroX;
-
+                centro.x - nodo.x;
             const dy =
-                persona.y -
-                cluster.centroY;
-
-            const distancia =
-                Math.hypot(dx, dy);
-
-            const radioMaximo =
-                Math.max(
-                    1,
-                    cluster.radio -
-                        config.margenCluster
+                centro.y - nodo.y;
+            const desplazamiento =
+                desplazamientos.get(
+                    nodo.id
                 );
-
-            if (distancia > radioMaximo) {
-                persona.x =
-                    cluster.centroX +
-                    (dx / distancia) *
-                        radioMaximo;
-
-                persona.y =
-                    cluster.centroY +
-                    (dy / distancia) *
-                        radioMaximo;
-            }
-
-            movimientoMayor =
-                Math.max(
-                    movimientoMayor,
-                    Math.hypot(
-                        movimientoX,
-                        movimientoY
-                    )
-                );
-        });
-
-        nodoRaiz.x =
-            clusterPorNombre.get(
-                nodoRaiz.cluster
-            ).centroX;
-
-        nodoRaiz.y =
-            clusterPorNombre.get(
-                nodoRaiz.cluster
-            ).centroY;
-
-        if (
-            movimientoMayor <
-            config.umbralConvergencia
-        ) {
-            iteracionesEstables += 1;
-
-            if (iteracionesEstables >= 10) {
-                break;
-            }
-        } else {
-            iteracionesEstables = 0;
+            desplazamiento.x +=
+                dx * peso;
+            desplazamiento.y +=
+                dy * peso;
         }
-    }
-
-    return personas;
+    );
 }
 
-function crearConexiones(personasPorId) {
-    const conexiones = [];
-
-    personasPorId.forEach(persona => {
-        if (!persona.reportaA) {
-            return;
-        }
-
-        const superior =
-            personasPorId.get(
-                persona.reportaA
-            );
-
-        if (!superior) {
-            console.warn(
-                `No se encontró el superior "${persona.reportaA}" de "${persona.id}".`
-            );
-
-            return;
-        }
-
-        conexiones.push({
-            origen: superior,
-            destino: persona,
-            tipoVinculo:
-                persona.tipoVinculo ??
-                "dependencia",
-
-            esInterCluster:
-                superior.cluster !==
-                persona.cluster,
-
-            esInterUbicacion:
-                superior.cluster ===
-                    persona.cluster &&
-                superior.ubicacion !==
-                    persona.ubicacion
-        });
-    });
-
-    return conexiones;
-}
-  
-function dibujarRed(
-  contenedor,
-  nodos,
-  conexiones,
-  ancho,
-  alto
+function obtenerCentroUbicacion(
+    nodo
 ) {
-  contenedor.innerHTML = "";
-
-  const svg = document.createElementNS(SVG_NS, "svg");
-  svg.classList.add("red-svg");
-
-  svg.setAttribute(
-    "viewBox",
-    `0 0 ${ancho} ${alto}`
-  );
-
-  svg.setAttribute("role", "img");
-  svg.setAttribute(
-    "aria-label",
-    "Mapa de relaciones organizacionales"
-  );
-
-  const capaConexiones =
-    document.createElementNS(SVG_NS, "g");
-
-  capaConexiones.classList.add("capa-conexiones");
-
-  const capaNodos =
-    document.createElementNS(SVG_NS, "g");
-
-  capaNodos.classList.add("capa-nodos");
-
-  svg.appendChild(capaConexiones);
-  svg.appendChild(capaNodos);
-
-  contenedor.appendChild(svg);
-
-  const etiqueta = crearEtiquetaNodo(contenedor);
-      
-  dibujarConexiones(
-    capaConexiones,
-    conexiones
-  );
-
-  dibujarNodos(
-  nodos,
-  capaNodos,
-  contenedor,
-  etiqueta
-);
-
-    svg.addEventListener("click", evento => {
-  if (evento.target === svg) {
-    etiqueta.hidden = true;
-  }
-});
-}
-
-  function dibujarConexiones(
-    capaConexiones,
-    conexiones
-) {
-    conexiones.forEach(conexion => {
-        const linea =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "line"
-            );
-
-        linea.setAttribute(
-            "x1",
-            conexion.origen.x
-        );
-
-        linea.setAttribute(
-            "y1",
-            conexion.origen.y
-        );
-
-        linea.setAttribute(
-            "x2",
-            conexion.destino.x
-        );
-
-        linea.setAttribute(
-            "y2",
-            conexion.destino.y
-        );
-
-        linea.classList.add(
-            "conexion",
-            `conexion-${conexion.tipoVinculo}`
-        );
-
-        if (conexion.esInterCluster) {
-            linea.classList.add(
-                "conexion-intercluster"
-            );
-        } else if (
-            conexion.esInterUbicacion
-        ) {
-            linea.classList.add(
-                "conexion-interubicacion"
-            );
-        } else {
-            linea.classList.add(
-                "conexion-interna"
-            );
-        }
-
-        capaConexiones.appendChild(linea);
-    });
-}
-  
- function dibujarNodos(
-  nodos,
-  capa,
-  contenedor,
-  etiqueta
-  ) {
-  nodos.forEach(nodo => {
-    const circulo =
-      document.createElementNS(SVG_NS, "circle");
-
-    circulo.classList.add("nodo-red");
-    circulo.dataset.id = nodo.id;
-
-    if (nodo.fijo) {
-      circulo.dataset.raiz = "true";
-    }
-
-    circulo.setAttribute("cx", nodo.x);
-    circulo.setAttribute("cy", nodo.y);
-    circulo.setAttribute("r", nodo.fijo ? 7 : 5);
-
-    circulo.addEventListener("click", evento => {
-      evento.stopPropagation();
-
-      mostrarEtiquetaNodo(
-        nodo,
-        circulo,
-        contenedor,
-        etiqueta
-      );
-    });
-
-    capa.appendChild(circulo);
-  });
-}
-
-function crearEtiquetaNodo(contenedor) {
-  const etiqueta = document.createElement("div");
-
-  etiqueta.classList.add("etiqueta-nodo");
-  etiqueta.hidden = true;
-
-  contenedor.appendChild(etiqueta);
-
-  return etiqueta;
-}
-
-function mostrarEtiquetaNodo(
-  nodo,
-  circulo,
-  contenedor,
-  etiqueta
-) {
-  etiqueta.innerHTML = `
-    <strong>${nodo.nombre}</strong>
-    <span>${nodo.cargo ?? ""}</span>
-    <small>${nodo.equipo ?? ""}</small>
-  `;
-
-  etiqueta.hidden = false;
-
-  const rectNodo =
-    circulo.getBoundingClientRect();
-
-  const rectContenedor =
-    contenedor.getBoundingClientRect();
-
-  etiqueta.style.left = `${
-    rectNodo.left -
-    rectContenedor.left +
-    rectNodo.width / 2
-  }px`;
-
-  etiqueta.style.top = `${
-    rectNodo.top -
-    rectContenedor.top -
-    8
-  }px`;
- }
-
-function obtenerDimensiones(contenedor) {
     return {
-        ancho: contenedor.clientWidth,
-        alto: contenedor.clientHeight
+        x:
+            nodo
+                .clusterRef
+                .x
+            +
+            nodo
+                .ubicacionRef
+                .xLocal,
+        y:
+            nodo
+                .clusterRef
+                .y
+            +
+            nodo
+                .ubicacionRef
+                .yLocal
     };
 }
 
-function validarDatos(personas) {
-  if (!Array.isArray(personas) || personas.length === 0) {
-    throw new Error("El archivo no contiene personas.");
-  }
-
-  const ids = new Set();
-
-  personas.forEach(persona => {
-    if (!persona.id || !persona.nombre) {
-      throw new Error("Cada persona necesita id y nombre.");
-    }
-
-    if (ids.has(persona.id)) {
-      throw new Error(`ID duplicado: ${persona.id}`);
-    }
-
-    ids.add(persona.id);
-  });
-
-  personas.forEach(persona => {
-    if (persona.reportaA && !ids.has(persona.reportaA)) {
-      throw new Error(
-        `${persona.nombre} reporta a un ID inexistente: ${persona.reportaA}`
-      );
-    }
-  });
-
-  const raices = personas.filter(
-    persona => persona.reportaA === null
-  );
-
-  if (raices.length !== 1) {
-    throw new Error(
-      `Se esperaba una jerarquía principal, pero se encontraron ${raices.length}.`
+    /* ---------------FUERZA: PERMANECER EN CLUSTER--------------- *//
+function aplicarFuerzaCluster(
+    modelo,
+    desplazamientos
+) {
+    const peso =
+        CONFIG_LAYOUT
+            .PESOS
+            .permanecerEnCluster
+        *
+        CONFIG_LAYOUT
+            .FUERZAS
+            .cluster;
+    modelo.nodos.forEach(
+        nodo => {
+            const cluster =
+                nodo.clusterRef;
+            const dx =
+                cluster.x - nodo.x;
+            const dy =
+                cluster.y - nodo.y;
+            const desplazamiento =
+                desplazamientos.get(
+                    nodo.id
+                );
+            desplazamiento.x +=
+                dx * peso;
+            desplazamiento.y +=
+                dy * peso;
+        }
     );
-  }
 }
 
+    /* ---------------FUERZA: MANTENER JERARQUÍA--------------- *//
+function aplicarFuerzaJerarquia(
+    modelo,
+    desplazamientos
+) {
+    const peso =
+        CONFIG_LAYOUT
+            .PESOS
+            .mantenerJerarquia
+        *
+        CONFIG_LAYOUT
+            .FUERZAS
+            .jerarquia;
+    modelo.conexiones.forEach(
+        conexion => {
+            const superior =
+                conexion.superior;
+            const subordinado =
+                conexion.subordinado;
+            const distanciaObjetivo =
+                conexion.mismaUbicacion
+                    ? CONFIG_LAYOUT
+                        .DISTANCIAS
+                        .jerarquiaLocal
+                    : CONFIG_LAYOUT
+                        .DISTANCIAS
+                        .separacionUbicaciones;
+            aplicarResorte(
+                superior,
+                subordinado,
+                distanciaObjetivo,
+                peso,
+                desplazamientos
+            );
+        }
+    );
+}
+
+    /* ---------------FUERZA: ACERCARSE AL SUPERIOR--------------- *//
+function aplicarFuerzaSuperior(
+    modelo,
+    desplazamientos
+) {
+    const peso =
+        CONFIG_LAYOUT
+            .PESOS
+            .acercarseAlSuperior
+        *
+        CONFIG_LAYOUT
+            .FUERZAS
+            .superior;
+    modelo.nodos.forEach(
+        nodo => {
+            if (!nodo.superior)
+                return;
+            const dx =
+                nodo.superior.x - nodo.x;
+            const dy =
+                nodo.superior.y - nodo.y;
+            const desplazamiento =
+                desplazamientos.get(
+                    nodo.id
+                );
+            desplazamiento.x +=
+                dx * peso;
+            desplazamiento.y +=
+                dy * peso;
+        }
+    );
+}
+
+    /* ---------------FUERZA: COLISIONES--------------- *//
+function aplicarFuerzaColision(
+    modelo,
+    desplazamientos
+) {
+    const peso =
+        CONFIG_LAYOUT
+            .PESOS
+            .evitarColisiones
+        *
+        CONFIG_LAYOUT
+            .FUERZAS
+            .colision;
+    const nodos =
+        modelo.nodos;
+    for (
+        let i = 0;
+        i < nodos.length;
+        i++
+    ) {
+        for (
+            let j = i + 1;
+            j < nodos.length;
+            j++
+        ) {
+            separarParNodos(
+                nodos[i],
+                nodos[j],
+                desplazamientos,
+                peso
+            );
+        }
+    };
+}
+
+function separarParNodos(
+    a,
+    b,
+    desplazamientos,
+    peso
+) {
+    let dx =
+        b.x - a.x;
+    let dy =
+        b.y - a.y;
+    let distancia =
+        Math.hypot(
+            dx,
+            dy
+        );
+    if (
+        distancia === 0
+    ) {
+        dx =
+            Math.random() - 0.5;
+        dy =
+            Math.random() - 0.5;
+        distancia =
+            Math.hypot(
+                dx,
+                dy
+            );
+    }
+    const distanciaMinima =
+        a.radio
+        +
+        b.radio
+        +
+        CONFIG_LAYOUT
+            .DISTANCIAS
+            .margenColision;
+    if (
+        distancia >=
+        distanciaMinima
+    ) {
+        return;
+    }
+    const solapamiento =
+        distanciaMinima
+        -
+        distancia;
+    const ux =
+        dx / distancia;
+    const uy =
+        dy / distancia;
+    const fuerza =
+        solapamiento
+        *
+        0.5
+        *
+        peso;
+    const desplazamientoA =
+        desplazamientos.get(
+            a.id
+        );
+    const desplazamientoB =
+        desplazamientos.get(
+            b.id
+        );
+    desplazamientoA.x -=
+        ux * fuerza;
+    desplazamientoA.y -=
+        uy * fuerza;
+    desplazamientoB.x +=
+        ux * fuerza;
+    desplazamientoB.y +=
+        uy * fuerza;
+}
+
+    /* ---------------RESORTE JERÁRQUICO--------------- *//
+function aplicarResorte(
+    a,
+    b,
+    distanciaObjetivo,
+    peso,
+    desplazamientos
+) {
+    const dx =
+        b.x - a.x;
+    const dy =
+        b.y - a.y;
+    const distancia =
+        Math.hypot(
+            dx,
+            dy
+        )
+        || 1;
+    const diferencia =
+        distancia
+        -
+        distanciaObjetivo;
+    const ux =
+        dx / distancia;
+    const uy =
+        dy / distancia;
+    const fuerza =
+        diferencia
+        *
+        peso
+        *
+        0.5;
+    const desplazamientoA =
+        desplazamientos.get(
+            a.id
+        );
+    const desplazamientoB =
+        desplazamientos.get(
+            b.id
+        );
+    desplazamientoA.x +=
+        ux * fuerza;
+    desplazamientoA.y +=
+        uy * fuerza;
+    desplazamientoB.x -=
+        ux * fuerza;
+    desplazamientoB.y -=
+        uy * fuerza;
+}
+
+    /* ---------------APLICACIÓN DE DESPLAZAMIENTOS--------------- *//
+function aplicarDesplazamientos(
+    nodos,
+    desplazamientos,
+    intensidad
+) {
+    nodos.forEach(
+        nodo => {
+            if (
+                nodo.esRaizGlobal
+            ) {
+                return;
+            }
+            const desplazamiento =
+                desplazamientos.get(
+                    nodo.id
+                );
+            nodo.x +=
+                limitarValor(
+                    desplazamiento.x,
+                    -8,
+                    8
+                )
+                *
+                intensidad;
+            nodo.y +=
+                limitarValor(
+                    desplazamiento.y,
+                    -8,
+                    8
+                )
+                *
+                intensidad;
+        }
+    );
+}
+
+    /* ---------------PASADA FINAL DE COLISIONES--------------- *//
+function resolverColisiones(
+    modelo
+) {
+    const iteraciones =
+        CONFIG_LAYOUT
+            .SIMULACION
+            .iteracionesColisionFinal;
+    for (
+        let iteracion = 0;
+        iteracion < iteraciones;
+        iteracion++
+    ) {
+        const desplazamientos =
+            crearMapaDesplazamientos(
+                modelo.nodos
+            );
+        aplicarFuerzaColision(
+            modelo,
+            desplazamientos
+        );
+        aplicarDesplazamientos(
+            modelo.nodos,
+            desplazamientos,
+            0.65
+        );
+    }
+}
+
+    /* ---------------NORMALIZACIÓN--------------- *//
+function normalizarMapa(modelo) {
+    const limites =
+        calcularLimites(modelo.nodos);
+    const margen =
+        CONFIG_LAYOUT
+            .DISTANCIAS
+            .margenMapa;
+    const desplazamientoX =
+        margen
+        -
+        limites.minX;
+    const desplazamientoY =
+        margen
+        -
+        limites.minY;
+    modelo.nodos.forEach(
+        nodo => {
+            nodo.x +=
+                desplazamientoX;
+            nodo.y +=
+                desplazamientoY;
+        }
+    );
+    const ancho =
+        limites.maxX
+        -
+        limites.minX
+        +
+        margen * 2;
+    const alto =
+        limites.maxY
+        -
+        limites.minY
+        +
+        margen * 2;
+    modelo.svg.setAttribute(
+        "viewBox",
+        `0 0 ${ancho} ${alto}`
+    );
+}
+
+function calcularLimites(nodos) {
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    nodos.forEach(
+        nodo => {
+            minX =
+                Math.min(
+                    minX,
+                    nodo.x - nodo.radio
+                );
+            minY =
+                Math.min(
+                    minY,
+                    nodo.y - nodo.radio
+                );
+            maxX =
+                Math.max(
+                    maxX,
+                    nodo.x + nodo.radio
+                );
+            maxY =
+                Math.max(
+                    maxY,
+                    nodo.y + nodo.radio
+                );
+        }
+    );
+    return {
+        minX,
+        minY,
+        maxX,
+        maxY
+    };
+}
+
+    /* ---------------RENDERIZADO--------------- *//
+function dibujarMapa(modelo) {
+    dibujarConexiones(modelo);
+    dibujarNodos(modelo);
+}
+
+ /* ---------------CONEXIONES--------------- *//
+function dibujarConexiones(modelo) {
+    const fragmento =
+        document.createDocumentFragment();
+    modelo.conexiones.forEach(
+        conexion => {
+            const clase =
+                conexion.mismaUbicacion
+                    ? "mapa-redes__conexion mapa-redes__conexion--interna"
+                    : "mapa-redes__conexion mapa-redes__conexion--externa";
+            const linea =
+                crearSVG(
+                    "line",
+                    {
+                        class: clase,
+                        x1: conexion.superior.x,
+                        y1: conexion.superior.y,
+                        x2: conexion.subordinado.x,
+                        y2: conexion.subordinado.y,
+                        "data-superior": conexion.superior.id,
+                        "data-subordinado": conexion.subordinado.id
+                    }
+                );
+            fragmento.append(linea);
+        }
+    );
+    modelo
+        .capas
+        .conexiones
+        .append(fragmento);
+}
+
+ /* ---------------NODOS--------------- *//
+function dibujarNodos(modelo) {
+    const fragmento =
+        document.createDocumentFragment();
+    modelo.nodos.forEach(
+        nodo => {
+            const grupo = crearGrupoNodo(nodo);
+            fragmento.append(grupo);
+        }
+    );
+    modelo
+        .capas
+        .nodos
+        .append(fragmento);
+}
+
+function crearGrupoNodo(nodo) {
+    const clases = [
+        "mapa-redes__nodo"
+    ];
+    if (nodo.esRaizGlobal) {
+        clases.push(
+            "mapa-redes__nodo--raiz"
+        );
+    }
+    const grupo =
+        crearSVG(
+            "g",
+            {
+                class:
+                    clases.join(" "),
+                transform:
+                    `translate(${nodo.x} ${nodo.y})`,
+                "data-id":
+                    nodo.id,
+                "data-cluster":
+                    nodo.datos.cluster,
+                "data-ubicacion":
+                    nodo.datos.ubicacion,
+                "data-superior":
+                    nodo.datos.reportaA ?? ""
+            }
+        );
+    const circulo =
+        crearSVG(
+            "circle",
+            {
+                class: "mapa-redes__circulo",
+                cx: 0,
+                cy: 0,   
+                r: nodo.radio
+            }
+        );
+    const titulo =
+        crearSVG("title");
+    titulo.textContent =
+        construirTituloNodo(nodo);
+    grupo.append(
+        circulo,
+        titulo
+    );
+    return grupo;
+}
+
+function construirTituloNodo(nodo) {
+    const partes = [];
+    if (nodo.datos.nombre) {
+        partes.push(nodo.datos.nombre);
+    }
+    if (nodo.datos.cargo) {
+        partes.push(
+            nodo.datos.cargo
+        );
+    }
+    partes.push(nodo.datos.cluster);
+    partes.push(nodo.datos.ubicacion);
+    return partes.join(" · ");
+}
+
+ /* ---------------ERRORES--------------- *//
+function mostrarError(error) {
+    const contenedor = document.querySelector(
+            CONFIG_LAYOUT
+                .SELECTORES
+                .contenedor
+        );
+    if (!contenedor)
+        return;
+    const mensaje =
+        document.createElement("div");
+    mensaje.className = "mapa-redes__error";
+    mensaje.textContent = error instanceof Error
+            ? error.message
+            : "No fue posible construir el mapa.";
+    contenedor.replaceChildren(mensaje);
+}
+
+ /* ---------------UTILIDADES SVG--------------- *//
+     function crearSVG(
+    etiqueta,
+    atributos = {}
+) {
+    const elemento =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            etiqueta
+        );
+    Object.entries(atributos).forEach(([nombre, valor]) => {
+            if (
+                valor === undefined ||
+                valor === null
+            ) {
+                return;
+            }
+            elemento.setAttribute(
+                nombre,
+                String(valor)
+            );
+        }
+    );
+    return elemento;
+}
+
+ /* ---------------UTILIDADES GENERALES--------------- *//
+function slug(valor) {
+    return String(valor)
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .toLowerCase()
+        .trim()
+        .replace(
+            /[^a-z0-9]+/g,
+            "-"
+        )
+        .replace(
+            /^-+|-+$/g,
+            ""
+        );
+}
+
+function limitarValor(
+    valor,
+    minimo,
+    maximo
+) {
+    return Math.max(
+        minimo,
+        Math.min(
+            valor,
+            maximo
+        )
+    );
+}
