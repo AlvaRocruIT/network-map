@@ -899,51 +899,91 @@ function resolverLayoutClusters(modelo) {
     );
 }
 
-function resolverLayoutCluster(
-    cluster
-) {
+function resolverLayoutCluster(cluster) {
     const ubicaciones =
         cluster.ubicaciones;
-    if (
-        ubicaciones.length === 1
-    ) {
-        ubicaciones[0].xLocal = 0;
-        ubicaciones[0].yLocal = 0;
+
+    if (ubicaciones.length === 0) {
+        return;
     }
-    else {
+
+    const ubicacionCentral =
+        seleccionarUbicacionCentral(
+            cluster
+        );
+
+    ubicacionCentral.xLocal = 0;
+    ubicacionCentral.yLocal = 0;
+
+    const ubicacionesPerifericas =
+        ubicaciones.filter(
+            ubicacion =>
+                ubicacion !==
+                ubicacionCentral
+        );
+
+    if (
+        ubicacionesPerifericas.length >
+        0
+    ) {
         const paso =
             (Math.PI * 2)
             /
-            ubicaciones.length;
-        let radio = 0;
-        ubicaciones.forEach(
-            u => {
-                radio +=
-                    u.radio;
-            }
-        );
-        radio /=
-            ubicaciones.length;
-        radio +=
-            CONFIG_LAYOUT
-                .DISTANCIAS
-                .separacionUbicaciones;
-        ubicaciones.forEach(
+            ubicacionesPerifericas.length;
+
+        ubicacionesPerifericas.forEach(
             (ubicacion, indice) => {
                 const angulo =
                     indice * paso;
+
+                const distancia =
+                    ubicacionCentral.radio
+                    +
+                    ubicacion.radio
+                    +
+                    CONFIG_LAYOUT
+                        .DISTANCIAS
+                        .separacionUbicaciones;
+
                 ubicacion.xLocal =
                     Math.cos(angulo)
-                    * radio;
+                    *
+                    distancia;
+
                 ubicacion.yLocal =
                     Math.sin(angulo)
-                    * radio;
+                    *
+                    distancia;
             }
         );
     }
+
     calcularRadioCluster(
         cluster
     );
+}
+
+function seleccionarUbicacionCentral(
+    cluster
+) {
+    const ubicacionRaiz =
+        cluster.ubicaciones.find(
+            ubicacion =>
+                ubicacion.nodos.some(
+                    nodo =>
+                        nodo.esRaizGlobal
+                )
+        );
+
+    if (ubicacionRaiz) {
+        return ubicacionRaiz;
+    }
+
+    return [...cluster.ubicaciones]
+        .sort(
+            (a, b) =>
+                b.radio - a.radio
+        )[0];
 }
 
 function calcularRadioCluster(
