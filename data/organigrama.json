@@ -5,7 +5,7 @@
     "cargo": "Gerente General",
     "equipo": "Dirección",
     "cluster": "Pto. Montt",
-    "Ubicacion": "Casa Central",
+    "Ubicacion": "Casa Matriz",
     "reportaA": null
   },
   {
@@ -14,7 +14,7 @@
     "cargo": "Presidente Directorio",
     "equipo": "Dirección",
     "cluster": "Pto. Montt",
-    "Ubicacion": "Casa Central",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "gg",
     "tipoVinculo": "pseudo"
   },  
@@ -34,7 +34,7 @@
     "cargo": "Secretaria Gerencia",
     "equipo": "Dirección",
     "cluster": "Pto. Montt",
-    "Ubicacion": "Casa Central",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "gg"
   },
   {
@@ -43,7 +43,7 @@
     "cargo": "Asistente Administrativo",
     "equipo": "Dirección",
     "cluster": "Pto. Montt",
-    "Ubicacion": "Casa Central",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "s-gg"
   },
   {
@@ -61,7 +61,7 @@
     "cargo": "Jefe Planificación",
     "equipo": "Dirección",
     "cluster": "Pto. Montt",
-    "Ubicacion": "Casa Central",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "gg"
   },
   {
@@ -70,7 +70,7 @@
     "cargo": "Subgerente Calidad",
     "equipo": "Calidad",
     "cluster": "Pto. Montt",
-    "Ubicacion": "Casa Central",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "gg"
   },
   {
@@ -79,7 +79,7 @@
     "cargo": "Biblioteca técnica",
     "equipo": "Calidad",
     "cluster": "Pto. Montt",
-    "Ubicacion": "Casa Central",
+    "Ubicacion": "Casa Matriz",
     "reportaA": "cal1"
   },
   {
@@ -87,7 +87,7 @@
     "nombre": "Gonzalo",
     "cargo": "Gerente Operaciones",
     "cluster": "Pto. Montt",
-    "Ubicacion": "Casa Central",
+    "Ubicacion": "Casa Matriz",
     "equipo": "Operaciones",
     "reportaA": "gg"
   },
@@ -96,7 +96,7 @@
     "nombre": "Gerardo",
     "cargo": "Planificación Operacional",
     "cluster": "Pto. Montt",
-    "Ubicacion": "Casa Central",
+    "Ubicacion": "Casa Matriz",
     "equipo": "Operaciones",
     "reportaA": "Ops1"
   },
