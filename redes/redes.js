@@ -1422,22 +1422,17 @@ function aplicarFuerzaJerarquia(
             .jerarquia;
     modelo.conexiones.forEach(
         conexion => {
-            const superior =
-                conexion.superior;
-            const subordinado =
-                conexion.subordinado;
-            const distanciaObjetivo =
-                conexion.mismaUbicacion
-                    ? CONFIG_LAYOUT
-                        .DISTANCIAS
-                        .jerarquiaLocal
-                    : CONFIG_LAYOUT
-                        .DISTANCIAS
-                        .separacionUbicaciones;
+            if (
+                !conexion.mismaUbicacion
+            ) {
+                return;
+            }
             aplicarResorte(
-                superior,
-                subordinado,
-                distanciaObjetivo,
+                conexion.superior,
+                conexion.subordinado,
+                CONFIG_LAYOUT
+                    .DISTANCIAS
+                    .jerarquiaLocal,
                 peso,
                 desplazamientos
             );
@@ -1460,12 +1455,22 @@ function aplicarFuerzaSuperior(
             .superior;
     modelo.nodos.forEach(
         nodo => {
-            if (!nodo.superior)
+            if (
+                !nodo.superior
+                ||
+                nodo.ubicacionRef !==
+                nodo.superior.ubicacionRef
+            ) {
                 return;
+            }
             const dx =
-                nodo.superior.x - nodo.x;
+                nodo.superior.x
+                -
+                nodo.x;
             const dy =
-                nodo.superior.y - nodo.y;
+                nodo.superior.y
+                -
+                nodo.y;
             const desplazamiento =
                 desplazamientos.get(
                     nodo.id
