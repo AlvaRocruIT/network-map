@@ -47,6 +47,14 @@ const CONFIG_LAYOUT = {
         crecimientoUbicacion: 18
     },
 
+   EMPAQUETADO: {
+       pasoAngular:
+           Math.PI *
+           (3 - Math.sqrt(5)),
+       pasoRadial: 8,
+       intentosMaximos: 3000
+   },
+ 
     FUERZAS: {
         ubicacion: 0.05,
         cluster: 0.025,
@@ -899,73 +907,54 @@ function resolverLayoutClusters(modelo) {
     );
 }
 
-function resolverLayoutCluster(cluster) {
+function resolverLayoutCluster(cluster) 
+{
     const ubicaciones =
         cluster.ubicaciones;
-
-    if (ubicaciones.length === 0) {
+    if (
+        ubicaciones.length === 0
+    ) {
+        cluster.radio = 0;
         return;
     }
-
     const ubicacionCentral =
         seleccionarUbicacionCentral(
             cluster
         );
-
     ubicacionCentral.xLocal = 0;
     ubicacionCentral.yLocal = 0;
+    const ubicacionesColocadas = [
+        ubicacionCentral
+    ];
+    const ubicacionesPendientes =
+        ubicaciones
+            .filter(
+                ubicacion =>
+                    ubicacion !==
+                    ubicacionCentral
+            )
+            .sort(
+                compararUbicacionesPorTamano
+            );
+    ubicacionesPendientes.forEach(
+        ubicacion => {
+            colocarUbicacionEnRacimo(
+                ubicacion,
+                ubicacionesColocadas
+            );
 
-    const ubicacionesPerifericas =
-        ubicaciones.filter(
-            ubicacion =>
-                ubicacion !==
-                ubicacionCentral
-        );
-
-    if (
-        ubicacionesPerifericas.length >
-        0
-    ) {
-        const paso =
-            (Math.PI * 2)
-            /
-            ubicacionesPerifericas.length;
-
-        ubicacionesPerifericas.forEach(
-            (ubicacion, indice) => {
-                const angulo =
-                    indice * paso;
-
-                const distancia =
-                    ubicacionCentral.radio
-                    +
-                    ubicacion.radio
-                    +
-                    CONFIG_LAYOUT
-                        .DISTANCIAS
-                        .separacionUbicaciones;
-
-                ubicacion.xLocal =
-                    Math.cos(angulo)
-                    *
-                    distancia;
-
-                ubicacion.yLocal =
-                    Math.sin(angulo)
-                    *
-                    distancia;
-            }
-        );
-    }
-
+            ubicacionesColocadas.push(
+                ubicacion
+            );
+        }
+    );
     calcularRadioCluster(
         cluster
     );
 }
 
-function seleccionarUbicacionCentral(
-    cluster
-) {
+function seleccionarUbicacionCentral(cluster)
+{
     const ubicacionRaiz =
         cluster.ubicaciones.find(
             ubicacion =>
@@ -974,11 +963,9 @@ function seleccionarUbicacionCentral(
                         nodo.esRaizGlobal
                 )
         );
-
     if (ubicacionRaiz) {
         return ubicacionRaiz;
     }
-
     return [...cluster.ubicaciones]
         .sort(
             (a, b) =>
@@ -986,9 +973,115 @@ function seleccionarUbicacionCentral(
         )[0];
 }
 
-function calcularRadioCluster(
-    cluster
+function compararUbicacionesPorTamano(
+    a,
+    b
 ) {
+    const diferenciaRadio =
+        b.radio - a.radio;
+
+    if (
+        diferenciaRadio !== 0
+    ) {
+        return diferenciaRadio;
+    }
+
+    return a.id.localeCompare(
+        b.id
+    );
+}
+
+function colocarUbicacionEnRacimo(
+    ubicacion,
+    ubicacionesColocadas
+) {
+    const configuracion =
+        CONFIG_LAYOUT
+            .EMPAQUETADO;
+    for (
+        let intento = 1;
+        intento <=
+        configuracion.intentosMaximos;
+        intento++
+    ) {
+        const angulo =
+            intento
+            *
+            configuracion
+                .pasoAngular;
+        const distancia =
+            Math.sqrt(intento)
+            *
+            configuracion
+                .pasoRadial;
+
+        const candidato = {
+            x:
+                Math.cos(angulo)
+                *
+                distancia,
+            y:
+                Math.sin(angulo)
+                *
+                distancia
+        };
+        if (
+            posicionUbicacionDisponible(
+                ubicacion,
+                candidato,
+                ubicacionesColocadas
+            )
+        ) {
+            ubicacion.xLocal =
+                candidato.x;
+            ubicacion.yLocal =
+                candidato.y;
+            return;
+        }
+    }
+    throw new Error(
+        `No fue posible ubicar la ubicación ${ubicacion.id}`
+    );
+}
+
+function posicionUbicacionDisponible(
+    ubicacion,
+    candidato,
+    ubicacionesColocadas
+) {
+    const separacion =
+        CONFIG_LAYOUT
+            .DISTANCIAS
+            .separacionUbicaciones;
+    return ubicacionesColocadas.every(
+        ubicacionColocada => {
+            const dx =
+                candidato.x
+                -
+                ubicacionColocada.xLocal;
+            const dy =
+                candidato.y
+                -
+                ubicacionColocada.yLocal;
+            const distancia =
+                Math.hypot(
+                    dx,
+                    dy
+                );
+            const distanciaMinima =
+                ubicacion.radio
+                +
+                ubicacionColocada.radio
+                +
+                separacion;
+            return distancia >=
+                distanciaMinima;
+        }
+    );
+}
+
+function calcularRadioCluster(cluster)
+{
     let radio = 0;
     cluster.ubicaciones.forEach(
         ubicacion => {
