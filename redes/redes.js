@@ -1490,8 +1490,24 @@ function aplicarFuerzaColision(
         CONFIG_LAYOUT
             .FUERZAS
             .colision;
+    modelo.ubicaciones.forEach(
+        ubicacion => {
+            aplicarColisionesDentroUbicacion(
+                ubicacion,
+                desplazamientos,
+                peso
+            );
+        }
+    );
+}
+
+function aplicarColisionesDentroUbicacion(
+    ubicacion,
+    desplazamientos,
+    peso
+) {
     const nodos =
-        modelo.nodos;
+        ubicacion.nodos;
     for (
         let i = 0;
         i < nodos.length;
@@ -1509,7 +1525,7 @@ function aplicarFuerzaColision(
                 peso
             );
         }
-    };
+    }
 }
 
 function separarParNodos(
