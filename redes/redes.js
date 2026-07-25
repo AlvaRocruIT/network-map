@@ -1186,14 +1186,14 @@ function aplicarFuerzaUbicacion(
             .ubicacion;
     modelo.nodos.forEach(
         nodo => {
-            const centro =
-                obtenerCentroUbicacion(
+            const objetivo =
+                obtenerObjetivoUbicacion(
                     nodo
                 );
             const dx =
-                centro.x - nodo.x;
+                objetivo.x - nodo.x;
             const dy =
-                centro.y - nodo.y;
+                objetivo.y - nodo.y;
             const desplazamiento =
                 desplazamientos.get(
                     nodo.id
@@ -1206,26 +1206,22 @@ function aplicarFuerzaUbicacion(
     );
 }
 
-function obtenerCentroUbicacion(
+function obtenerObjetivoUbicacion(
     nodo
 ) {
     return {
         x:
-            nodo
-                .clusterRef
-                .x
+            nodo.clusterRef.x
             +
-            nodo
-                .ubicacionRef
-                .xLocal,
+            nodo.ubicacionRef.xLocal
+            +
+            nodo.xLocal,
         y:
-            nodo
-                .clusterRef
-                .y
+            nodo.clusterRef.y
             +
-            nodo
-                .ubicacionRef
-                .yLocal
+            nodo.ubicacionRef.yLocal
+            +
+            nodo.yLocal
     };
 }
 
