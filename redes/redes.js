@@ -48,12 +48,9 @@ const CONFIG_LAYOUT = {
     },
 
    EMPAQUETADO: {
-       pasoAngular:
-           Math.PI *
-           (3 - Math.sqrt(5)),
-       pasoRadial: 8,
-       intentosMaximos: 3000
-   },
+    pasoRadial: 8,
+    separacionAngularMinima: 8
+},
  
     FUERZAS: {
         ubicacion: 0.05,
@@ -998,45 +995,103 @@ function colocarUbicacionEnRacimo(
     const configuracion =
         CONFIG_LAYOUT
             .EMPAQUETADO;
+    const separacion =
+        CONFIG_LAYOUT
+            .DISTANCIAS
+            .separacionUbicaciones;
+    const alcanceActual =
+        ubicacionesColocadas.reduce(
+            (
+                maximo,
+                ubicacionColocada
+            ) => {
+                const alcance =
+                    Math.hypot(
+                        ubicacionColocada.xLocal,
+                        ubicacionColocada.yLocal
+                    )
+                    +
+                    ubicacionColocada.radio;
+                return Math.max(
+                    maximo,
+                    alcance
+                );
+            },
+            0
+        );
+    const limiteBusqueda =
+        alcanceActual
+        +
+        ubicacion.radio
+        +
+        separacion
+        +
+        configuracion.pasoRadial;
     for (
-        let intento = 1;
-        intento <=
-        configuracion.intentosMaximos;
-        intento++
+        let radioBusqueda =
+            configuracion.pasoRadial;
+        radioBusqueda <=
+            limiteBusqueda;
+        radioBusqueda +=
+            configuracion.pasoRadial
     ) {
-        const angulo =
-            intento
+        const circunferencia =
+            Math.PI
             *
-            configuracion
-                .pasoAngular;
-        const distancia =
-            Math.sqrt(intento)
+            2
             *
-            configuracion
-                .pasoRadial;
+            radioBusqueda;
+        const cantidadAngulos =
+            Math.max(
+                12,
+                Math.ceil(
+                    circunferencia
+                    /
+                    configuracion
+                        .separacionAngularMinima
+                )
+            );
 
-        const candidato = {
-            x:
-                Math.cos(angulo)
-                *
-                distancia,
-            y:
-                Math.sin(angulo)
-                *
-                distancia
-        };
-        if (
-            posicionUbicacionDisponible(
-                ubicacion,
-                candidato,
-                ubicacionesColocadas
-            )
+        for (
+            let indice = 0;
+            indice <
+                cantidadAngulos;
+            indice++
         ) {
-            ubicacion.xLocal =
-                candidato.x;
-            ubicacion.yLocal =
-                candidato.y;
-            return;
+            const angulo =
+                indice
+                *
+                (
+                    Math.PI
+                    *
+                    2
+                    /
+                    cantidadAngulos
+                );
+            const candidato = {
+                x:
+                    Math.cos(angulo)
+                    *
+                    radioBusqueda,
+                y:
+                    Math.sin(angulo)
+                    *
+                    radioBusqueda
+            };
+            if (
+                posicionUbicacionDisponible(
+                    ubicacion,
+                    candidato,
+                    ubicacionesColocadas
+                )
+            ) {
+                ubicacion.xLocal =
+                    candidato.x;
+
+                ubicacion.yLocal =
+                    candidato.y;
+                return;
+            }
         }
     }
     throw new Error(
