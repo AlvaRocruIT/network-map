@@ -655,6 +655,7 @@ function calcularLayout(modelo) {
     resolverLayoutPersonas(modelo);
     simularLayout(modelo);
     resolverColisiones(modelo);
+    recalcularRadiosPostSimulacion(modelo);
     normalizarMapa(modelo);
 }
 
@@ -1716,6 +1717,63 @@ function resolverColisiones(
             0.65
         );
     }
+}
+
+function recalcularRadiosPostSimulacion(
+    modelo
+) {
+    modelo.ubicaciones.forEach(
+        ubicacion => {
+            recalcularRadioUbicacionFinal(
+                ubicacion
+            );
+        }
+    );
+
+    modelo.clusters.forEach(
+        cluster => {
+            calcularRadioCluster(
+                cluster
+            );
+        }
+    );
+}
+
+function recalcularRadioUbicacionFinal(
+    ubicacion
+) {
+    const centroX =
+        ubicacion.cluster.x
+        +
+        ubicacion.xLocal;
+    const centroY =
+        ubicacion.cluster.y
+        +
+        ubicacion.yLocal;
+    let radio = 0;
+    ubicacion.nodos.forEach(
+        nodo => {
+            const distancia =
+                Math.hypot(
+                    nodo.x - centroX,
+                    nodo.y - centroY
+                )
+                +
+                nodo.radio;
+
+            radio =
+                Math.max(
+                    radio,
+                    distancia
+                );
+        }
+    );
+    ubicacion.radio =
+        radio
+        +
+        CONFIG_LAYOUT
+            .ESCALA
+            .crecimientoUbicacion;
 }
 
     /* ---------------NORMALIZACIÓN--------------- */
