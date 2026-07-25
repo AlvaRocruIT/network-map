@@ -1550,18 +1550,21 @@ function separarParNodos(
             dy
         );
     if (
-        distancia === 0
-    ) {
-        dx =
-            Math.random() - 0.5;
-        dy =
-            Math.random() - 0.5;
-        distancia =
-            Math.hypot(
-                dx,
-                dy
-            );
-    }
+    distancia === 0
+) {
+    const direccion =
+        obtenerDireccionDeterminista(
+            a.id,
+            b.id
+        );
+    dx =
+        direccion.x;
+
+    dy =
+        direccion.y;
+    distancia = 1;
+}
+ 
     const distanciaMinima =
         a.radio
         +
@@ -2039,6 +2042,48 @@ function slug(valor) {
             /^-+|-+$/g,
             ""
         );
+}
+
+function obtenerDireccionDeterminista(
+    idA,
+    idB
+) {
+    const clave =
+        String(idA) < String(idB)
+            ? `${idA}|${idB}`
+            : `${idB}|${idA}`;
+
+    let hash = 2166136261;
+    for (
+        let indice = 0;
+        indice < clave.length;
+        indice++
+    ) {
+        hash ^=
+            clave.charCodeAt(
+                indice
+            );
+
+        hash =
+            Math.imul(
+                hash,
+                16777619
+            );
+    }
+    const proporcion =
+        (hash >>> 0)
+        /
+        4294967296;
+    const angulo =
+        proporcion
+        *
+        Math.PI
+        *
+        2;
+    return {
+        x: Math.cos(angulo),
+        y: Math.sin(angulo)
+    };
 }
 
 function limitarValor(
