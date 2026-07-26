@@ -52,17 +52,16 @@ const CONFIG_LAYOUT = {
         crecimientoUbicacion: 18
     },
 
-        EMPAQUETADO: {
+    EMPAQUETADO: {
         pasoRadial: 8,
         separacionAngularMinima: 8
     },
 
    ORBITAS: {
-        radioBase: 30,
-        expansionPorPoblacion: 260,
-        penalizacionClusterUnitario: 90,
-        pasoRadial: 12,
-        separacionAngularMinima: 20,
+        radioBase: 20,
+        expansionPorPoblacion: 520,
+        pasoRadial: 10,
+        separacionAngularMinima: 18,
         limiteBusqueda: 2400
     },
  
@@ -1263,11 +1262,10 @@ function calcularRadioCluster(cluster)
 function distribuirClusters(
     clusters
 ) {
-    if (
-        clusters.length === 0
-    ) {
+    if (clusters.length === 0) {
         return;
     }
+
     const clusterCentral =
         clusters.find(
             cluster =>
@@ -1277,49 +1275,73 @@ function distribuirClusters(
                 )
         )
         ??
-        [...clusters]
-            .sort(
-                compararClustersPorPoblacion
-            )[0];
+        [...clusters].sort(
+            compararClustersPorPoblacion
+        )[0];
+
     clusterCentral.x = 0;
     clusterCentral.y = 0;
-    const clustersColocados = [
-        clusterCentral
-    ];
-    const clustersPendientes =
+
+    const pendientes =
         clusters
             .filter(
                 cluster =>
-                    cluster !==
-                    clusterCentral
+                    cluster !== clusterCentral
             )
             .sort(
                 compararClustersPorPoblacion
             );
-    const poblacionMaxima =
-        Math.max(
-            1,
-            ...clustersPendientes.map(
-                cluster =>
-                    cluster.nodos.length
-            )
-        );
-    clustersPendientes.forEach(
-        cluster => {
-            const proporcionPoblacion =
-                cluster.nodos.length
-                /
-                poblacionMaxima;
 
-            const factorPeriferia =
-                1
-                -
-                proporcionPoblacion;
-            let radioPreferido =
-                clusterCentral.radio
-                +
-                cluster.radio
-                +
+    if (pendientes.length === 0) {
+        return;
+    }
+
+    const poblaciones =
+        pendientes.map(
+            cluster =>
+                cluster.nodos.length
+        );
+
+    const poblacionMaxima =
+        Math.max(...poblaciones);
+
+    const poblacionMinima =
+        Math.min(...poblaciones);
+
+    const colocados = [
+        clusterCentral
+    ];
+
+    pendientes.forEach(
+        cluster => {
+            const densidadNormalizada =
+                poblacionMaxima ===
+                poblacionMinima
+                    ? 1
+                    : (
+                        cluster.nodos.length
+                        -
+                        poblacionMinima
+                    )
+                    /
+                    (
+                        poblacionMaxima
+                        -
+                        poblacionMinima
+                    );
+
+            const distanciaPeriferica =
+                (
+                    1
+                    -
+                    densidadNormalizada
+                )
+                *
+                CONFIG_LAYOUT
+                    .ORBITAS
+                    .expansionPorPoblacion;
+
+            const separacionDesdeBorde =
                 CONFIG_LAYOUT
                     .DISTANCIAS
                     .separacionClusters
@@ -1328,25 +1350,22 @@ function distribuirClusters(
                     .ORBITAS
                     .radioBase
                 +
-                factorPeriferia
-                *
-                CONFIG_LAYOUT
-                    .ORBITAS
-                    .expansionPorPoblacion;
-            if (
-                cluster.nodos.length === 1
-            ) {
-                radioPreferido +=
-                    CONFIG_LAYOUT
-                        .ORBITAS
-                        .penalizacionClusterUnitario;
-            }
+                distanciaPeriferica;
+
+            const radioPreferido =
+                clusterCentral.radio
+                +
+                cluster.radio
+                +
+                separacionDesdeBorde;
+
             colocarClusterEnOrbita(
                 cluster,
-                clustersColocados,
+                colocados,
                 radioPreferido
             );
-            clustersColocados.push(
+
+            colocados.push(
                 cluster
             );
         }
