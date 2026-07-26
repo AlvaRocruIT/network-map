@@ -1355,7 +1355,7 @@ function distribuirClusters(
             const radioPreferido =
                 clusterCentral.radio
                 +
-                cluster.radio
+                cluster.radio *0.35
                 +
                 separacionDesdeBorde;
 
