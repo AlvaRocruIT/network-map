@@ -183,15 +183,15 @@ function construirModelo(personas) {
         construirClusters(nodos);
     const ubicaciones =
         extraerUbicaciones(clusters);
-  const raices =
-    encontrarRaices(nodos);
-   calcularJerarquia(
-       raices
-   );
-const raiz =
-    seleccionarRaizGlobal(
-        raices,
-        nodos
+    const raices =
+        encontrarRaices(nodos);
+    const raiz =
+        seleccionarRaizGlobal(
+            raices,
+            nodos
+        );
+    calcularJerarquia(
+        raices
     );
     detectarLideresLocales(
         ubicaciones
@@ -336,9 +336,9 @@ function seleccionarRaizGlobal(
         return [...raices]
             .sort(
                 (a, b) =>
-                    b.pesoRama
+                    calcularPesoRama(b)
                     -
-                    a.pesoRama
+                    calcularPesoRama(a)
             )[0];
     }
     return nodos[0];
@@ -850,22 +850,17 @@ function calcularPesoRamaLocal(nodo) {
                 hijo.ubicacionRef ===
                 nodo.ubicacionRef
         );
-
+    if (
+        hijosLocales.length === 0
+    ) {
+        return 1;
+    }
     return 1 +
         hijosLocales.reduce(
             (total, hijo) =>
-                total +
+                total
+                +
                 calcularPesoRamaLocal(hijo),
-            0
-        );
-}
-
-function calcularPesoRama(nodo) {
-    return 1 +
-        nodo.subordinados.reduce(
-            (pesoTotal, hijo) =>
-                pesoTotal +
-                calcularPesoRama(hijo),
             0
         );
 }
@@ -936,7 +931,9 @@ function resolverLayoutCluster(cluster)
                     ubicacion !==
                     ubicacionCentral
             )
-            .sort(compararPorRadioEId);
+            .sort(
+                compararUbicacionesPorTamano
+            );
     ubicacionesPendientes.forEach(
         ubicacion => {
             colocarUbicacionEnRacimo(
@@ -974,6 +971,23 @@ function seleccionarUbicacionCentral(cluster)
         )[0];
 }
 
+function compararUbicacionesPorTamano(
+    a,
+    b
+) {
+    const diferenciaRadio =
+        b.radio - a.radio;
+
+    if (
+        diferenciaRadio !== 0
+    ) {
+        return diferenciaRadio;
+    }
+
+    return a.id.localeCompare(
+        b.id
+    );
+}
 
 function colocarUbicacionEnRacimo(
     ubicacion,
@@ -1167,7 +1181,9 @@ function distribuirClusters(clusters)
         )
         ??
         [...clusters]
-            .sort(compararPorRadioEId)[0];
+            .sort(
+                compararClustersPorTamano
+            )[0];
 
     clusterCentral.x = 0;
     clusterCentral.y = 0;
@@ -1201,12 +1217,22 @@ function distribuirClusters(clusters)
     );
 }
 
-function compararPorRadioEId(a, b) {
-    const diferenciaRadio = b.radio - a.radio;
+function compararClustersPorTamano(
+    a,
+    b
+) {
+    const diferenciaRadio =
+        b.radio - a.radio;
 
-    return diferenciaRadio !== 0
-        ? diferenciaRadio
-        : a.id.localeCompare(b.id);
+    if (
+        diferenciaRadio !== 0
+    ) {
+        return diferenciaRadio;
+    }
+
+    return a.id.localeCompare(
+        b.id
+    );
 }
 
 function colocarClusterEnRacimoGlobal(
