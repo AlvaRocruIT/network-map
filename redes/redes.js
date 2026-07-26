@@ -2196,7 +2196,6 @@ function calcularLimites(nodos) {
 
     /* ---------------RENDERIZADO--------------- */
 function dibujarMapa(modelo) {
-    dibujarConexiones(modelo);
     dibujarNodos(modelo);
 }
 
