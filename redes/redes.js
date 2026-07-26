@@ -2401,7 +2401,9 @@ function crearGrupoNodo(nodo) {
     const clases = [
         "mapa-redes__nodo"
     ];
-    if (nodo.esRaizGlobal) {
+    if (
+        nodo.esRaizGlobal
+    ) {
         clases.push(
             "mapa-redes__nodo--raiz"
         );
@@ -2428,19 +2430,25 @@ function crearGrupoNodo(nodo) {
         crearSVG(
             "circle",
             {
-                class: "mapa-redes__circulo",
+                class:
+                    "mapa-redes__circulo",
                 cx: 0,
-                cy: 0,   
+                cy: 0,
                 r: nodo.radio
             }
         );
-    const titulo =
-        crearSVG("title");
-    titulo.textContent =
-        construirTituloNodo(nodo);
     grupo.append(
-        circulo,
-        titulo
+        circulo
+    );
+    grupo.addEventListener(
+        "click",
+        evento => {
+            evento.stopPropagation();
+            mostrarEtiquetaNodo(
+                nodo,
+                evento
+            );
+        }
     );
     return grupo;
 }
