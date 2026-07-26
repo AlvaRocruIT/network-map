@@ -971,23 +971,6 @@ function seleccionarUbicacionCentral(cluster)
         )[0];
 }
 
-function compararUbicacionesPorTamano(
-    a,
-    b
-) {
-    const diferenciaRadio =
-        b.radio - a.radio;
-
-    if (
-        diferenciaRadio !== 0
-    ) {
-        return diferenciaRadio;
-    }
-
-    return a.id.localeCompare(
-        b.id
-    );
-}
 
 function colocarUbicacionEnRacimo(
     ubicacion,
@@ -1217,22 +1200,12 @@ function distribuirClusters(clusters)
     );
 }
 
-function compararClustersPorTamano(
-    a,
-    b
-) {
-    const diferenciaRadio =
-        b.radio - a.radio;
+function compararPorRadioEId(a, b) {
+    const diferenciaRadio = b.radio - a.radio;
 
-    if (
-        diferenciaRadio !== 0
-    ) {
-        return diferenciaRadio;
-    }
-
-    return a.id.localeCompare(
-        b.id
-    );
+    return diferenciaRadio !== 0
+        ? diferenciaRadio
+        : a.id.localeCompare(b.id);
 }
 
 function colocarClusterEnRacimoGlobal(
