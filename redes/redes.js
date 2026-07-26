@@ -2099,44 +2099,61 @@ function recalcularRadioUbicacionFinal(
 }
 
     /* ---------------NORMALIZACIÓN--------------- */
-function normalizarMapa(modelo) {
-    const limites =
-        calcularLimites(modelo.nodos);
+function normalizarMapa(
+    modelo
+) {
     const margen =
         CONFIG_LAYOUT
             .DISTANCIAS
             .margenMapa;
-    const desplazamientoX =
-        margen
-        -
-        limites.minX;
-    const desplazamientoY =
-        margen
-        -
-        limites.minY;
+
+    let alcanceMaximo = 0;
+    modelo.nodos.forEach(
+        nodo => {
+            const alcanceX =
+                Math.abs(nodo.x)
+                +
+                nodo.radio;
+            const alcanceY =
+                Math.abs(nodo.y)
+                +
+                nodo.radio;
+            alcanceMaximo =
+                Math.max(
+                    alcanceMaximo,
+                    alcanceX,
+                    alcanceY
+                );
+        }
+    );
+    const semilado =
+        alcanceMaximo
+        +
+        margen;
+    const lado =
+        semilado
+        *
+        2;
     modelo.nodos.forEach(
         nodo => {
             nodo.x +=
-                desplazamientoX;
+                semilado;
             nodo.y +=
-                desplazamientoY;
+                semilado;
         }
     );
-    const ancho =
-        limites.maxX
-        -
-        limites.minX
-        +
-        margen * 2;
-    const alto =
-        limites.maxY
-        -
-        limites.minY
-        +
-        margen * 2;
+    modelo.clusters.forEach(
+        cluster => {
+            cluster.x +=
+                semilado;
+            cluster.y +=
+                semilado;
+        }
+    );
+
     modelo.svg.setAttribute(
         "viewBox",
-        `0 0 ${ancho} ${alto}`
+        `0 0 ${lado} ${lado}`
     );
 }
 
