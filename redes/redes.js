@@ -1260,14 +1260,14 @@ function calcularRadioCluster(cluster)
             .crecimientoCluster;
 }
 
-function distribuirClusters(clusters)
-{
+function distribuirClusters(
+    clusters
+) {
     if (
         clusters.length === 0
     ) {
         return;
     }
-
     const clusterCentral =
         clusters.find(
             cluster =>
@@ -1279,16 +1279,13 @@ function distribuirClusters(clusters)
         ??
         [...clusters]
             .sort(
-                compararClustersPorTamano
+                compararClustersPorPoblacion
             )[0];
-
     clusterCentral.x = 0;
     clusterCentral.y = 0;
-
     const clustersColocados = [
         clusterCentral
     ];
-
     const clustersPendientes =
         clusters
             .filter(
@@ -1297,16 +1294,58 @@ function distribuirClusters(clusters)
                     clusterCentral
             )
             .sort(
-                compararClustersPorTamano
+                compararClustersPorPoblacion
             );
-
+    const poblacionMaxima =
+        Math.max(
+            1,
+            ...clustersPendientes.map(
+                cluster =>
+                    cluster.nodos.length
+            )
+        );
     clustersPendientes.forEach(
         cluster => {
-            colocarClusterEnRacimoGlobal(
-                cluster,
-                clustersColocados
-            );
+            const proporcionPoblacion =
+                cluster.nodos.length
+                /
+                poblacionMaxima;
 
+            const factorPeriferia =
+                1
+                -
+                proporcionPoblacion;
+            let radioPreferido =
+                clusterCentral.radio
+                +
+                cluster.radio
+                +
+                CONFIG_LAYOUT
+                    .DISTANCIAS
+                    .separacionClusters
+                +
+                CONFIG_LAYOUT
+                    .ORBITAS
+                    .radioBase
+                +
+                factorPeriferia
+                *
+                CONFIG_LAYOUT
+                    .ORBITAS
+                    .expansionPorPoblacion;
+            if (
+                cluster.nodos.length === 1
+            ) {
+                radioPreferido +=
+                    CONFIG_LAYOUT
+                        .ORBITAS
+                        .penalizacionClusterUnitario;
+            }
+            colocarClusterEnOrbita(
+                cluster,
+                clustersColocados,
+                radioPreferido
+            );
             clustersColocados.push(
                 cluster
             );
@@ -1314,70 +1353,57 @@ function distribuirClusters(clusters)
     );
 }
 
-function compararClustersPorTamano(
+function compararClustersPorPoblacion(
     a,
     b
 ) {
+    const diferenciaPoblacion =
+        b.nodos.length
+        -
+        a.nodos.length;
+    if (
+        diferenciaPoblacion !== 0
+    ) {
+        return diferenciaPoblacion;
+    }
     const diferenciaRadio =
-        b.radio - a.radio;
-
+        b.radio
+        -
+        a.radio;
     if (
         diferenciaRadio !== 0
     ) {
         return diferenciaRadio;
     }
-
     return a.id.localeCompare(
         b.id
     );
 }
 
-function colocarClusterEnRacimoGlobal(
+function colocarClusterEnOrbita(
     cluster,
-    clustersColocados
+    clustersColocados,
+    radioPreferido
 ) {
     const configuracion =
         CONFIG_LAYOUT
-            .EMPAQUETADO;
-
-    const alcanceActual =
-        clustersColocados.reduce(
-            (
-                maximo,
-                clusterColocado
-            ) => {
-                const alcance =
-                    Math.hypot(
-                        clusterColocado.x,
-                        clusterColocado.y
-                    )
-                    +
-                    clusterColocado.radio;
-
-                return Math.max(
-                    maximo,
-                    alcance
-                );
-            },
-            0
+            .ORBITAS;
+    const anguloInicial =
+        obtenerAnguloDeterminista(
+            cluster.id
         );
-    const limiteBusqueda =
-        alcanceActual
+    const limite =
+        radioPreferido
         +
-        cluster.radio
-        +
-        CONFIG_LAYOUT
-            .DISTANCIAS
-            .separacionClusters
-        +
-        configuracion.pasoRadial;
+        configuracion
+            .limiteBusqueda;
     for (
         let radioBusqueda =
-            configuracion.pasoRadial;
-        radioBusqueda <=
-            limiteBusqueda;
+            radioPreferido;
+        radioBusqueda <= limite;
         radioBusqueda +=
-            configuracion.pasoRadial
+            configuracion
+                .pasoRadial
     ) {
         const circunferencia =
             Math.PI
@@ -1387,7 +1413,7 @@ function colocarClusterEnRacimoGlobal(
             radioBusqueda;
         const cantidadAngulos =
             Math.max(
-                12,
+                16,
                 Math.ceil(
                     circunferencia
                     /
@@ -1402,6 +1428,8 @@ function colocarClusterEnRacimoGlobal(
             indice++
         ) {
             const angulo =
+                anguloInicial
+                +
                 indice
                 *
                 (
@@ -2328,6 +2356,39 @@ function slug(valor) {
             /^-+|-+$/g,
             ""
         );
+}
+
+function obtenerAnguloDeterminista(
+    valor
+) {
+    const texto =
+        String(valor);
+    let hash =
+        2166136261;
+    for (
+        let indice = 0;
+        indice < texto.length;
+        indice++
+    ) {
+        hash ^=
+            texto.charCodeAt(
+                indice
+            );
+        hash =
+            Math.imul(
+                hash,
+                16777619
+            );
+    }
+    return (
+        (hash >>> 0)
+        /
+        4294967296
+    )
+    *
+    Math.PI
+    *
+    2;
 }
 
 function obtenerDireccionDeterminista(
