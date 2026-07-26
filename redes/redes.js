@@ -656,6 +656,10 @@ function prepararSVG(modelo) {
     );
     svg.append(viewport);
     contenedor.append(svg);
+    svg.addEventListener(
+    "click",
+    ocultarEtiquetaNodo
+    );
     modelo.svg = svg;
     modelo.viewport = viewport;
     modelo.capas = {
