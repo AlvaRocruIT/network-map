@@ -1,123 +1,113 @@
-.mapa-redes {
-  width: 100%;
-}
-
-.controles-red {
-  display: flex;
-  justify-content: flex-end;
-
-  margin-bottom: 0.75rem;
-}
-
-.controles-red button {
-  padding: 0.5rem 0.85rem;
-
-  border: 1px solid #d1d5db;
-  border-radius: 0.35rem;
-
-  background: #ffffff;
-
-  cursor: pointer;
-}
-
-.controles-red button:hover {
-  background: #f3f4f6;
-}
-
-.redes-contenedor {
+/* CONTENEDOR DEL MAPA */
+#redes {
   position: relative;
-
   width: 100%;
   min-height: 700px;
-
   overflow: hidden;
-
   border: 1px solid #d1d5db;
   background: #ffffff;
 }
 
-.red-svg {
+/* SVG PRINCIPAL */
+.mapa-redes {
   display: block;
-
   width: 100%;
   height: 700px;
 }
 
-.capa-conexiones {
+/* VIEWPORT GENERAL */
+.mapa-redes__viewport {
+  transform-origin: center;
+}
+
+/* CAPA DE CONEXIONES */
+.mapa-redes__conexiones {
   pointer-events: none;
 }
 
-.conexion-red {
+/* Las conexiones todavía no se dibujan,
+   pero estas clases quedan preparadas */
+.mapa-redes__conexion {
+  fill: none;
   stroke: #9ca3af;
   stroke-width: 1;
-
   vector-effect: non-scaling-stroke;
 }
 
-.capa-nodos {
+.mapa-redes__conexion--interna {
+  stroke: #94a3b8;
+}
+
+.mapa-redes__conexion--externa {
+  stroke: #64748b;
+}
+
+/* CAPA DE NODOS */
+.mapa-redes__nodos {
   pointer-events: auto;
 }
 
-.nodo-red {
-  fill: #2563eb;
+/* GRUPO DE CADA NODO */
+.mapa-redes__nodo {
+  cursor: pointer;
+}
 
+/* CÍRCULO VISIBLE */
+.mapa-redes__circulo {
+  fill: #2563eb;
   stroke: #ffffff;
   stroke-width: 1.5;
-
-  cursor: pointer;
-
-  transition:
-    r 120ms ease,
-    opacity 120ms ease;
-}
-
-.nodo-red:hover {
+  vector-effect: non-scaling-stroke;
   opacity: 1;
+  transition:
+    opacity 120ms ease,
+    stroke-width 120ms ease;
 }
 
-.nodo-red[data-raiz="true"] {
+/* NODO RAÍZ */
+.mapa-redes__nodo--raiz
+.mapa-redes__circulo {
   fill: #1e40af;
   stroke-width: 2;
 }
 
-.red-svg:hover .nodo-red:not(:hover) {
-  opacity: 0.82;
+/* INTERACCIÓN */
+.mapa-redes__nodo:hover
+.mapa-redes__circulo {
+  opacity: 1;
+  stroke-width: 2.5;
 }
 
+.mapa-redes__nodos:hover
+.mapa-redes__nodo:not(:hover)
+.mapa-redes__circulo {
+  opacity: 0.76;
+}
+
+/* MENSAJE DE ERROR */
+.mapa-redes__error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 700px;
+  padding: 1rem;
+  color: #991b1b;
+  background: #fef2f2;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* RESPONSIVE */
 @media (max-width: 700px) {
-  .redes-contenedor {
+  #redes {
     min-height: 560px;
   }
 
-  .red-svg {
+  .mapa-redes {
     height: 560px;
   }
-}
 
-.etiqueta-nodo {
-  position: absolute;
-  z-index: 10;
-  min-width: 140px;
-  padding: 0.55rem 0.7rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.35rem;
-  background: #fff;
-  transform: translate(-50%, -100%);
-  pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
-.etiqueta-nodo strong,
-.etiqueta-nodo span,
-.etiqueta-nodo small {
-  display: block;
-}
-
-.etiqueta-nodo span {
-  margin-top: 0.15rem;
-}
-
-.etiqueta-nodo small {
-  margin-top: 0.1rem;
-  color: #6b7280;
+  .mapa-redes__error {
+    min-height: 560px;
+  }
 }
