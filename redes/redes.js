@@ -931,9 +931,7 @@ function resolverLayoutCluster(cluster)
                     ubicacion !==
                     ubicacionCentral
             )
-            .sort(
-                compararUbicacionesPorTamano
-            );
+            .sort(compararPorRadioEId);
     ubicacionesPendientes.forEach(
         ubicacion => {
             colocarUbicacionEnRacimo(
@@ -1164,9 +1162,7 @@ function distribuirClusters(clusters)
         )
         ??
         [...clusters]
-            .sort(
-                compararClustersPorTamano
-            )[0];
+            .sort(compararPorRadioEId)[0];
 
     clusterCentral.x = 0;
     clusterCentral.y = 0;
