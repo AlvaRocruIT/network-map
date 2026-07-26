@@ -28,8 +28,8 @@ const CONFIG_LAYOUT = {
     },
     
     NODOS: {
-        radioNormal: 5,
-        radioRaiz: 8
+        radioNormal: 10,
+        radioRaiz: 15
     },
  
     DISTANCIAS: {
