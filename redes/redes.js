@@ -31,15 +31,20 @@ const CONFIG_LAYOUT = {
         radioNormal: 5,
         radioRaiz: 8
     },
-
+ 
     DISTANCIAS: {
         jerarquiaLocal: 34,
-        anilloLideres: 22,
+    
+        separacionNivelesUbicacion: 38,
+        separacionNodosAnillo: 14,
+        radioNucleoUbicacion: 18,
+    
+        separacionUbicaciones: 22,
+        separacionClusters: 60,
+    
         separacionRamas: 20,
-        separacionUbicaciones: 70,
-        separacionClusters: 150,
         margenColision: 5,
-        margenMapa: 50
+        margenMapa: 60
     },
 
     ESCALA: {
@@ -47,10 +52,19 @@ const CONFIG_LAYOUT = {
         crecimientoUbicacion: 18
     },
 
-   EMPAQUETADO: {
-    pasoRadial: 8,
-    separacionAngularMinima: 8
-},
+        EMPAQUETADO: {
+        pasoRadial: 8,
+        separacionAngularMinima: 8
+    },
+
+   ORBITAS: {
+        radioBase: 30,
+        expansionPorPoblacion: 260,
+        penalizacionClusterUnitario: 90,
+        pasoRadial: 12,
+        separacionAngularMinima: 20,
+        limiteBusqueda: 2400
+    },
  
     FUERZAS: {
         ubicacion: 0.05,
@@ -653,9 +667,6 @@ function calcularLayout(modelo) {
     resolverLayoutUbicaciones(modelo);
     resolverLayoutClusters(modelo);
     resolverLayoutPersonas(modelo);
-    simularLayout(modelo);
-    resolverColisiones(modelo);
-    recalcularRadiosPostSimulacion(modelo);
     normalizarMapa(modelo);
 }
 
@@ -670,199 +681,285 @@ function resolverLayoutUbicaciones(modelo) {
         }
     );
 }
-function resolverLayoutUbicacion(ubicacion) {
-    const lideres =
-        ubicacion.lideresLocales;
+function resolverLayoutUbicacion(
+    ubicacion
+) {
+    const niveles =
+        agruparNodosPorNivelLocal(
+            ubicacion
+        );
+
     if (
-        lideres.length === 0
+        niveles.length === 0
     ) {
+        ubicacion.radio =
+            CONFIG_LAYOUT
+                .ESCALA
+                .crecimientoUbicacion;
+
         return;
     }
-    if (
-        lideres.length === 1
-    ) {
-        const lider =
-            lideres[0];
-        lider.xLocal = 0;
-        lider.yLocal = 0;
-        lider.angulo = -Math.PI / 2;
-        distribuirRamaLocal(
-            lider,
-            -Math.PI / 2,
-            Math.PI * 1.75
+
+    const raizGlobal =
+        ubicacion.nodos.find(
+            nodo =>
+                nodo.esRaizGlobal
         );
-    }
-    else {
-        distribuirLideres(
-            lideres
-        );
-        const aperturaPorLider =
-            (Math.PI * 2)
-            /
-            lideres.length;
-        lideres.forEach(
-            (lider, indice) => {
-                const anguloBase =
-                    indice
-                    *
-                    aperturaPorLider;
-                lider.angulo =
-                    anguloBase;
-                distribuirRamaLocal(
-                    lider,
-                    anguloBase,
-                    aperturaPorLider * 0.82
-                );
+
+    let radioAnterior = 0;
+
+    niveles.forEach(
+        nivel => {
+            let nodosNivel =
+                [...nivel.nodos]
+                    .sort(
+                        compararNodosDeterministicamente
+                    );
+
+            if (
+                nivel.profundidad === 0
+                &&
+                raizGlobal
+            ) {
+                raizGlobal.xLocal = 0;
+                raizGlobal.yLocal = 0;
+                raizGlobal.angulo =
+                    -Math.PI / 2;
+
+                nodosNivel =
+                    nodosNivel.filter(
+                        nodo =>
+                            nodo !== raizGlobal
+                    );
+
+                if (
+                    nodosNivel.length > 0
+                ) {
+                    radioAnterior =
+                        distribuirNivelEnAnillo(
+                            nodosNivel,
+                            CONFIG_LAYOUT
+                                .DISTANCIAS
+                                .radioNucleoUbicacion,
+                            -Math.PI / 2
+                        );
+                }
+
+                return;
             }
-        );
-    }
+
+            if (
+                nivel.profundidad === 0
+                &&
+                nodosNivel.length === 1
+            ) {
+                const nodo =
+                    nodosNivel[0];
+
+                nodo.xLocal = 0;
+                nodo.yLocal = 0;
+                nodo.angulo =
+                    -Math.PI / 2;
+
+                return;
+            }
+
+            const radioJerarquico =
+                nivel.profundidad === 0
+                    ? CONFIG_LAYOUT
+                        .DISTANCIAS
+                        .radioNucleoUbicacion
+                    : nivel.profundidad
+                        *
+                        CONFIG_LAYOUT
+                            .DISTANCIAS
+                            .separacionNivelesUbicacion;
+
+            const radioMinimo =
+                Math.max(
+                    radioJerarquico,
+                    radioAnterior
+                    +
+                    CONFIG_LAYOUT
+                        .DISTANCIAS
+                        .separacionNivelesUbicacion
+                        *
+                        0.72
+                );
+
+            radioAnterior =
+                distribuirNivelEnAnillo(
+                    nodosNivel,
+                    radioMinimo,
+                    -Math.PI / 2
+                    +
+                    nivel.profundidad
+                    *
+                    0.31
+                );
+        }
+    );
+
     calcularRadioUbicacion(
         ubicacion
     );
 }
 
-function distribuirLideres(lideres) {
-    const radio =
+function agruparNodosPorNivelLocal(
+    ubicacion
+) {
+    const mapa =
+        new Map();
+    ubicacion.nodos.forEach(
+        nodo => {
+            const profundidad =
+                Math.max(
+                    0,
+                    Number(
+                        nodo.profundidadLocal
+                    )
+                    ||
+                    0
+                );
+            if (
+                !mapa.has(
+                    profundidad
+                )
+            ) {
+                mapa.set(
+                    profundidad,
+                    []
+                );
+            }
+            mapa
+                .get(profundidad)
+                .push(nodo);
+        }
+    );
+    return [...mapa.entries()]
+        .sort(
+            (
+                [profundidadA],
+                [profundidadB]
+            ) =>
+                profundidadA
+                -
+                profundidadB
+        )
+        .map(
+            (
+                [
+                    profundidad,
+                    nodos
+                ]
+            ) => ({
+                profundidad,
+                nodos
+            })
+        );
+}
+
+function distribuirNivelEnAnillo(
+    nodos,
+    radioMinimo,
+    anguloInicial
+) {
+    if (
+        nodos.length === 0
+    ) {
+        return radioMinimo;
+    }
+    const radioNodoMaximo =
+        nodos.reduce(
+            (
+                maximo,
+                nodo
+            ) =>
+                Math.max(
+                    maximo,
+                    nodo.radio
+                ),
+            0
+        );
+    const separacionLineal =
+        radioNodoMaximo
+        *
+        2
+        +
         CONFIG_LAYOUT
             .DISTANCIAS
-            .anilloLideres;
-    const paso =
-
-        (Math.PI * 2)
+            .separacionNodosAnillo;
+    const radioPorCantidad =
+        (
+            nodos.length
+            *
+            separacionLineal
+        )
         /
-        lideres.length;
-    lideres.forEach(
-        (lider, indice) => {
+        (
+            Math.PI
+            *
+            2
+        );
+    const radio =
+        Math.max(
+            radioMinimo,
+            radioPorCantidad
+        );
+    const pasoAngular =
+        (
+            Math.PI
+            *
+            2
+        )
+        /
+        nodos.length;
+        nodos.forEach(
+        (
+            nodo,
+            indice
+        ) => {
             const angulo =
+                anguloInicial
+                +
                 indice
                 *
-                paso;
-            lider.xLocal =
+                pasoAngular;
+
+            nodo.angulo =
+                angulo;
+
+            nodo.xLocal =
                 Math.cos(angulo)
                 *
                 radio;
-            lider.yLocal =
+
+            nodo.yLocal =
                 Math.sin(angulo)
                 *
                 radio;
-            lider.angulo =
-                angulo;
         }
     );
+    return radio;
 }
 
-function distribuirRamaLocal(
-    nodo,
-    anguloBase,
-    aperturaDisponible
+function compararNodosDeterministicamente(
+    a,
+    b
 ) {
-    const hijos =
-        nodo.subordinados.filter(
-            hijo =>
-                hijo.ubicacionRef ===
-                nodo.ubicacionRef
-        );
-    if (
-        hijos.length === 0
-    ) {
-        return;
-    }
-    const pesos =
-        hijos.map(
-            hijo =>
-                Math.max(
-                    1,
-                    calcularPesoRamaLocal(hijo)
-                )
-        );
-    const pesoTotal =
-        pesos.reduce(
-            (total, peso) =>
-                total + peso,
-            0
-        );
-    let anguloCursor =
-        anguloBase
+    const diferenciaPeso =
+        b.pesoRama
         -
-        aperturaDisponible / 2;
-    hijos.forEach(
-        (hijo, indice) => {
-            const proporcion =
-                pesos[indice]
-                /
-                pesoTotal;
-            const aperturaHijo =
-                Math.max(
-                    0.22,
-                    aperturaDisponible
-                    *
-                    proporcion
-                );
-            const anguloHijo =
-                anguloCursor
-                +
-                aperturaHijo / 2;
-            const distancia =
-                CONFIG_LAYOUT
-                    .DISTANCIAS
-                    .jerarquiaLocal
-                +
-                Math.sqrt(
-                    pesos[indice]
-                )
-                *
-                CONFIG_LAYOUT
-                    .DISTANCIAS
-                    .separacionRamas;
-            hijo.angulo =
-                anguloHijo;
-            hijo.xLocal =
-                nodo.xLocal
-                +
-                Math.cos(
-                    anguloHijo
-                )
-                *
-                distancia;
-            hijo.yLocal =
-                nodo.yLocal
-                +
-                Math.sin(
-                    anguloHijo
-                )
-                *
-                distancia;
-            distribuirRamaLocal(
-                hijo,
-                anguloHijo,
-                aperturaHijo * 0.88
-            );
-            anguloCursor +=
-                aperturaHijo;
-        }
-    );
-}
+        a.pesoRama;
 
-function calcularPesoRamaLocal(nodo) {
-    const hijosLocales =
-        nodo.subordinados.filter(
-            hijo =>
-                hijo.ubicacionRef ===
-                nodo.ubicacionRef
-        );
     if (
-        hijosLocales.length === 0
+        diferenciaPeso !== 0
     ) {
-        return 1;
+        return diferenciaPeso;
     }
-    return 1 +
-        hijosLocales.reduce(
-            (total, hijo) =>
-                total
-                +
-                calcularPesoRamaLocal(hijo),
-            0
-        );
+    return a.id.localeCompare(
+        b.id
+    );
 }
 
 function calcularRadioUbicacion(
