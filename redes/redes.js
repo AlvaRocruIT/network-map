@@ -183,15 +183,15 @@ function construirModelo(personas) {
         construirClusters(nodos);
     const ubicaciones =
         extraerUbicaciones(clusters);
-    const raices =
-        encontrarRaices(nodos);
-    const raiz =
-        seleccionarRaizGlobal(
-            raices,
-            nodos
-        );
-    calcularJerarquia(
-        raices
+  const raices =
+    encontrarRaices(nodos);
+   calcularJerarquia(
+       raices
+   );
+const raiz =
+    seleccionarRaizGlobal(
+        raices,
+        nodos
     );
     detectarLideresLocales(
         ubicaciones
@@ -336,9 +336,9 @@ function seleccionarRaizGlobal(
         return [...raices]
             .sort(
                 (a, b) =>
-                    calcularPesoRama(b)
+                    b.pesoRama
                     -
-                    calcularPesoRama(a)
+                    a.pesoRama
             )[0];
     }
     return nodos[0];
