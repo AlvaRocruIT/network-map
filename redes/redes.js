@@ -2471,6 +2471,147 @@ function construirTituloNodo(nodo) {
     partes.push(nodo.datos.ubicacion);
     return partes.join(" · ");
 }
+ /* ---------------ETIQUETAS--------------- */
+function mostrarEtiquetaNodo(
+    nodo,
+    evento
+) {
+    const contenedor =
+        document.querySelector(
+            CONFIG_LAYOUT
+                .SELECTORES
+                .contenedor
+        );
+    if (
+        !contenedor
+    ) {
+        return;
+    }
+    ocultarEtiquetaNodo();
+    const etiqueta =
+        document.createElement(
+            "div"
+        );
+    etiqueta.className =
+        "etiqueta-nodo";
+    etiqueta.dataset.nodoId =
+        nodo.id;
+    const nombre =
+        document.createElement(
+            "strong"
+        );
+    nombre.textContent =
+        nodo.datos.nombre
+        ||
+        "Sin nombre";
+    const cargo =
+        document.createElement(
+            "span"
+        );
+    cargo.textContent =
+        nodo.datos.cargo
+        ||
+        "Sin cargo";
+    const equipo =
+        document.createElement(
+            "small"
+        );
+    equipo.textContent =
+        nodo.datos.equipo
+        ||
+        "Sin equipo";
+    etiqueta.append(
+        nombre,
+        cargo,
+        equipo
+    );
+    contenedor.append(
+        etiqueta
+    );
+    posicionarEtiquetaNodo(
+        etiqueta,
+        evento,
+        contenedor
+    );
+}
+
+function posicionarEtiquetaNodo(
+    etiqueta,
+    evento,
+    contenedor
+) {
+    const rectContenedor =
+        contenedor
+            .getBoundingClientRect();
+    const margen = 10;
+    const separacionNodo = 14;
+    const xClick =
+        evento.clientX
+        -
+        rectContenedor.left;
+    const yClick =
+        evento.clientY
+        -
+        rectContenedor.top;
+    const anchoEtiqueta =
+        etiqueta.offsetWidth;
+    const altoEtiqueta =
+        etiqueta.offsetHeight;
+    let izquierda =
+        xClick
+        -
+        anchoEtiqueta / 2;
+    izquierda =
+        limitarValor(
+            izquierda,
+            margen,
+            rectContenedor.width
+            -
+            anchoEtiqueta
+            -
+            margen
+        );
+    let arriba =
+        yClick
+        -
+        altoEtiqueta
+        -
+        separacionNodo;
+    if (
+        arriba < margen
+    ) {
+        arriba =
+            yClick
+            +
+            separacionNodo;
+    }
+    arriba =
+        limitarValor(
+            arriba,
+            margen,
+            rectContenedor.height
+            -
+            altoEtiqueta
+            -
+            margen
+        );
+    etiqueta.style.left =
+        `${izquierda}px`;
+    etiqueta.style.top =
+        `${arriba}px`;
+}
+
+function ocultarEtiquetaNodo() {
+    const etiqueta =
+        document.querySelector(
+            ".etiqueta-nodo"
+        );
+    if (
+        etiqueta
+    ) {
+        etiqueta.remove();
+    }
+}
 
  /* ---------------ERRORES--------------- */
 function mostrarError(error) {
