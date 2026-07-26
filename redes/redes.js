@@ -843,6 +843,23 @@ function distribuirRamaLocal(
     );
 }
 
+function calcularPesoRamaLocal(nodo) {
+    const hijosLocales =
+        nodo.subordinados.filter(
+            hijo =>
+                hijo.ubicacionRef ===
+                nodo.ubicacionRef
+        );
+
+    return 1 +
+        hijosLocales.reduce(
+            (total, hijo) =>
+                total +
+                calcularPesoRamaLocal(hijo),
+            0
+        );
+}
+
 function calcularPesoRama(nodo) {
     return 1 +
         nodo.subordinados.reduce(
