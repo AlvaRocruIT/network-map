@@ -850,16 +850,15 @@ function calcularPesoRamaLocal(nodo) {
                 hijo.ubicacionRef ===
                 nodo.ubicacionRef
         );
-    if (
-        hijosLocales.length === 0
-    ) {
+
+    if (hijosLocales.length === 0) {
         return 1;
     }
+
     return 1 +
         hijosLocales.reduce(
             (total, hijo) =>
-                total
-                +
+                total +
                 calcularPesoRamaLocal(hijo),
             0
         );
