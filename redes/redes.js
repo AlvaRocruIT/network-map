@@ -1624,6 +1624,21 @@ function compararClustersPorPoblacion(
     );
 }
 
+function posicionClusterDisponible(
+    cluster,
+    candidato,
+    clustersColocados
+) {
+    return clustersColocados.every(
+        clusterColocado =>
+            ubicacionesDeClustersSeparadas(
+                cluster,
+                candidato,
+                clusterColocado
+            )
+    );
+}
+
 function ubicacionesDeClustersSeparadas(
     cluster,
     candidato,
