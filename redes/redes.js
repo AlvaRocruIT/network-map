@@ -2351,6 +2351,7 @@ function calcularLimites(nodos) {
 
     /* ---------------RENDERIZADO--------------- */
 function dibujarMapa(modelo) {
+    dibujarConexiones(modelo);
     dibujarNodos(modelo);
 }
 
@@ -2360,30 +2361,24 @@ function dibujarConexiones(modelo) {
         document.createDocumentFragment();
     modelo.conexiones.forEach(
         conexion => {
-            const clase =
-                conexion.mismaUbicacion
-                    ? "mapa-redes__conexion mapa-redes__conexion--interna"
-                    : "mapa-redes__conexion mapa-redes__conexion--externa";
-            const linea =
+            fragmento.append(
                 crearSVG(
                     "line",
                     {
-                        class: clase,
+                        class:
+                            "mapa-redes__conexion",
                         x1: conexion.superior.x,
                         y1: conexion.superior.y,
                         x2: conexion.subordinado.x,
-                        y2: conexion.subordinado.y,
-                        "data-superior": conexion.superior.id,
-                        "data-subordinado": conexion.subordinado.id
+                        y2: conexion.subordinado.y
                     }
-                );
-            fragmento.append(linea);
+                )
+            );
         }
     );
-    modelo
-        .capas
-        .conexiones
-        .append(fragmento);
+    modelo.capas.conexiones.append(
+        fragmento
+    );
 }
 
  /* ---------------NODOS--------------- */
