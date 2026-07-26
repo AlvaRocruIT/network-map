@@ -61,8 +61,11 @@ const CONFIG_LAYOUT = {
         radioBase: 20,
         expansionPorPoblacion: 520,
         pasoRadial: 10,
-        separacionAngularMinima: 18,
-        limiteBusqueda: 2400
+        limiteBusqueda: 2400,
+        pesoBaseSector: 1,
+        pesoPoblacionSector: 1,
+        pesoTamanoSector: 0.018,
+        margenAngularSector: 0.035
     },
  
     FUERZAS: {
@@ -1262,7 +1265,9 @@ function calcularRadioCluster(cluster)
 function distribuirClusters(
     clusters
 ) {
-    if (clusters.length === 0) {
+    if (
+        clusters.length === 0
+    ) {
         return;
     }
 
@@ -1275,9 +1280,10 @@ function distribuirClusters(
                 )
         )
         ??
-        [...clusters].sort(
-            compararClustersPorPoblacion
-        )[0];
+        [...clusters]
+            .sort(
+                compararClustersPorPoblacion
+            )[0];
 
     clusterCentral.x = 0;
     clusterCentral.y = 0;
@@ -1292,21 +1298,31 @@ function distribuirClusters(
                 compararClustersPorPoblacion
             );
 
-    if (pendientes.length === 0) {
+    if (
+        pendientes.length === 0
+    ) {
         return;
     }
 
-    const poblaciones =
-        pendientes.map(
-            cluster =>
-                cluster.nodos.length
+    const poblacionMaxima =
+        Math.max(
+            ...pendientes.map(
+                cluster =>
+                    cluster.nodos.length
+            )
         );
 
-    const poblacionMaxima =
-        Math.max(...poblaciones);
-
     const poblacionMinima =
-        Math.min(...poblaciones);
+        Math.min(
+            ...pendientes.map(
+                cluster =>
+                    cluster.nodos.length
+            )
+        );
+
+    prepararSectoresClusters(
+        pendientes
+    );
 
     const colocados = [
         clusterCentral
@@ -1314,61 +1330,270 @@ function distribuirClusters(
 
     pendientes.forEach(
         cluster => {
-            const densidadNormalizada =
-                poblacionMaxima ===
-                poblacionMinima
-                    ? 1
-                    : (
-                        cluster.nodos.length
-                        -
-                        poblacionMinima
-                    )
-                    /
-                    (
-                        poblacionMaxima
-                        -
-                        poblacionMinima
-                    );
+            const radioGravitacional =
+                calcularRadioGravitacional(
+                    cluster,
+                    clusterCentral,
+                    poblacionMinima,
+                    poblacionMaxima
+                );
 
-            const distanciaPeriferica =
-                (
-                    1
-                    -
-                    densidadNormalizada
-                )
-                *
-                CONFIG_LAYOUT
-                    .ORBITAS
-                    .expansionPorPoblacion;
+            const radioMinimoSector =
+                calcularRadioMinimoSector(
+                    cluster
+                );
 
-            const separacionDesdeBorde =
-                CONFIG_LAYOUT
-                    .DISTANCIAS
-                    .separacionClusters
-                +
-                CONFIG_LAYOUT
-                    .ORBITAS
-                    .radioBase
-                +
-                distanciaPeriferica;
-
-            const radioPreferido =
+            const radioFisicoMinimo =
                 clusterCentral.radio
                 +
-                cluster.radio *0.35
+                cluster.radio
                 +
-                separacionDesdeBorde;
+                CONFIG_LAYOUT
+                    .DISTANCIAS
+                    .separacionClusters;
 
-            colocarClusterEnOrbita(
+            const radioInicial =
+                Math.max(
+                    radioGravitacional,
+                    radioMinimoSector,
+                    radioFisicoMinimo
+                );
+
+            colocarClusterEnSector(
                 cluster,
                 colocados,
-                radioPreferido
+                radioInicial
             );
 
             colocados.push(
                 cluster
             );
         }
+    );
+}
+
+function prepararSectoresClusters(
+    clusters
+) {
+    const configuracion =
+        CONFIG_LAYOUT
+            .ORBITAS;
+
+    clusters.forEach(
+        cluster => {
+            cluster.pesoSector =
+                configuracion
+                    .pesoBaseSector
+                +
+                cluster.nodos.length
+                *
+                configuracion
+                    .pesoPoblacionSector
+                +
+                cluster.radio
+                *
+                configuracion
+                    .pesoTamanoSector;
+        }
+    );
+
+    const pesoTotal =
+        clusters.reduce(
+            (
+                total,
+                cluster
+            ) =>
+                total
+                +
+                cluster.pesoSector,
+            0
+        );
+
+    let anguloCursor =
+        -Math.PI / 2;
+
+    clusters.forEach(
+        cluster => {
+            const apertura =
+                (
+                    cluster.pesoSector
+                    /
+                    pesoTotal
+                )
+                *
+                Math.PI
+                *
+                2;
+
+            cluster.anguloInicio =
+                anguloCursor;
+
+            cluster.anguloFin =
+                anguloCursor
+                +
+                apertura;
+
+            cluster.anguloCentro =
+                anguloCursor
+                +
+                apertura / 2;
+
+            cluster.aperturaAngular =
+                apertura;
+
+            anguloCursor +=
+                apertura;
+        }
+    );
+}
+
+function calcularRadioGravitacional(
+    cluster,
+    clusterCentral,
+    poblacionMinima,
+    poblacionMaxima
+) {
+    let densidadNormalizada = 1;
+
+    if (
+        poblacionMaxima !==
+        poblacionMinima
+    ) {
+        densidadNormalizada =
+            (
+                cluster.nodos.length
+                -
+                poblacionMinima
+            )
+            /
+            (
+                poblacionMaxima
+                -
+                poblacionMinima
+            );
+    }
+
+    const factorPeriferia =
+        1
+        -
+        densidadNormalizada;
+
+    return (
+        clusterCentral.radio
+        +
+        CONFIG_LAYOUT
+            .DISTANCIAS
+            .separacionClusters
+        +
+        CONFIG_LAYOUT
+            .ORBITAS
+            .radioBase
+        +
+        factorPeriferia
+        *
+        CONFIG_LAYOUT
+            .ORBITAS
+            .expansionPorPoblacion
+    );
+}
+
+function calcularRadioMinimoSector(
+    cluster
+) {
+    const margen =
+        CONFIG_LAYOUT
+            .ORBITAS
+            .margenAngularSector;
+
+    const medioAnguloDisponible =
+        cluster.aperturaAngular
+        /
+        2
+        -
+        margen;
+
+    const anguloSeguro =
+        Math.max(
+            0.04,
+            Math.min(
+                medioAnguloDisponible,
+                Math.PI / 2
+            )
+        );
+
+    const radioConMargen =
+        cluster.radio
+        +
+        CONFIG_LAYOUT
+            .DISTANCIAS
+            .separacionClusters
+            *
+            0.35;
+
+    return (
+        radioConMargen
+        /
+        Math.sin(
+            anguloSeguro
+        )
+    );
+}
+
+function colocarClusterEnSector(
+    cluster,
+    clustersColocados,
+    radioInicial
+) {
+    const configuracion =
+        CONFIG_LAYOUT
+            .ORBITAS;
+    const angulo =
+        cluster.anguloCentro;
+    const limite =
+        radioInicial
+        +
+        configuracion
+            .limiteBusqueda;
+    for (
+        let radioBusqueda =
+            radioInicial;
+        radioBusqueda <= limite;
+        radioBusqueda +=
+            configuracion
+                .pasoRadial
+    ) {
+        const candidato = {
+            x:
+                Math.cos(
+                    angulo
+                )
+                *
+                radioBusqueda,
+            y:
+                Math.sin(
+                    angulo
+                )
+                *
+                radioBusqueda
+        };
+        if (
+            posicionClusterDisponible(
+                cluster,
+                candidato,
+                clustersColocados
+            )
+        ) {
+            cluster.x =
+                candidato.x;
+            cluster.y =
+                candidato.y;
+            cluster.radioOrbital =
+                radioBusqueda;
+            return;
+        }
+    }
+    throw new Error(
+        `No fue posible ubicar el cluster ${cluster.id} dentro de su sector`
     );
 }
 
@@ -1396,110 +1621,6 @@ function compararClustersPorPoblacion(
     }
     return a.id.localeCompare(
         b.id
-    );
-}
-
-function colocarClusterEnOrbita(
-    cluster,
-    clustersColocados,
-    radioPreferido
-) {
-    const configuracion =
-        CONFIG_LAYOUT
-            .ORBITAS;
-    const anguloInicial =
-        obtenerAnguloDeterminista(
-            cluster.id
-        );
-    const limite =
-        radioPreferido
-        +
-        configuracion
-            .limiteBusqueda;
-    for (
-        let radioBusqueda =
-            radioPreferido;
-        radioBusqueda <= limite;
-        radioBusqueda +=
-            configuracion
-                .pasoRadial
-    ) {
-        const circunferencia =
-            Math.PI
-            *
-            2
-            *
-            radioBusqueda;
-        const cantidadAngulos =
-            Math.max(
-                16,
-                Math.ceil(
-                    circunferencia
-                    /
-                    configuracion
-                        .separacionAngularMinima
-                )
-            );
-        for (
-            let indice = 0;
-            indice <
-                cantidadAngulos;
-            indice++
-        ) {
-            const angulo =
-                anguloInicial
-                +
-                indice
-                *
-                (
-                    Math.PI
-                    *
-                    2
-                    /
-                    cantidadAngulos
-                );
-            const candidato = {
-                x:
-                    Math.cos(angulo)
-                    *
-                    radioBusqueda,
-                y:
-                    Math.sin(angulo)
-                    *
-                    radioBusqueda
-            };
-            if (
-                posicionClusterDisponible(
-                    cluster,
-                    candidato,
-                    clustersColocados
-                )
-            ) {
-                cluster.x =
-                    candidato.x;
-                cluster.y =
-                    candidato.y;
-                return;
-            }
-        }
-    }
-    throw new Error(
-        `No fue posible ubicar el cluster ${cluster.id}`
-    );
-}
-
-function posicionClusterDisponible(
-    cluster,
-    candidato,
-    clustersColocados
-) {
-    return clustersColocados.every(
-        clusterColocado =>
-            ubicacionesDeClustersSeparadas(
-                cluster,
-                candidato,
-                clusterColocado
-            )
     );
 }
 
