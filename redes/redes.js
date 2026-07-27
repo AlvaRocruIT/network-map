@@ -2482,7 +2482,6 @@ function manejarRuedaVista(
             configuracion.zoomMinimo,
             configuracion.zoomMaximo
         );
-
     if (
         escalaNueva ===
         escalaAnterior
@@ -2693,14 +2692,13 @@ function liberarCapturaPuntero(
     }
 }
 
-function manejarClickFondoVista(
-    modelo
-) {
+function manejarClickFondoVista(modelo) {
     if (
         consumirClickSuprimido(modelo)
     ) {
         return;
     }
+    limpiarResaltadoJerarquia(modelo);
     ocultarEtiquetaNodo();
 }
 
@@ -2721,9 +2719,8 @@ function consumirClickSuprimido(
     return true;
 }
 
-function restablecerVista(
-    modelo
-) {
+function restablecerVista(modelo) 
+{
     const vista =
         modelo.vista;
     mostrarMapaCompleto(
@@ -2739,6 +2736,7 @@ function restablecerVista(
     vista.huboArrastre = false;
     vista.suprimirProximoClick = false;
     vista.punteroId = null;
+    limpiarResaltadoJerarquia(modelo);
     ocultarEtiquetaNodo();
     aplicarTransformacionVista(
         modelo
@@ -3084,6 +3082,224 @@ function enfocarCluster(
     );
 }
 
+/* ---------------RESALTADO JERÁRQUICO--------------- */
+
+function resaltarJerarquiaNodo(
+    modelo,
+    nodoSeleccionado
+) {
+    limpiarResaltadoJerarquia(
+        modelo
+    );
+
+    const nodosRelacionados =
+        obtenerNodosJerarquiaDestacados(
+            nodoSeleccionado
+        );
+
+    const idsRelacionados =
+        new Set(
+            nodosRelacionados.map(
+                nodo => nodo.id
+            )
+        );
+
+    modelo
+        .capas
+        .nodos
+        .querySelectorAll(
+            ".mapa-redes__nodo"
+        )
+        .forEach(
+            elemento => {
+                if (
+                    elemento.style.display ===
+                    "none"
+                ) {
+                    return;
+                }
+
+                const id =
+                    elemento.dataset.id;
+
+                if (
+                    id ===
+                    nodoSeleccionado.id
+                ) {
+                    elemento.classList.add(
+                        "mapa-redes__nodo--seleccionado"
+                    );
+
+                    return;
+                }
+
+                if (
+                    idsRelacionados.has(id)
+                ) {
+                    elemento.classList.add(
+                        "mapa-redes__nodo--relacionado"
+                    );
+                }
+            }
+        );
+
+    modelo
+        .capas
+        .conexiones
+        .querySelectorAll(
+            ".mapa-redes__conexion"
+        )
+        .forEach(
+            elemento => {
+                if (
+                    elemento.style.display ===
+                    "none"
+                ) {
+                    return;
+                }
+
+                elemento.classList.add(
+                    "mapa-redes__conexion--atenuada"
+                );
+
+                const superiorId =
+                    elemento.dataset
+                        .superiorId;
+
+                const subordinadoId =
+                    elemento.dataset
+                        .subordinadoId;
+
+                if (
+                    esConexionJerarquicaDestacada(
+                        nodoSeleccionado,
+                        superiorId,
+                        subordinadoId
+                    )
+                ) {
+                    elemento.classList.remove(
+                        "mapa-redes__conexion--atenuada"
+                    );
+
+                    elemento.classList.add(
+                        "mapa-redes__conexion--destacada"
+                    );
+                }
+            }
+        );
+}
+
+function obtenerNodosJerarquiaDestacados(
+    nodoSeleccionado
+) {
+    const resultado =
+        new Map();
+
+    resultado.set(
+        nodoSeleccionado.id,
+        nodoSeleccionado
+    );
+
+    let superior =
+        nodoSeleccionado.superior;
+
+    while (superior) {
+        resultado.set(
+            superior.id,
+            superior
+        );
+
+        superior =
+            superior.superior;
+    }
+
+    nodoSeleccionado
+        .subordinados
+        .forEach(
+            subordinado => {
+                resultado.set(
+                    subordinado.id,
+                    subordinado
+                );
+            }
+        );
+
+    return [
+        ...resultado.values()
+    ];
+}
+
+function esConexionJerarquicaDestacada(
+    nodoSeleccionado,
+    superiorId,
+    subordinadoId
+) {
+    if (
+        superiorId ===
+        nodoSeleccionado.id
+        &&
+        nodoSeleccionado
+            .subordinados
+            .some(
+                nodo =>
+                    nodo.id ===
+                    subordinadoId
+            )
+    ) {
+        return true;
+    }
+    let nodoActual =
+        nodoSeleccionado;
+    while (
+        nodoActual.superior
+    ) {
+        if (
+            superiorId ===
+            nodoActual.superior.id
+            &&
+            subordinadoId ===
+            nodoActual.id
+        ) {
+            return true;
+        }
+        nodoActual =
+            nodoActual.superior;
+    }
+    return false;
+}
+function limpiarResaltadoJerarquia(
+    modelo
+) {
+    modelo
+        .capas
+        .nodos
+        .querySelectorAll(
+            ".mapa-redes__nodo"
+        )
+        .forEach(
+            elemento => {
+                elemento.classList.remove(
+                    "mapa-redes__nodo--seleccionado",
+                    "mapa-redes__nodo--relacionado"
+                );
+            }
+        );
+    modelo
+        .capas
+        .conexiones
+        .querySelectorAll(
+            ".mapa-redes__conexion"
+        )
+        .forEach(
+            elemento => {
+                elemento.classList.remove(
+                    "mapa-redes__conexion--destacada",
+                    "mapa-redes__conexion--atenuada"
+                );
+            }
+        );
+}
+
     /* ---------------RENDERIZADO--------------- */
 function dibujarMapa(modelo) {
     dibujarConexiones(modelo);
@@ -3109,7 +3325,11 @@ function dibujarConexiones(modelo) {
                         "data-cluster-superior":
                             conexion.superior.clusterRef.id,
                         "data-cluster-subordinado":
-                            conexion.subordinado.clusterRef.id
+                            conexion.subordinado.clusterRef.id,
+                        "data-superior-id":
+                            conexion.superior.id,
+                        "data-subordinado-id":
+                            conexion.subordinado.id
                         }
                      )
             );
@@ -3196,6 +3416,10 @@ grupo.addEventListener(
         ) {
             return;
         }
+        resaltarJerarquiaNodo(
+            modelo,
+            nodo
+        );
         mostrarEtiquetaNodo(
             nodo,
             evento
@@ -3207,14 +3431,17 @@ grupo.addEventListener(
     evento => {
         evento.preventDefault();
         evento.stopPropagation();
+        limpiarResaltadoJerarquia(
+            modelo
+        );
         ocultarEtiquetaNodo();
+
         alternarVistaCluster(
             modelo,
             nodo.clusterRef
         );
     }
 );
-
 return grupo;
 }
 
