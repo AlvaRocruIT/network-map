@@ -2380,7 +2380,6 @@ function calcularLimites(nodos) {
 }
 
 /* ---------------PAN Y ZOOM--------------- */
-
 function configurarInteraccionVista(
     modelo
 ) {
@@ -2436,16 +2435,25 @@ function configurarInteraccionVista(
                 modelo,
                 evento
             )
-    );
-    svg.addEventListener(
-        "dblclick",
-        evento => {
-            evento.preventDefault();
-            restablecerVista(
-                modelo
-            );
-        }
-    );
+      );
+      ssvg.addEventListener(
+      "dblclick",
+      evento => {
+          evento.preventDefault(); 
+          if (
+              modelo.vista.modo ===
+              "cluster"
+          ) {
+              salirVistaCluster(
+                  modelo
+              );
+              return;
+          }
+          restablecerVista(
+              modelo
+          );
+      }
+  );
 }
 
 function manejarRuedaVista(
@@ -2710,7 +2718,6 @@ function consumirClickSuprimido(
         .vista
         .suprimirProximoClick =
         false;
-
     return true;
 }
 
@@ -2719,10 +2726,15 @@ function restablecerVista(
 ) {
     const vista =
         modelo.vista;
+    mostrarMapaCompleto(
+        modelo
+    );
     vista.escala = 1;
     vista.desplazamientoX = 0;
     vista.desplazamientoY = 0;
     vista.modo = "mapa";
+    vista.clusterActivo = null;
+    vista.vistaAnterior = null;
     vista.arrastrando = false;
     vista.huboArrastre = false;
     vista.suprimirProximoClick = false;
@@ -2783,6 +2795,310 @@ function obtenerPuntoSVG(
         x: transformado.x,
         y: transformado.y
     };
+}
+
+/* ---------------VISTA AISLADA DE CLUSTER--------------- */
+
+function alternarVistaCluster(
+    modelo,
+    cluster
+) {
+    if (
+        !cluster
+        ||
+        cluster.nodos.length < 10
+    ) {
+        return;
+    }
+    if (
+        modelo.vista.modo ===
+        "cluster"
+    ) {
+        salirVistaCluster(
+            modelo
+        );
+        return;
+    }
+    entrarVistaCluster(
+        modelo,
+        cluster
+    );
+}
+
+function entrarVistaCluster(
+    modelo,
+    cluster
+) {
+    const vista =
+        modelo.vista;
+    vista.vistaAnterior = {
+        escala:
+            vista.escala,
+        desplazamientoX:
+            vista.desplazamientoX,
+        desplazamientoY:
+            vista.desplazamientoY
+    };
+    vista.modo =
+        "cluster";
+    vista.clusterActivo =
+        cluster.id;
+    ocultarEtiquetaNodo();
+    aplicarVisibilidadCluster(
+        modelo,
+        cluster.id
+    );
+    enfocarCluster(
+        modelo,
+        cluster
+    );
+}
+
+function salirVistaCluster(
+    modelo
+) {
+    const vista =
+        modelo.vista;
+    mostrarMapaCompleto(
+        modelo
+    );
+
+    if (
+        vista.vistaAnterior
+    ) {
+        vista.escala =
+            vista
+                .vistaAnterior
+                .escala;
+        vista.desplazamientoX =
+            vista
+                .vistaAnterior
+                .desplazamientoX;
+        vista.desplazamientoY =
+            vista
+                .vistaAnterior
+                .desplazamientoY;
+    }
+    else {
+        vista.escala = 1;
+        vista.desplazamientoX = 0;
+        vista.desplazamientoY = 0;
+    }
+    vista.modo =
+        "mapa";
+    vista.clusterActivo =
+        null;
+    vista.vistaAnterior =
+        null;
+    ocultarEtiquetaNodo();
+    aplicarTransformacionVista(
+        modelo
+    );
+}
+
+function aplicarVisibilidadCluster(
+    modelo,
+    clusterId
+) {
+    const nodos =
+        modelo
+            .capas
+            .nodos
+            .querySelectorAll(
+                ".mapa-redes__nodo"
+            );
+
+    nodos.forEach(
+        elemento => {
+            const pertenece =
+                elemento.dataset
+                    .clusterId ===
+                clusterId;
+
+            elemento.style.display =
+                pertenece
+                    ? ""
+                    : "none";
+        }
+    );
+
+    const conexiones =
+        modelo
+            .capas
+            .conexiones
+            .querySelectorAll(
+                ".mapa-redes__conexion"
+            );
+
+    conexiones.forEach(
+        elemento => {
+            const superior =
+                elemento.dataset
+                    .clusterSuperior;
+
+            const subordinado =
+                elemento.dataset
+                    .clusterSubordinado;
+
+            const esInterna =
+                superior ===
+                clusterId
+                &&
+                subordinado ===
+                clusterId;
+
+            elemento.style.display =
+                esInterna
+                    ? ""
+                    : "none";
+        }
+    );
+}
+
+function mostrarMapaCompleto(
+    modelo
+) {
+    modelo
+        .capas
+        .nodos
+        .querySelectorAll(
+            ".mapa-redes__nodo"
+        )
+        .forEach(
+            elemento => {
+                elemento.style.display =
+                    "";
+            }
+        );
+
+    modelo
+        .capas
+        .conexiones
+        .querySelectorAll(
+            ".mapa-redes__conexion"
+        )
+        .forEach(
+            elemento => {
+                elemento.style.display =
+                    "";
+            }
+        );
+}
+
+function enfocarCluster(
+    modelo,
+    cluster
+) {
+    const limites =
+        calcularLimites(
+            cluster.nodos
+        );
+    const anchoContenido =
+        Math.max(
+            1,
+            limites.maxX
+            -
+            limites.minX
+        );
+    const altoContenido =
+        Math.max(
+            1,
+            limites.maxY
+            -
+            limites.minY
+        );
+    const viewBox =
+        modelo.svg.viewBox.baseVal;
+    const margenProporcional =
+        0.14;
+    const anchoDisponible =
+        viewBox.width
+        *
+        (
+            1
+            -
+            margenProporcional
+            *
+            2
+        );
+    const altoDisponible =
+        viewBox.height
+        *
+        (
+            1
+            -
+            margenProporcional
+            *
+            2
+        );
+    const escalaHorizontal =
+        anchoDisponible
+        /
+        anchoContenido;
+    const escalaVertical =
+        altoDisponible
+        /
+        altoContenido;
+    const escalaObjetivo =
+        limitarValor(
+            Math.min(
+                escalaHorizontal,
+                escalaVertical
+            ),
+
+            CONFIG_LAYOUT
+                .VISTA
+                .zoomMinimo,
+
+            CONFIG_LAYOUT
+                .VISTA
+                .zoomMaximo
+        );
+    const centroClusterX =
+        (
+            limites.minX
+            +
+            limites.maxX
+        )
+        /
+        2;
+    const centroClusterY =
+        (
+            limites.minY
+            +
+            limites.maxY
+        )
+        /
+        2;
+    const centroVistaX =
+        viewBox.x
+        +
+        viewBox.width
+        /
+        2;
+    const centroVistaY =
+        viewBox.y
+        +
+        viewBox.height
+        /
+        2;
+    modelo.vista.escala =
+        escalaObjetivo;
+    modelo.vista.desplazamientoX =
+        centroVistaX
+        -
+        centroClusterX
+        *
+        escalaObjetivo;
+    modelo.vista.desplazamientoY =
+        centroVistaY
+        -
+        centroClusterY
+        *
+        escalaObjetivo;
+    aplicarTransformacionVista(
+        modelo
+    );
 }
 
     /* ---------------RENDERIZADO--------------- */
