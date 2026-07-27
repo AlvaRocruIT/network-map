@@ -2752,7 +2752,15 @@ function aplicarTransformacionVista(
         modelo.vista;
     modelo.viewport.setAttribute(
         "transform",
-        `matrix(${vista.escala} 0 0 ${vista.escala} ${vista.desplazamientoX} ${vista.desplazamientoY})`
+        [
+            `translate(`,
+            `${vista.desplazamientoX} `,
+            `${vista.desplazamientoY}`,
+            `) `,
+            `scale(`,
+            `${vista.escala}`,
+            `)`
+        ].join("")
     );
 }
 
@@ -2981,104 +2989,98 @@ function enfocarCluster(
     modelo,
     cluster
 ) {
-    const limites =
-        calcularLimites(
-            cluster.nodos
-        );
-    const anchoCluster =
-        Math.max(
-            1,
-            limites.maxX
-            -
-            limites.minX
-        );
-    const altoCluster =
-        Math.max(
-            1,
-            limites.maxY
-            -
-            limites.minY
-        );
-    const viewBox =
-        modelo
-            .svg
-            .viewBox
-            .baseVal;
-    const margen =
-        0.78;
-    const escalaHorizontal =
-        (
-            viewBox.width
-            *
-            margen
-        )
-        /
-        anchoCluster;
-    const escalaVertical =
-        (
-            viewBox.height
-            *
-            margen
-        )
-        /
-        altoCluster;
-    const escalaObjetivo =
-        limitarValor(
-            Math.min(
-                escalaHorizontal,
-                escalaVertical
-            ),
-            CONFIG_LAYOUT
-                .VISTA
-                .zoomMinimo,
-            CONFIG_LAYOUT
-                .VISTA
-                .zoomMaximo
-        );
-    const centroVistaX =
-        viewBox.x
-        +
-        viewBox.width
-        /
-        2;
-    const centroVistaY =
-        viewBox.y
-        +
-        viewBox.height
-        /
-        2;
-    const nucleoClusterX =
-    (
-        limites.minX
-        +
-        limites.maxX
-    )
-    /
-    2;
-const nucleoClusterY =
-    (
-        limites.minY
-        +
-        limites.maxY
-    )
-    /
-    2;
-    modelo.vista.escala =
-        escalaObjetivo;
-    modelo.vista.desplazamientoX =
-        centroVistaX
-        -
-        nucleoClusterX
-        *
-        escalaObjetivo;
-    modelo.vista.desplazamientoY =
-        centroVistaY
-        -
-        nucleoClusterY
-        *
-        escalaObjetivo;
-    aplicarTransformacionVista(
-        modelo
+    requestAnimationFrame(
+        () => {
+            const cajaVisible =
+                modelo
+                    .capas
+                    .nodos
+                    .getBBox();
+            if (
+                cajaVisible.width <= 0
+                ||
+                cajaVisible.height <= 0
+            ) {
+                return;
+            }
+            const viewBox =
+                modelo
+                    .svg
+                    .viewBox
+                    .baseVal;
+            const margen =
+                0.82;
+            const escalaHorizontal =
+                (
+                    viewBox.width
+                    *
+                    margen
+                )
+                /
+                cajaVisible.width;
+            const escalaVertical =
+                (
+                    viewBox.height
+                    *
+                    margen
+                )
+                /
+                cajaVisible.height;
+            const escalaObjetivo =
+                limitarValor(
+                    Math.min(
+                        escalaHorizontal,
+                        escalaVertical
+                    ),
+                    CONFIG_LAYOUT
+                        .VISTA
+                        .zoomMinimo,
+                    CONFIG_LAYOUT
+                        .VISTA
+                        .zoomMaximo
+                );
+            const centroClusterX =
+                cajaVisible.x
+                +
+                cajaVisible.width
+                /
+                2;
+            const centroClusterY =
+                cajaVisible.y
+                +
+                cajaVisible.height
+                /
+                2;
+            const centroVistaX =
+                viewBox.x
+                +
+                viewBox.width
+                /
+                2;
+            const centroVistaY =
+                viewBox.y
+                +
+                viewBox.height
+                /
+                2;
+            modelo.vista.escala =
+                escalaObjetivo;
+            modelo.vista.desplazamientoX =
+                centroVistaX
+                -
+                centroClusterX
+                *
+                escalaObjetivo;
+            modelo.vista.desplazamientoY =
+                centroVistaY
+                -
+                centroClusterY
+                *
+                escalaObjetivo;
+            aplicarTransformacionVista(
+                modelo
+            );
+        }
     );
 }
 
