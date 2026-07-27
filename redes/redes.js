@@ -2436,7 +2436,7 @@ function configurarInteraccionVista(
                 evento
             )
       );
-      ssvg.addEventListener(
+      svg.addEventListener(
       "dblclick",
       evento => {
           evento.preventDefault(); 
