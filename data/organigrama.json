@@ -509,8 +509,8 @@
     "id": "Lnk14",
     "nombre": "Quispe",
     "cargo": "Tec. en terreno",
-    "equipo": "Operaciones",
-    "cluster": "Talcahuano",
+    "equipo": "Bío-bío",
+    "cluster": "Talchuano",
     "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
@@ -518,8 +518,8 @@
     "id": "Lnk15",
     "nombre": "Huenchu",
     "cargo": "Tec. en terreno",
-    "equipo": "Operaciones",
-    "cluster": "Talcahuano",
+    "equipo": "Bío-bío",
+    "cluster": "Talchuano",
     "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
   },
@@ -527,16 +527,16 @@
     "id": "Lnk16",
     "nombre": "Huaiqui",
     "cargo": "Tec. en terreno",
-    "equipo": "Operaciones",
-    "cluster": "Mejillones",
-    "Ubicacion": "Terreno",
+    "equipo": "Mejillones",
+    "cluster": "Antofagasta",
+    "Ubicacion": "Mejillones",
     "reportaA": "Lnk1"
   },
   {
     "id": "Lnk17",
     "nombre": "Rodolfo",
     "cargo": "Tec. en terreno",
-    "equipo": "Operaciones",
+    "equipo": "Valparaiso",
     "cluster": "Valparaiso",
     "Ubicacion": "Terreno",
     "reportaA": "Lnk1"
@@ -741,7 +741,7 @@
   },
   {
     "id": "Log3",
-    "nombre": "Jerry",
+    "nombre": "Larry",
     "cargo": "Abastecimiento",
     "equipo": "Logística",
     "cluster": "Pto. Montt",
@@ -888,8 +888,8 @@
     "id": "Vna1",
     "nombre": "Karen",
     "cargo": "Enlace Bío Bío",
-    "equipo": "Comercial",
-    "cluster": "Talcahuano",
+    "equipo": "Bío-bío",
+    "cluster": "Talchuano",
     "Ubicacion": "Terreno",
     "reportaA": "Com2"
   },
@@ -934,8 +934,8 @@
     "nombre": "Jerry",
     "cargo": "Ventas USA-Canadá",
     "equipo": "Comercial",
-    "cluster": "Canadá",
-    "Ubicacion": "New Scotland",
+    "cluster": "Foreign",
+    "Ubicacion": "Canadá",
     "reportaA": "Com4"
   },
   {
@@ -943,13 +943,13 @@
     "nombre": "Jude",
     "cargo": "Ventas Euro",
     "equipo": "Comercial",
-    "cluster": "Alemania",
-    "Ubicacion": "Hamburg",
+    "cluster": "Foreign",
+    "Ubicacion": "Alemania",
     "reportaA": "Com4"
   },
   {
     "id": "Com5",
-    "nombre": "úrsula",
+    "nombre": "Úrsula",
     "cargo": "Client Success Manager",
     "equipo": "Comercial",
     "cluster": "Pto. Montt",
@@ -1004,7 +1004,7 @@
     "id": "Csm6",
     "nombre": "Willy",
     "cargo": "Operaciones Bío-bío",
-    "equipo": "Comercial",
+    "equipo": "Bío-bío",
     "cluster": "Talchuano",
     "Ubicacion": "Terreno",
     "reportaA": "Csm1"
@@ -1020,7 +1020,7 @@
   },
   {
     "id": "Csm8",
-    "nombre": "Antoine",
+    "nombre": "Toño",
     "cargo": "Operaciones Norte",
     "equipo": "Comercial",
     "cluster": "Antofagasta",
