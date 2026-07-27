@@ -2985,10 +2985,7 @@ function mostrarMapaCompleto(
         );
 }
 
-function enfocarCluster(
-    modelo,
-    cluster
-) {
+function enfocarCluster(modelo) {
     requestAnimationFrame(
         () => {
             const cajaVisible =
