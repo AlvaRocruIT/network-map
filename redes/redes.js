@@ -7,8 +7,9 @@
  * 4. Construcción del modelo
  * 5. Jerarquía
  * 6. Layout
- * 7. Render SVG
- * 8. Utilidades 
+ * 7. Zoom
+ * 8. Render SVG
+ * 9. Utilidades 
  
 ---------------------CONFIG--------------- */
 const CONFIG_LAYOUT = {
