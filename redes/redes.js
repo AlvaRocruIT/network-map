@@ -3048,9 +3048,21 @@ function enfocarCluster(
         /
         2;
     const nucleoClusterX =
-        cluster.x;
-    const nucleoClusterY =
-        cluster.y;
+    (
+        limites.minX
+        +
+        limites.maxX
+    )
+    /
+    2;
+const nucleoClusterY =
+    (
+        limites.minY
+        +
+        limites.maxY
+    )
+    /
+    2;
     modelo.vista.escala =
         escalaObjetivo;
     modelo.vista.desplazamientoX =
