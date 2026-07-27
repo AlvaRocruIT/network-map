@@ -2553,10 +2553,8 @@ function iniciarArrastreVista(
     vista.desplazamientoInicialX =
         vista.desplazamientoX;
     vista.desplazamientoInicialY =
-        vista.desplazamientoY;
-    modelo.svg.setPointerCapture(
-        evento.pointerId
-    );
+        vista.desplazamientoY
+        );
 }
 
 function moverVista(
@@ -2594,11 +2592,16 @@ function moverVista(
         return;
     }
     if (
-        !vista.huboArrastre
-    ) {
-        vista.huboArrastre = true;
-        ocultarEtiquetaNodo();
-    }
+    !vista.huboArrastre
+) {
+    vista.huboArrastre = true;
+
+    ocultarEtiquetaNodo();
+
+    modelo.svg.setPointerCapture(
+        evento.pointerId
+    );
+}
     evento.preventDefault();
     const puntoActual =
         obtenerPuntoSVG(
