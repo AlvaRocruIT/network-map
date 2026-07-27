@@ -2553,8 +2553,7 @@ function iniciarArrastreVista(
     vista.desplazamientoInicialX =
         vista.desplazamientoX;
     vista.desplazamientoInicialY =
-        vista.desplazamientoY
-        );
+        vista.desplazamientoY;
 }
 
 function moverVista(
