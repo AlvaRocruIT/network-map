@@ -2752,15 +2752,7 @@ function aplicarTransformacionVista(
         modelo.vista;
     modelo.viewport.setAttribute(
         "transform",
-        [
-            `translate(`,
-            `${vista.desplazamientoX} `,
-            `${vista.desplazamientoY}`,
-            `) `,
-            `scale(`,
-            `${vista.escala}`,
-            `)`
-        ].join("")
+        `matrix(${vista.escala} 0 0 ${vista.escala} ${vista.desplazamientoX} ${vista.desplazamientoY})`
     );
 }
 
