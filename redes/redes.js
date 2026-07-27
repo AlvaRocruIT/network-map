@@ -19,6 +19,13 @@ const CONFIG_LAYOUT = {
         contenedor: "#redes"
     },
 
+   VISTA: {
+        zoomMinimo: 0.35,
+        zoomMaximo: 5,
+        factorRueda: 1.15,
+        umbralArrastre: 4
+    },
+
     PESOS: {
         permanecerEnUbicacion: 0.23,
         permanecerEnCluster: 0.23,
@@ -34,14 +41,11 @@ const CONFIG_LAYOUT = {
  
     DISTANCIAS: {
         jerarquiaLocal: 34,
-    
         separacionNivelesUbicacion: 38,
         separacionNodosAnillo: 14,
         radioNucleoUbicacion: 18,
-    
         separacionUbicaciones: 22,
         separacionClusters: 60,
-    
         separacionRamas: 20,
         margenColision: 5,
         margenMapa: 60
@@ -232,7 +236,28 @@ function construirModelo(personas) {
         raiz,
         svg: null,
         viewport: null,
-        capas: null
+        capas: null,
+        vista: crearEstadoVista()
+    };
+}
+
+    /* ---------------ZOOM--------------- */
+function crearEstadoVista() {
+    return {
+        escala: 1,
+        desplazamientoX: 0,
+        desplazamientoY: 0,
+        modo: "mapa",
+        arrastrando: false,
+        huboArrastre: false,
+        suprimirProximoClick: false,
+        punteroId: null,
+        inicioClienteX: 0,
+        inicioClienteY: 0,
+        inicioSVGX: 0,
+        inicioSVGY: 0,
+        desplazamientoInicialX: 0,
+        desplazamientoInicialY: 0
     };
 }
 
@@ -656,16 +681,14 @@ function prepararSVG(modelo) {
     );
     svg.append(viewport);
     contenedor.append(svg);
-    svg.addEventListener(
-    "click",
-    ocultarEtiquetaNodo
-    );
     modelo.svg = svg;
     modelo.viewport = viewport;
     modelo.capas = {
         conexiones,
         nodos
     };
+    configurarInteraccionVista(modelo);
+    aplicarTransformacionVista(modelo);
 }
 
     /* ---------------CÁLCULO DEL LAYOUT--------------- */
@@ -2353,6 +2376,410 @@ function calcularLimites(nodos) {
     };
 }
 
+/* ---------------PAN Y ZOOM--------------- */
+
+function configurarInteraccionVista(
+    modelo
+) {
+    const svg =
+        modelo.svg;
+    svg.addEventListener(
+        "wheel",
+        evento =>
+            manejarRuedaVista(
+                modelo,
+                evento
+            ),
+        {
+            passive: false
+        }
+    );
+    svg.addEventListener(
+        "pointerdown",
+        evento =>
+            iniciarArrastreVista(
+                modelo,
+                evento
+            )
+    );
+    svg.addEventListener(
+        "pointermove",
+        evento =>
+            moverVista(
+                modelo,
+                evento
+            )
+    );
+    svg.addEventListener(
+        "pointerup",
+        evento =>
+            finalizarArrastreVista(
+                modelo,
+                evento
+            )
+    );
+    svg.addEventListener(
+        "pointercancel",
+        evento =>
+            cancelarArrastreVista(
+                modelo,
+                evento
+            )
+    );
+    svg.addEventListener(
+        "click",
+        evento =>
+            manejarClickFondoVista(
+                modelo,
+                evento
+            )
+    );
+    svg.addEventListener(
+        "dblclick",
+        evento => {
+            evento.preventDefault();
+            restablecerVista(
+                modelo
+            );
+        }
+    );
+}
+
+function manejarRuedaVista(
+    modelo,
+    evento
+) {
+    evento.preventDefault();
+    const vista =
+        modelo.vista;
+    const configuracion =
+        CONFIG_LAYOUT
+            .VISTA;
+    const factor =
+        evento.deltaY < 0
+            ? configuracion.factorRueda
+            : 1
+              /
+              configuracion.factorRueda;
+    const escalaAnterior =
+        vista.escala;
+    const escalaNueva =
+        limitarValor(
+            escalaAnterior
+            *
+            factor,
+            configuracion.zoomMinimo,
+            configuracion.zoomMaximo
+        );
+
+    if (
+        escalaNueva ===
+        escalaAnterior
+    ) {
+        return;
+    }
+    const puntoCursor =
+        obtenerPuntoSVG(
+            modelo.svg,
+            evento.clientX,
+            evento.clientY
+        );
+    const puntoLocalX =
+        (
+            puntoCursor.x
+            -
+            vista.desplazamientoX
+        )
+        /
+        escalaAnterior;
+    const puntoLocalY =
+        (
+            puntoCursor.y
+            -
+            vista.desplazamientoY
+        )
+        /
+        escalaAnterior;
+    vista.escala =
+        escalaNueva;
+    vista.desplazamientoX =
+        puntoCursor.x
+        -
+        puntoLocalX
+        *
+        escalaNueva;
+    vista.desplazamientoY =
+        puntoCursor.y
+        -
+        puntoLocalY
+        *
+        escalaNueva;
+    ocultarEtiquetaNodo();
+    aplicarTransformacionVista(
+        modelo
+    );
+}
+
+function iniciarArrastreVista(
+    modelo,
+    evento
+) {
+    if (
+        evento.button !== 0
+    ) {
+        return;
+    }
+    const vista =
+        modelo.vista;
+    const punto =
+        obtenerPuntoSVG(
+            modelo.svg,
+            evento.clientX,
+            evento.clientY
+        );
+    vista.arrastrando = true;
+    vista.huboArrastre = false;
+    vista.punteroId =
+        evento.pointerId;
+    vista.inicioClienteX =
+        evento.clientX;
+    vista.inicioClienteY =
+        evento.clientY;
+    vista.inicioSVGX =
+        punto.x;
+    vista.inicioSVGY =
+        punto.y;
+    vista.desplazamientoInicialX =
+        vista.desplazamientoX;
+    vista.desplazamientoInicialY =
+        vista.desplazamientoY;
+    modelo.svg.setPointerCapture(
+        evento.pointerId
+    );
+}
+
+function moverVista(
+    modelo,
+    evento
+) {
+    const vista =
+        modelo.vista;
+    if (
+        !vista.arrastrando
+        ||
+        evento.pointerId !==
+        vista.punteroId
+    ) {
+        return;
+    }
+    const movimientoCliente =
+        Math.hypot(
+            evento.clientX
+            -
+            vista.inicioClienteX,
+            evento.clientY
+            -
+            vista.inicioClienteY
+        );
+    if (
+        !vista.huboArrastre
+        &&
+        movimientoCliente
+        <
+        CONFIG_LAYOUT
+            .VISTA
+            .umbralArrastre
+    ) {
+        return;
+    }
+    if (
+        !vista.huboArrastre
+    ) {
+        vista.huboArrastre = true;
+        ocultarEtiquetaNodo();
+    }
+    evento.preventDefault();
+    const puntoActual =
+        obtenerPuntoSVG(
+            modelo.svg,
+            evento.clientX,
+            evento.clientY
+        );
+    vista.desplazamientoX =
+        vista.desplazamientoInicialX
+        +
+        puntoActual.x
+        -
+        vista.inicioSVGX;
+    vista.desplazamientoY =
+        vista.desplazamientoInicialY
+        +
+        puntoActual.y
+        -
+        vista.inicioSVGY;
+    aplicarTransformacionVista(
+        modelo
+    );
+}
+
+function finalizarArrastreVista(
+    modelo,
+    evento
+) {
+    const vista =
+        modelo.vista;
+    if (
+        evento.pointerId !==
+        vista.punteroId
+    ) {
+        return;
+    }
+    if (
+        vista.huboArrastre
+    ) {
+        vista.suprimirProximoClick =
+            true;
+    }
+    liberarCapturaPuntero(
+        modelo.svg,
+        evento.pointerId
+    );
+    vista.arrastrando = false;
+    vista.punteroId = null;
+}
+
+function cancelarArrastreVista(
+    modelo,
+    evento
+) {
+    const vista =
+        modelo.vista;
+    if (
+        evento.pointerId !==
+        vista.punteroId
+    ) {
+        return;
+    }
+    liberarCapturaPuntero(
+        modelo.svg,
+        evento.pointerId
+    );
+    vista.arrastrando = false;
+    vista.huboArrastre = false;
+    vista.punteroId = null;
+}
+
+function liberarCapturaPuntero(
+    svg,
+    pointerId
+) {
+    if (
+        svg.hasPointerCapture(pointerId)
+    ) {
+        svg.releasePointerCapture(pointerId);
+    }
+}
+
+function manejarClickFondoVista(
+    modelo
+) {
+    if (
+        consumirClickSuprimido(modelo)
+    ) {
+        return;
+    }
+    ocultarEtiquetaNodo();
+}
+
+function consumirClickSuprimido(
+    modelo
+) {
+    if (
+        !modelo
+            .vista
+            .suprimirProximoClick
+    ) {
+        return false;
+    }
+    modelo
+        .vista
+        .suprimirProximoClick =
+        false;
+
+    return true;
+}
+
+function restablecerVista(
+    modelo
+) {
+    const vista =
+        modelo.vista;
+    vista.escala = 1;
+    vista.desplazamientoX = 0;
+    vista.desplazamientoY = 0;
+    vista.modo = "mapa";
+    vista.arrastrando = false;
+    vista.huboArrastre = false;
+    vista.suprimirProximoClick = false;
+    vista.punteroId = null;
+    ocultarEtiquetaNodo();
+    aplicarTransformacionVista(
+        modelo
+    );
+}
+
+function aplicarTransformacionVista(
+    modelo
+) {
+    const vista =
+        modelo.vista;
+    modelo.viewport.setAttribute(
+        "transform",
+        [
+            `translate(`,
+            `${vista.desplazamientoX} `,
+            `${vista.desplazamientoY}`,
+            `) `,
+            `scale(`,
+            `${vista.escala}`,
+            `)`
+        ].join("")
+    );
+}
+
+function obtenerPuntoSVG(
+    svg,
+    clienteX,
+    clienteY
+) {
+    const punto =
+        svg.createSVGPoint();
+    punto.x =
+        clienteX;
+
+    punto.y =
+        clienteY;
+
+    const matriz =
+        svg.getScreenCTM();
+    if (
+        !matriz
+    ) {
+        return {
+            x: 0,
+            y: 0
+        };
+    }
+    const transformado =
+        punto.matrixTransform(
+            matriz.inverse()
+        );
+    return {
+        x: transformado.x,
+        y: transformado.y
+    };
+}
+
     /* ---------------RENDERIZADO--------------- */
 function dibujarMapa(modelo) {
     dibujarConexiones(modelo);
@@ -2391,7 +2818,10 @@ function dibujarNodos(modelo) {
         document.createDocumentFragment();
     modelo.nodos.forEach(
         nodo => {
-            const grupo = crearGrupoNodo(nodo);
+            const grupo = crearGrupoNodo(
+                nodo,
+                modelo
+            );
             fragmento.append(grupo);
         }
     );
@@ -2401,7 +2831,10 @@ function dibujarNodos(modelo) {
         .append(fragmento);
 }
 
-function crearGrupoNodo(nodo) {
+function crearGrupoNodo(
+    nodo,
+    modelo
+) {
     const clases = [
         "mapa-redes__nodo"
     ];
@@ -2448,12 +2881,19 @@ function crearGrupoNodo(nodo) {
         "click",
         evento => {
             evento.stopPropagation();
-            mostrarEtiquetaNodo(
-                nodo,
-                evento
-            );
+            if (
+            consumirClickSuprimido(
+                modelo
+            )
+        ) {
+            return;
         }
-    );
+        mostrarEtiquetaNodo(
+            nodo,
+            evento
+        );
+    }
+);
     return grupo;
 }
 
