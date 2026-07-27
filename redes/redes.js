@@ -249,6 +249,8 @@ function crearEstadoVista() {
         desplazamientoX: 0,
         desplazamientoY: 0,
         modo: "mapa",
+        clusterActivo: null,
+        vistaAnterior: null,
         arrastrando: false,
         huboArrastre: false,
         suprimirProximoClick: false,
@@ -2804,9 +2806,13 @@ function dibujarConexiones(modelo) {
                         x1: conexion.superior.x,
                         y1: conexion.superior.y,
                         x2: conexion.subordinado.x,
-                        y2: conexion.subordinado.y
-                    }
-                )
+                        y2: conexion.subordinado.y,
+                        "data-cluster-superior":
+                            conexion.superior.clusterRef.id,
+                        "data-cluster-subordinado":
+                            conexion.subordinado.clusterRef.id
+                        }
+                     )
             );
         }
     );
@@ -2858,8 +2864,8 @@ function crearGrupoNodo(
                     `translate(${nodo.x} ${nodo.y})`,
                 "data-id":
                     nodo.id,
-                "data-cluster":
-                    nodo.datos.cluster,
+                "data-cluster-id":
+                    nodo.clusterRef.id,
                 "data-ubicacion":
                     nodo.datos.ubicacion,
                 "data-superior":
@@ -2880,11 +2886,11 @@ function crearGrupoNodo(
     grupo.append(
         circulo
     );
-    grupo.addEventListener(
-        "click",
-        evento => {
-            evento.stopPropagation();
-            if (
+grupo.addEventListener(
+    "click",
+    evento => {
+        evento.stopPropagation();
+        if (
             consumirClickSuprimido(
                 modelo
             )
@@ -2897,7 +2903,20 @@ function crearGrupoNodo(
         );
     }
 );
-    return grupo;
+grupo.addEventListener(
+    "dblclick",
+    evento => {
+        evento.preventDefault();
+        evento.stopPropagation();
+        ocultarEtiquetaNodo();
+        alternarVistaCluster(
+            modelo,
+            nodo.clusterRef
+        );
+    }
+);
+
+return grupo;
 }
 
 function construirTituloNodo(nodo) {
