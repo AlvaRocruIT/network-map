@@ -16,6 +16,7 @@ const CONFIG_LAYOUT = {
     VINCULOS: {
         datos: "../data/organigrama.json"
     },
+ 
     SELECTORES: {
         contenedor: "#redes"
     },
@@ -105,9 +106,9 @@ async function iniciarMapa() {
 
         const modelo =
             construirModelo(personas);
-        prepararSVG(modelo);
-        calcularLayout(modelo);
-        dibujarMapa(modelo);
+            prepararSVG(modelo);
+            calcularLayout(modelo);
+            dibujarMapa(modelo);
     }
     catch (error) {
         console.error(error);
@@ -118,8 +119,8 @@ async function iniciarMapa() {
     /* ---------------CARGA DE DATOS--------------- */
 async function cargarDatos(url) {
     const respuesta = await fetch(url);
-    if (!respuesta.ok) {
-        throw new Error(
+        if (!respuesta.ok) {
+            throw new Error(
             `No fue posible cargar ${url}`
         );
     }
@@ -130,25 +131,23 @@ async function cargarDatos(url) {
         Array.isArray(json)
             ? json
             : json.personas;
-    validarPersonas(personas);
+        validarPersonas(personas);
     return personas;
 }
 
     /* ---------------VALIDACIONES--------------- */
 function validarConfiguracion() {
     const ruta = CONFIG_LAYOUT.VINCULOS.datos;
-    if (!ruta) {
-        throw new Error("Debes configurar la ruta del JSON.");
+        if (!ruta) {
+            throw new Error("Debes configurar la ruta del JSON.");
     }
     const suma = Object
         .values(CONFIG_LAYOUT.PESOS)
         .reduce(
-            (a, b) => a + b,
-            0
+            (a, b) => a + b, 0
         );
-    if (
-        Math.abs(suma - 1) > 0.0001
-    ) {
+    if (Math.abs(suma - 1) > 0.0001) 
+    {
         throw new Error(
             "Los pesos deben sumar 1."
         );
@@ -190,36 +189,23 @@ function validarPersonas(personas) {
 
     /* ---------------CONSTRUCCION DEL MODELO--------------- */
 function construirModelo(personas) {
-    const nodos =
-        prepararNodos(personas);
-    const indice =
-        crearIndiceNodos(nodos);
-    vincularJerarquia(
+    const nodos = prepararNodos(personas);
+    const indice = crearIndiceNodos(nodos);
+        vincularJerarquia(
         nodos,
         indice
     );
-    const conexiones =
-        prepararConexiones(nodos);
-    const clusters =
-        construirClusters(nodos);
-    const ubicaciones =
-        extraerUbicaciones(clusters);
-    const raices =
-        encontrarRaices(nodos);
-    const raiz =
-        seleccionarRaizGlobal(
+    const conexiones = prepararConexiones(nodos);
+    const clusters = construirClusters(nodos);
+    const ubicaciones = extraerUbicaciones(clusters);
+    const raices = encontrarRaices(nodos);
+    const raiz = seleccionarRaizGlobal(
             raices,
             nodos
         );
-    calcularJerarquia(
-        raices
-    );
-    detectarLideresLocales(
-        ubicaciones
-    );
-    calcularJerarquiaLocal(
-        ubicaciones
-    );
+    calcularJerarquia(raices);
+    detectarLideresLocales(ubicaciones);
+    calcularJerarquiaLocal(ubicaciones);
     if (raiz) {
         raiz.esRaizGlobal = true;
         raiz.radio =
@@ -319,23 +305,17 @@ function vincularJerarquia(
     nodos.forEach(nodo => {
         if (!nodo.datos.reportaA)
             return;
-        const superior =
-            indice.get(
-                nodo.datos.reportaA
-            );
+        const superior = indice.get(nodo.datos.reportaA);
         if (!superior)
             return;
-        nodo.superior =
-            superior;
+        nodo.superior = superior;
         superior
             .subordinados
             .push(nodo);
     });
 }
 
-function prepararConexiones(
-    nodos
-) {
+function prepararConexiones(nodos) {
     return nodos
         .filter(nodo => nodo.superior)
         .map(nodo => ({
@@ -359,28 +339,20 @@ function prepararConexiones(
 }
 
 function encontrarRaices(nodos) {
-    return nodos.filter(
-        nodo =>
-            nodo.superior === null
-    );
+    return nodos.filter(nodo => nodo.superior === null);
 }
 
 function seleccionarRaizGlobal(
     raices,
     nodos
 ) {
-    if (
-        raices.length === 1
-    ) {
+    if (raices.length === 1) {
         return raices[0];
     }
-    if (
-        raices.length > 1
-    ) {
+    if (raices.length > 1) {
         return [...raices]
             .sort(
-                (a, b) =>
-                    calcularPesoRama(b)
+                (a, b) => calcularPesoRama(b)
                     -
                     calcularPesoRama(a)
             )[0];
@@ -389,11 +361,9 @@ function seleccionarRaizGlobal(
 }
 
 function calcularJerarquia(raices) {
-    const visitados =
-        new Set();
+    const visitados = new Set();
     raices.forEach(
-        raiz =>
-            recorrerJerarquia(
+        raiz => recorrerJerarquia(
                 raiz,
                 0,
                 visitados
@@ -406,23 +376,13 @@ function recorrerJerarquia(
     profundidad,
     visitados
 ) {
-    if (
-        visitados.has(
-            nodo.id
-        )
-    ) {
+    if (visitados.has(nodo.id)) {
         return;
     }
-    visitados.add(
-        nodo.id
-    );
-    nodo.profundidadGlobal =
-        profundidad;
-    nodo.pesoRama =
-        calcularPesoRama(nodo);
-    nodo.subordinados.forEach(
-        hijo =>
-            recorrerJerarquia(
+    visitados.add(nodo.id);
+    nodo.profundidadGlobal = profundidad;
+    nodo.pesoRama = calcularPesoRama(nodo);
+    nodo.subordinados.forEach( hijo => recorrerJerarquia(
                 hijo,
                 profundidad + 1,
                 visitados
@@ -431,18 +391,13 @@ function recorrerJerarquia(
 }
 
 function calcularPesoRama(nodo) {
-    if (
-        nodo.subordinados.length === 0
-    ) {
+    if ( nodo.subordinados.length === 0) {
         return 1;
     }
     let peso = 1;
     nodo.subordinados.forEach(
         hijo => {
-            peso +=
-                calcularPesoRama(
-                    hijo
-                );
+            peso += calcularPesoRama(hijo);
         }
     );
     nodo.pesoRama =
@@ -452,18 +407,12 @@ function calcularPesoRama(nodo) {
 
     /* ---------------CLUSTERS--------------- */
 function construirClusters(nodos) {
-    const mapa =
-        new Map();
-    nodos.forEach(nodo => {
-        const nombre =
-            nodo
+    const mapa = new Map();
+    nodos.forEach(nodo => {const nombre = nodo
                 .datos
                 .cluster;
-        if (
-            !mapa.has(nombre)
-        ) {
-            mapa.set(
-                nombre,
+        if (!mapa.has(nombre)) {
+            mapa.set(nombre,
                 {
                     nombre,
                     id: slug(nombre),
@@ -475,33 +424,26 @@ function construirClusters(nodos) {
                 }
             );
         }
-        const cluster =
-            mapa.get(nombre);
+        const cluster = mapa.get(nombre);
         cluster
             .nodos
             .push(nodo);
-        nodo.clusterRef =
-            cluster;
+        nodo.clusterRef = cluster;
     });
     mapa.forEach(cluster => {
-        cluster.ubicaciones =
-            construirUbicaciones(cluster);
+        cluster.ubicaciones = construirUbicaciones(cluster);
     });
     return [...mapa.values()];
 }
 
     /* ---------------UBICACIONES--------------- */
 function construirUbicaciones(cluster) {
-    const mapa =
-        new Map();
+    const mapa = new Map();
     cluster.nodos.forEach(nodo => {
-        const nombre =
-            nodo
+        const nombre = nodo
                 .datos
                 .ubicacion;
-        if (
-            !mapa.has(nombre)
-        ) {
+        if (!mapa.has(nombre)) {
             mapa.set(
                 nombre,
                 {
@@ -519,53 +461,39 @@ function construirUbicaciones(cluster) {
                 }
             );
         }
-        const ubicacion =
-            mapa.get(nombre);
+        const ubicacion = mapa.get(nombre);
         ubicacion
             .nodos
-            .push(
-                nodo
-            );
-        nodo.ubicacionRef =
-            ubicacion;
+            .push(nodo);
+        nodo.ubicacionRef =ubicacion;
     });
     return [...mapa.values()];
 }
 
 function extraerUbicaciones(clusters) {
-    return clusters.flatMap(
-        cluster =>
-            cluster.ubicaciones
-    );
+    return clusters.flatMap(cluster =>  cluster.ubicaciones);
 }
 
-function detectarLideresLocales(
-    ubicaciones
-) {
+function detectarLideresLocales(ubicaciones) {
     ubicaciones.forEach(
         ubicacion => {
-            const ids =
-                new Set(
-                    ubicacion
-                        .nodos
-                        .map(
-                            n => n.id
-                        )
+            const ids = new Set(
+                ubicacion
+                    .nodos
+                    .map(n => n.id)
                 );
             ubicacion.lideresLocales =
                 ubicacion.nodos.filter(
-                    nodo =>
-                        !nodo.superior ||
+                    nodo => !nodo.superior ||
                         !ids.has(
                          nodo
                                 .superior
                                 .id
                         )
                 );
-            if (
-                ubicacion
-                    .lideresLocales
-                    .length === 0
+            if (ubicacion
+                .lideresLocales
+                .length === 0
             ) {
                 ubicacion
                     .lideresLocales
@@ -578,18 +506,14 @@ function detectarLideresLocales(
     );
 }
 
-function calcularJerarquiaLocal(
-    ubicaciones
-) {
+function calcularJerarquiaLocal(ubicaciones) {
     ubicaciones.forEach(
         ubicacion => {
-            const visitados =
-                new Set();
+            const visitados = new Set();
             ubicacion
                 .lideresLocales
                 .forEach(
-                    lider =>
-                        recorrerJerarquiaLocal(
+                    lider => recorrerJerarquiaLocal(
                             lider,
                             ubicacion,
                             0,
@@ -607,27 +531,20 @@ function recorrerJerarquiaLocal(
     visitados
 ) {
     if (
-        visitados.has(
-            nodo.id
-        )
+        visitados.has(nodo.id)
     ) {
         return;
     }
     if (
         nodo
-            .ubicacionRef !==
-        ubicacion
+            .ubicacionRef !== ubicacion
     ) {
         return;
     }
-    visitados.add(
-        nodo.id
-    );
-    nodo.profundidadLocal =
-        profundidad;
+    visitados.add(nodo.id);
+    nodo.profundidadLocal = profundidad;
     nodo.subordinados.forEach(
-        hijo =>
-            recorrerJerarquiaLocal(
+        hijo => recorrerJerarquiaLocal(
                 hijo,
                 ubicacion,
                 profundidad + 1,
@@ -638,8 +555,7 @@ function recorrerJerarquiaLocal(
 
     /* ---------------PREPARACIÓN SVG--------------- */
 function prepararSVG(modelo) {
-    const contenedor =
-        document.querySelector(
+    const contenedor = document.querySelector(
             CONFIG_LAYOUT
                 .SELECTORES
                 .contenedor
@@ -650,30 +566,22 @@ function prepararSVG(modelo) {
         );
     }
     contenedor.replaceChildren();
-    const svg =
-        crearSVG(
-            "svg",
+    const svg = crearSVG("svg",
             {
                 class:"mapa-redes"
             }
         );
-    const viewport =
-        crearSVG(
-            "g",
+    const viewport = crearSVG("g",
             {
                 class: "mapa-redes__viewport"
             }
         );
-    const conexiones =
-        crearSVG(
-            "g",
+    const conexiones = crearSVG("g",
             {
                 class: "mapa-redes__conexiones"
             }
         );
-    const nodos =
-        crearSVG(
-            "g",
+    const nodos = crearSVG("g",
             {
                 class: "mapa-redes__nodos"
             }
@@ -707,49 +615,30 @@ function calcularLayout(modelo) {
 function resolverLayoutUbicaciones(modelo) {
     modelo.ubicaciones.forEach(
         ubicacion => {
-            resolverLayoutUbicacion(
-                ubicacion
-            );
+            resolverLayoutUbicacion(ubicacion);
         }
     );
 }
-function resolverLayoutUbicacion(
-    ubicacion
-) {
-    const niveles =
-        agruparNodosPorNivelLocal(
-            ubicacion
-        );
+function resolverLayoutUbicacion(ubicacion) {
+    const niveles = agruparNodosPorNivelLocal(ubicacion);
 
-    if (
-        niveles.length === 0
-    ) {
+    if (niveles.length === 0) {
         ubicacion.radio =
             CONFIG_LAYOUT
                 .ESCALA
                 .crecimientoUbicacion;
-
         return;
     }
 
-    const raizGlobal =
-        ubicacion.nodos.find(
-            nodo =>
-                nodo.esRaizGlobal
-        );
-
+    const raizGlobal = ubicacion.nodos.find(
+            nodo => nodo.esRaizGlobal);
     let radioAnterior = 0;
-
     niveles.forEach(
         nivel => {
-            let nodosNivel =
-                [...nivel.nodos]
-                    .sort(
-                        compararNodosDeterministicamente
-                    );
+            let nodosNivel = [...nivel.nodos]
+                    .sort(compararNodosDeterministicamente);
 
-            if (
-                nivel.profundidad === 0
+            if (nivel.profundidad === 0
                 &&
                 raizGlobal
             ) {
@@ -757,16 +646,9 @@ function resolverLayoutUbicacion(
                 raizGlobal.yLocal = 0;
                 raizGlobal.angulo =
                     -Math.PI / 2;
-
                 nodosNivel =
-                    nodosNivel.filter(
-                        nodo =>
-                            nodo !== raizGlobal
-                    );
-
-                if (
-                    nodosNivel.length > 0
-                ) {
+                    nodosNivel.filter(nodo => nodo !== raizGlobal);
+                if (nodosNivel.length > 0) {
                     radioAnterior =
                         distribuirNivelEnAnillo(
                             nodosNivel,
@@ -776,7 +658,6 @@ function resolverLayoutUbicacion(
                             -Math.PI / 2
                         );
                 }
-
                 return;
             }
 
@@ -787,17 +668,13 @@ function resolverLayoutUbicacion(
             ) {
                 const nodo =
                     nodosNivel[0];
-
                 nodo.xLocal = 0;
                 nodo.yLocal = 0;
                 nodo.angulo =
                     -Math.PI / 2;
-
                 return;
             }
-
-            const radioJerarquico =
-                nivel.profundidad === 0
+            const radioJerarquico = nivel.profundidad === 0
                     ? CONFIG_LAYOUT
                         .DISTANCIAS
                         .radioNucleoUbicacion
@@ -806,9 +683,7 @@ function resolverLayoutUbicacion(
                         CONFIG_LAYOUT
                             .DISTANCIAS
                             .separacionNivelesUbicacion;
-
-            const radioMinimo =
-                Math.max(
+            const radioMinimo = Math.max(
                     radioJerarquico,
                     radioAnterior
                     +
@@ -818,9 +693,7 @@ function resolverLayoutUbicacion(
                         *
                         0.72
                 );
-
-            radioAnterior =
-                distribuirNivelEnAnillo(
+            radioAnterior = distribuirNivelEnAnillo(
                     nodosNivel,
                     radioMinimo,
                     -Math.PI / 2
@@ -832,36 +705,20 @@ function resolverLayoutUbicacion(
         }
     );
 
-    calcularRadioUbicacion(
-        ubicacion
-    );
+    calcularRadioUbicacion(ubicacion);
 }
 
-function agruparNodosPorNivelLocal(
-    ubicacion
-) {
-    const mapa =
-        new Map();
-    ubicacion.nodos.forEach(
-        nodo => {
-            const profundidad =
-                Math.max(
+function agruparNodosPorNivelLocal(ubicacion) {
+    const mapa =new Map();
+    ubicacion.nodos.forEach(nodo => {
+            const profundidad =Math.max(
                     0,
-                    Number(
-                        nodo.profundidadLocal
-                    )
+                    Number(nodo.profundidadLocal)
                     ||
                     0
                 );
-            if (
-                !mapa.has(
-                    profundidad
-                )
-            ) {
-                mapa.set(
-                    profundidad,
-                    []
-                );
+            if (!mapa.has(profundidad)) {
+                mapa.set(profundidad, []);
             }
             mapa
                 .get(profundidad)
@@ -896,13 +753,8 @@ function distribuirNivelEnAnillo(
     radioMinimo,
     anguloInicial
 ) {
-    if (
-        nodos.length === 0
-    ) {
-        return radioMinimo;
-    }
-    const radioNodoMaximo =
-        nodos.reduce(
+    if (nodos.length === 0) {return radioMinimo; }
+    const radioNodoMaximo = nodos.reduce(
             (
                 maximo,
                 nodo
@@ -913,37 +765,19 @@ function distribuirNivelEnAnillo(
                 ),
             0
         );
-    const separacionLineal =
-        radioNodoMaximo
-        *
-        2
-        +
+    const separacionLineal = radioNodoMaximo * 2 +
         CONFIG_LAYOUT
             .DISTANCIAS
             .separacionNodosAnillo;
-    const radioPorCantidad =
-        (
-            nodos.length
-            *
-            separacionLineal
-        )
+    const radioPorCantidad =(nodos.length*
+            separacionLineal)
         /
-        (
-            Math.PI
-            *
-            2
-        );
-    const radio =
-        Math.max(
+        (Math.PI * 2);
+    const radio = Math.max(
             radioMinimo,
             radioPorCantidad
         );
-    const pasoAngular =
-        (
-            Math.PI
-            *
-            2
-        )
+    const pasoAngular = (Math.PI*2)
         /
         nodos.length;
         nodos.forEach(
@@ -952,68 +786,36 @@ function distribuirNivelEnAnillo(
             indice
         ) => {
             const angulo =
-                anguloInicial
-                +
-                indice
-                *
+                anguloInicial +
+                indice *
                 pasoAngular;
-
-            nodo.angulo =
-                angulo;
-
-            nodo.xLocal =
-                Math.cos(angulo)
-                *
-                radio;
-
-            nodo.yLocal =
-                Math.sin(angulo)
-                *
-                radio;
+            nodo.angulo = angulo;
+            nodo.xLocal = Math.cos(angulo)
+                * radio;
+            nodo.yLocal = Math.sin(angulo)
+                * radio;
         }
     );
     return radio;
 }
 
-function compararNodosDeterministicamente(
-    a,
-    b
-) {
-    const diferenciaPeso =
-        b.pesoRama
-        -
-        a.pesoRama;
-
-    if (
-        diferenciaPeso !== 0
-    ) {
+function compararNodosDeterministicamente(a,b) {
+    const diferenciaPeso =b.pesoRama - a.pesoRama;
+    if (diferenciaPeso !== 0) {
         return diferenciaPeso;
     }
-    return a.id.localeCompare(
-        b.id
-    );
+    return a.id.localeCompare(b.id);
 }
 
-function calcularRadioUbicacion(
-    ubicacion
-) {
+function calcularRadioUbicacion(ubicacion) {
     let radio = 0;
     ubicacion.nodos.forEach(
-        nodo => {
-            const distancia =
-                Math.hypot(
-                    nodo.xLocal,
-                    nodo.yLocal
-                );
-            radio =
-                Math.max(
-                    radio,
-                    distancia
-                );
+        nodo => {const distancia =
+                Math.hypot(nodo.xLocal, nodo.yLocal);
+            radio = Math.max(radio, distancia);
         }
     );
-    ubicacion.radio =
-        radio
+    ubicacion.radio = radio
         +
         CONFIG_LAYOUT
             .ESCALA
@@ -1024,98 +826,60 @@ function calcularRadioUbicacion(
 function resolverLayoutClusters(modelo) {
     modelo.clusters.forEach(
         cluster => {
-            resolverLayoutCluster(
-                cluster
-            );
+            resolverLayoutCluster(cluster);
         }
     );
-    distribuirClusters(
-        modelo.clusters
-    );
+    distribuirClusters(modelo.clusters);
 }
 
 function resolverLayoutCluster(cluster) 
 {
-    const ubicaciones =
-        cluster.ubicaciones;
-    if (
-        ubicaciones.length === 0
-    ) {
+    const ubicaciones = cluster.ubicaciones;
+    if (ubicaciones.length === 0) {
         cluster.radio = 0;
         return;
     }
     const ubicacionCentral =
-        seleccionarUbicacionCentral(
-            cluster
-        );
+        seleccionarUbicacionCentral(cluster);
     ubicacionCentral.xLocal = 0;
     ubicacionCentral.yLocal = 0;
-    const ubicacionesColocadas = [
-        ubicacionCentral
-    ];
-    const ubicacionesPendientes =
-        ubicaciones
-            .filter(
-                ubicacion =>
-                    ubicacion !==
-                    ubicacionCentral
-            )
-            .sort(
-                compararUbicacionesPorTamano
-            );
+    const ubicacionesColocadas = [ubicacionCentral];
+    const ubicacionesPendientes = ubicaciones
+            .filter(ubicacion => ubicacion !== ubicacionCentral)
+            .sort(compararUbicacionesPorTamano);
     ubicacionesPendientes.forEach(
         ubicacion => {
             colocarUbicacionEnRacimo(
                 ubicacion,
                 ubicacionesColocadas
             );
-
-            ubicacionesColocadas.push(
-                ubicacion
-            );
+            ubicacionesColocadas.push(ubicacion);
         }
     );
-    calcularRadioCluster(
-        cluster
-    );
+    calcularRadioCluster(cluster);
 }
 
 function seleccionarUbicacionCentral(cluster)
 {
-    const ubicacionRaiz =
-        cluster.ubicaciones.find(
-            ubicacion =>
-                ubicacion.nodos.some(
-                    nodo =>
-                        nodo.esRaizGlobal
+    const ubicacionRaiz = cluster.ubicaciones.find(
+            ubicacion => ubicacion.nodos.some(
+                    nodo => odo.esRaizGlobal
                 )
         );
     if (ubicacionRaiz) {
         return ubicacionRaiz;
     }
     return [...cluster.ubicaciones]
-        .sort(
-            (a, b) =>
-                b.radio - a.radio
-        )[0];
+        .sort((a, b) => b.radio - a.radio)[0];
 }
 
-function compararUbicacionesPorTamano(
-    a,
-    b
-) {
-    const diferenciaRadio =
-        b.radio - a.radio;
-
-    if (
-        diferenciaRadio !== 0
-    ) {
+function compararUbicacionesPorTamano(a,b) {
+    const diferenciaRadio = b.radio - a.radio;
+    if (diferenciaRadio !== 0) {
         return diferenciaRadio;
     }
 
-    return a.id.localeCompare(
-        b.id
-    );
+    return a.id.localeCompare(b.id);
 }
 
 function colocarUbicacionEnRacimo(
@@ -1140,86 +904,52 @@ function colocarUbicacionEnRacimo(
                         ubicacionColocada.xLocal,
                         ubicacionColocada.yLocal
                     )
-                    +
-                    ubicacionColocada.radio;
-                return Math.max(
-                    maximo,
-                    alcance
-                );
+                    + ubicacionColocada.radio;
+                return Math.max(maximo, alcance);
             },
             0
         );
-    const limiteBusqueda =
-        alcanceActual
-        +
-        ubicacion.radio
-        +
-        separacion
-        +
-        configuracion.pasoRadial;
+    const limiteBusqueda = alcanceActual
+        + ubicacion.radio
+        + separacion
+        + configuracion.pasoRadial;
     for (
-        let radioBusqueda =
-            configuracion.pasoRadial;
-        radioBusqueda <=
-            limiteBusqueda;
-        radioBusqueda +=
-            configuracion.pasoRadial
+        let radioBusqueda = configuracion.pasoRadial;
+        radioBusqueda <= limiteBusqueda;
+        radioBusqueda += configuracion.pasoRadial
     ) {
-        const circunferencia =
-            Math.PI
-            *
-            2
-            *
-            radioBusqueda;
-        const cantidadAngulos =
-            Math.max(
+        const circunferencia = Math.PI
+            * 2
+            * radioBusqueda;
+        const cantidadAngulos = Math.max(
                 12,
-                Math.ceil(
-                    circunferencia
-                    /
-                    configuracion
+                Math.ceil(circunferencia/configuracion
                         .separacionAngularMinima
                 )
             );
-
         for (
             let indice = 0;
-            indice <
-                cantidadAngulos;
+            indice < cantidadAngulos;
             indice++
         ) {
-            const angulo =
-                indice
-                *
-                (
-                    Math.PI
-                    *
-                    2
-                    /
-                    cantidadAngulos
-                );
-            const candidato = {
-                x:
+            const angulo = indice
+                * (Math.PI * 2 / cantidadAngulos);
+            const candidato = { x:
                     Math.cos(angulo)
                     *
                     radioBusqueda,
-                y:
-                    Math.sin(angulo)
-                    *
-                    radioBusqueda
+                y: Math.sin(angulo)
+                    * radioBusqueda
             };
-            if (
-                posicionUbicacionDisponible(
+            if ( posicionUbicacionDisponible(
                     ubicacion,
                     candidato,
                     ubicacionesColocadas
                 )
             ) {
-                ubicacion.xLocal =
-                    candidato.x;
+                ubicacion.xLocal = candidato.x;
 
-                ubicacion.yLocal =
-                    candidato.y;
+                ubicacion.yLocal = candidato.y;
                 return;
             }
         }
@@ -1242,25 +972,15 @@ function posicionUbicacionDisponible(
         ubicacionColocada => {
             const dx =
                 candidato.x
-                -
-                ubicacionColocada.xLocal;
-            const dy =
-                candidato.y
-                -
-                ubicacionColocada.yLocal;
-            const distancia =
-                Math.hypot(
-                    dx,
-                    dy
-                );
+                - ubicacionColocada.xLocal;
+            const dy = candidato.y
+                - ubicacionColocada.yLocal;
+            const distancia = Math.hypot(dx, dy);
             const distanciaMinima =
                 ubicacion.radio
-                +
-                ubicacionColocada.radio
-                +
-                separacion;
-            return distancia >=
-                distanciaMinima;
+                + ubicacionColocada.radio
+                + separacion;
+            return distancia >= distanciaMinima;
         }
     );
 }
@@ -1270,209 +990,111 @@ function calcularRadioCluster(cluster)
     let radio = 0;
     cluster.ubicaciones.forEach(
         ubicacion => {
-            const distancia =
-                Math.hypot(
-                    ubicacion.xLocal,
-                    ubicacion.yLocal
-                )
-                +
-                ubicacion.radio;
-            radio =
-                Math.max(
+            const distancia = Math.hypot(ubicacion.xLocal, ubicacion.yLocal)
+                + ubicacion.radio;
+            radio = Math.max(
                     radio,
                     distancia
                 );
         }
     );
-    cluster.radio =
-        radio
+    cluster.radio = radio
         +
         CONFIG_LAYOUT
             .ESCALA
             .crecimientoCluster;
 }
 
-function distribuirClusters(
-    clusters
-) {
-    if (
-        clusters.length === 0
-    ) {
+function distribuirClusters(clusters) {
+    if (clusters.length === 0) {
         return;
     }
-
-    const clusterCentral =
-        clusters.find(
-            cluster =>
-                cluster.nodos.some(
-                    nodo =>
-                        nodo.esRaizGlobal
+    const clusterCentral = clusters.find(
+            cluster => cluster.nodos.some(
+                    nodo => nodo.esRaizGlobal
                 )
         )
         ??
         [...clusters]
-            .sort(
-                compararClustersPorPoblacion
-            )[0];
-
+            .sort(compararClustersPorPoblacion)[0];
     clusterCentral.x = 0;
     clusterCentral.y = 0;
-
-    const pendientes =
-        clusters
-            .filter(
-                cluster =>
-                    cluster !== clusterCentral
-            )
-            .sort(
-                compararClustersPorPoblacion
-            );
-
-    if (
-        pendientes.length === 0
-    ) {
+    const pendientes = clusters
+            .filter(cluster =>cluster !== clusterCentral)
+            .sort(compararClustersPorPoblacion);
+    if (pendientes.length === 0) {
         return;
     }
-
-    const poblacionMaxima =
-        Math.max(
-            ...pendientes.map(
-                cluster =>
-                    cluster.nodos.length
-            )
+    const poblacionMaxima = Math.max(
+            ...pendientes.map(cluster => cluster.nodos.length)
         );
-
-    const poblacionMinima =
-        Math.min(
-            ...pendientes.map(
-                cluster =>
-                    cluster.nodos.length
-            )
+    const poblacionMinima =Math.min(
+            ...pendientes.map(cluster => cluster.nodos.length)
         );
-
-    prepararSectoresClusters(
-        pendientes
-    );
-
-    const colocados = [
-        clusterCentral
-    ];
-
-    pendientes.forEach(
-        cluster => {
-            const radioGravitacional =
-                calcularRadioGravitacional(
+    prepararSectoresClusters(pendientes);
+    const colocados = [clusterCentral];
+    pendientes.forEach( cluster => {
+            const radioGravitacional = calcularRadioGravitacional(
                     cluster,
                     clusterCentral,
                     poblacionMinima,
                     poblacionMaxima
                 );
-
-            const radioMinimoSector =
-                calcularRadioMinimoSector(
-                    cluster
-                );
-
+            const radioMinimoSector = calcularRadioMinimoSector(cluster);
             const radioFisicoMinimo =
                 clusterCentral.radio
-                +
-                cluster.radio
+                + cluster.radio
                 +
                 CONFIG_LAYOUT
                     .DISTANCIAS
                     .separacionClusters;
-
             const radioInicial =
                 Math.max(
                     radioGravitacional,
                     radioMinimoSector,
                     radioFisicoMinimo
                 );
-
             colocarClusterEnSector(
                 cluster,
                 colocados,
                 radioInicial
             );
-
-            colocados.push(
-                cluster
-            );
+            colocados.push(cluster);
         }
     );
 }
 
-function prepararSectoresClusters(
-    clusters
-) {
-    const configuracion =
-        CONFIG_LAYOUT
-            .ORBITAS;
-
-    clusters.forEach(
-        cluster => {
+function prepararSectoresClusters(clusters) {
+    const configuracion = CONFIG_LAYOUT.ORBITAS;
+    clusters.forEach(cluster => {
             cluster.pesoSector =
-                configuracion
-                    .pesoBaseSector
-                +
-                cluster.nodos.length
-                *
-                configuracion
+                configuracion.pesoBaseSector
+                + cluster.nodos.length
+                * configuracion
                     .pesoPoblacionSector
-                +
-                cluster.radio
-                *
-                configuracion
+                + cluster.radio
+                * configuracion
                     .pesoTamanoSector;
         }
     );
+    const pesoTotal = clusters.reduce(
+            (total,cluster) => total
+                + cluster.pesoSector, 0);
 
-    const pesoTotal =
-        clusters.reduce(
-            (
-                total,
-                cluster
-            ) =>
-                total
-                +
-                cluster.pesoSector,
-            0
-        );
-
-    let anguloCursor =
-        -Math.PI / 2;
-
+    let anguloCursor = -Math.PI / 2;
     clusters.forEach(
         cluster => {
             const apertura =
-                (
-                    cluster.pesoSector
-                    /
-                    pesoTotal
-                )
-                *
-                Math.PI
-                *
-                2;
-
-            cluster.anguloInicio =
-                anguloCursor;
-
-            cluster.anguloFin =
-                anguloCursor
-                +
-                apertura;
-
-            cluster.anguloCentro =
-                anguloCursor
-                +
-                apertura / 2;
-
-            cluster.aperturaAngular =
-                apertura;
-
-            anguloCursor +=
-                apertura;
+                (cluster.pesoSector/pesoTotal)
+                * Math.PI
+                * 2;
+            cluster.anguloInicio = anguloCursor;
+            cluster.anguloFin = anguloCursor
+                + apertura;
+            cluster.anguloCentro = anguloCursor
+                + apertura / 2;
+            cluster.aperturaAngular = apertura;
+            anguloCursor += apertura;
         }
     );
 }
@@ -1484,88 +1106,50 @@ function calcularRadioGravitacional(
     poblacionMaxima
 ) {
     let densidadNormalizada = 1;
-
-    if (
-        poblacionMaxima !==
-        poblacionMinima
-    ) {
+    if (poblacionMaxima !== poblacionMinima) {
         densidadNormalizada =
-            (
-                cluster.nodos.length
-                -
-                poblacionMinima
-            )
+            (cluster.nodos.length - poblacionMinima)
             /
-            (
-                poblacionMaxima
-                -
-                poblacionMinima
-            );
+            (poblacionMaxima - poblacionMinima);
     }
 
     const factorPeriferia =
-        1
-        -
-        densidadNormalizada;
-
-    return (
-        clusterCentral.radio
-        +
-        CONFIG_LAYOUT
+        1 - densidadNormalizada;
+    return (clusterCentral.radio
+        + CONFIG_LAYOUT
             .DISTANCIAS
             .separacionClusters
-        +
-        CONFIG_LAYOUT
+        + CONFIG_LAYOUT
             .ORBITAS
             .radioBase
-        +
-        factorPeriferia
-        *
-        CONFIG_LAYOUT
+        + factorPeriferia
+        * CONFIG_LAYOUT
             .ORBITAS
             .expansionPorPoblacion
     );
 }
 
-function calcularRadioMinimoSector(
-    cluster
-) {
-    const margen =
-        CONFIG_LAYOUT
+function calcularRadioMinimoSector(cluster) {
+    const margen = CONFIG_LAYOUT
             .ORBITAS
             .margenAngularSector;
-
-    const medioAnguloDisponible =
-        cluster.aperturaAngular
-        /
-        2
-        -
-        margen;
-
+    const medioAnguloDisponible = cluster.aperturaAngular
+        / 2 - margen;
     const anguloSeguro =
-        Math.max(
-            0.04,
+        Math.max(0.04,
             Math.min(
                 medioAnguloDisponible,
                 Math.PI / 2
             )
         );
 
-    const radioConMargen =
-        cluster.radio
-        +
-        CONFIG_LAYOUT
+    const radioConMargen = cluster.radio
+        + CONFIG_LAYOUT
             .DISTANCIAS
-            .separacionClusters
-            *
-            0.35;
-
+            .separacionClusters *  0.35;
     return (
-        radioConMargen
-        /
-        Math.sin(
-            anguloSeguro
-        )
+        radioConMargen/
+        Math.sin(anguloSeguro)
     );
 }
 
@@ -1579,32 +1163,19 @@ function colocarClusterEnSector(
             .ORBITAS;
     const angulo =
         cluster.anguloCentro;
-    const limite =
-        radioInicial
-        +
-        configuracion
+    const limite = radioInicial
+        + configuracion
             .limiteBusqueda;
-    for (
-        let radioBusqueda =
-            radioInicial;
+    for (let radioBusqueda = radioInicial;
         radioBusqueda <= limite;
-        radioBusqueda +=
-            configuracion
+        radioBusqueda += configuracion
                 .pasoRadial
     ) {
         const candidato = {
-            x:
-                Math.cos(
-                    angulo
-                )
-                *
-                radioBusqueda,
-            y:
-                Math.sin(
-                    angulo
-                )
-                *
-                radioBusqueda
+            x:Math.cos(angulo)
+                * radioBusqueda,
+            y: Math.sin(angulo)
+                * radioBusqueda
         };
         if (
             posicionClusterDisponible(
@@ -1613,12 +1184,9 @@ function colocarClusterEnSector(
                 clustersColocados
             )
         ) {
-            cluster.x =
-                candidato.x;
-            cluster.y =
-                candidato.y;
-            cluster.radioOrbital =
-                radioBusqueda;
+            cluster.x = candidato.x;
+            cluster.y = candidato.y;
+            cluster.radioOrbital = radioBusqueda;
             return;
         }
     }
@@ -1627,31 +1195,17 @@ function colocarClusterEnSector(
     );
 }
 
-function compararClustersPorPoblacion(
-    a,
-    b
-) {
+function compararClustersPorPoblacion(a,b) {
     const diferenciaPoblacion =
-        b.nodos.length
-        -
-        a.nodos.length;
-    if (
-        diferenciaPoblacion !== 0
-    ) {
+        b.nodos.length - a.nodos.length;
+    if (diferenciaPoblacion !== 0) {
         return diferenciaPoblacion;
     }
-    const diferenciaRadio =
-        b.radio
-        -
-        a.radio;
-    if (
-        diferenciaRadio !== 0
-    ) {
+    const diferenciaRadio = b.radio - a.radio;
+    if (diferenciaRadio !== 0) {
         return diferenciaRadio;
     }
-    return a.id.localeCompare(
-        b.id
-    );
+    return a.id.localeCompare(b.id);
 }
 
 function posicionClusterDisponible(
@@ -1679,40 +1233,16 @@ function ubicacionesDeClustersSeparadas(
             .DISTANCIAS
             .separacionClusters;
     return cluster.ubicaciones.every(
-        ubicacion =>
-            clusterColocado
+        ubicacion => clusterColocado
                 .ubicaciones
-                .every(
-                    ubicacionColocada => {
-                        const x =
-                            candidato.x
-                            +
-                            ubicacion.xLocal;
-                        const y =
-                            candidato.y
-                            +
-                            ubicacion.yLocal;
-                        const xColocado =
-                            clusterColocado.x
-                            +
-                            ubicacionColocada.xLocal;
-                        const yColocado =
-                            clusterColocado.y
-                            +
-                            ubicacionColocada.yLocal;
-                        const distancia =
-                            Math.hypot(
-                                x - xColocado,
-                                y - yColocado
-                            );
-                        const distanciaMinima =
-                            ubicacion.radio
-                            +
-                            ubicacionColocada.radio
-                            +
-                            separacion;
-                        return distancia >=
-                            distanciaMinima;
+                .every(ubicacionColocada => {
+                        const x = candidato.x + ubicacion.xLocal;
+                        const y = candidato.y + ubicacion.yLocal;
+                        const xColocado = clusterColocado.x + ubicacionColocada.xLocal;
+                        const yColocado = clusterColocado.y + ubicacionColocada.yLocal;
+                        const distancia = Math.hypot( x - xColocado, y - yColocado);
+                        const distanciaMinima = ubicacion.radio + ubicacionColocada.radio + separacion;
+                        return distancia >= distanciaMinima;
                     }
                 )
     );
@@ -1726,18 +1256,10 @@ function resolverLayoutPersonas(modelo) {
                 ubicacion => {
                     ubicacion.nodos.forEach(
                         nodo => {
-                            nodo.xBase =
-                                cluster.x +
-                                ubicacion.xLocal +
-                                nodo.xLocal;
-                            nodo.yBase =
-                                cluster.y +
-                                ubicacion.yLocal +
-                                nodo.yLocal;
-                            nodo.x =
-                                nodo.xBase;
-                            nodo.y =
-                                nodo.yBase;
+                            nodo.xBase = cluster.x + ubicacion.xLocal + nodo.xLocal;
+                            nodo.yBase = cluster.y + ubicacion.yLocal + nodo.yLocal;
+                            nodo.x = nodo.xBase;
+                            nodo.y = nodo.yBase;
                         }
                     );
                 }
@@ -1760,41 +1282,17 @@ function simularLayout(modelo) {
             .intensidadInicial;
     for (
         let iteracion = 0;
-        iteracion <
-        CONFIG_LAYOUT
+        iteracion < CONFIG_LAYOUT
             .SIMULACION
             .iteraciones;
-        iteracion++
-    ) {
-        const desplazamientos =
-            crearMapaDesplazamientos(
-                modelo.nodos
-            );
-        aplicarFuerzaUbicacion(
-            modelo,
-            desplazamientos
-        );
-        aplicarFuerzaCluster(
-            modelo,
-            desplazamientos
-        );
-        aplicarFuerzaJerarquia(
-            modelo,
-            desplazamientos
-        );
-        aplicarFuerzaSuperior(
-            modelo,
-            desplazamientos
-        );
-        aplicarFuerzaColision(
-            modelo,
-            desplazamientos
-        );
-        aplicarDesplazamientos(
-            modelo.nodos,
-            desplazamientos,
-            intensidad
-        );
+        iteracion++) {
+        const desplazamientos = crearMapaDesplazamientos(modelo.nodos);
+        aplicarFuerzaUbicacion(modelo, desplazamientos);
+        aplicarFuerzaCluster(modelo, desplazamientos);
+        aplicarFuerzaJerarquia(modelo, desplazamientos);
+        aplicarFuerzaSuperior(modelo, desplazamientos);
+        aplicarFuerzaColision(modelo, desplazamientos);
+        aplicarDesplazamientos(modelo.nodos, desplazamientos, intensidad);
         intensidad *=
             CONFIG_LAYOUT
                 .SIMULACION
@@ -1803,15 +1301,10 @@ function simularLayout(modelo) {
 }
 
 function crearMapaDesplazamientos(nodos) {
-    const mapa =
-        new Map();
-    nodos.forEach(
-        nodo => {
-            mapa.set(
-                nodo.id,
+    const mapa = new Map();
+    nodos.forEach( nodo => {mapa.set(nodo.id,
                 {
-                    x: 0,
-                    y: 0
+                    x: 0, y: 0
                 }
             );
         }
@@ -1820,183 +1313,114 @@ function crearMapaDesplazamientos(nodos) {
 }
 
     /* ---------------FUERZA: PERMANECER EN UBICACIÓN--------------- */
-function aplicarFuerzaUbicacion(
-    modelo,
-    desplazamientos
-) {
+function aplicarFuerzaUbicacion(modelo, desplazamientos) {
     const peso =
         CONFIG_LAYOUT
             .PESOS
             .permanecerEnUbicacion
-        *
-        CONFIG_LAYOUT
+        * CONFIG_LAYOUT
             .FUERZAS
             .ubicacion;
     modelo.nodos.forEach(
         nodo => {
-            const objetivo =
-                obtenerObjetivoUbicacion(
-                    nodo
-                );
-            const dx =
-                objetivo.x - nodo.x;
-            const dy =
-                objetivo.y - nodo.y;
-            const desplazamiento =
-                desplazamientos.get(
-                    nodo.id
-                );
-            desplazamiento.x +=
-                dx * peso;
-            desplazamiento.y +=
-                dy * peso;
+            const objetivo = obtenerObjetivoUbicacion(nodo);
+            const dx = objetivo.x - nodo.x;
+            const dy = objetivo.y - nodo.y;
+            const desplazamiento = desplazamientos.get(nodo.id);
+            desplazamiento.x += dx * peso;
+            desplazamiento.y += dy * peso;
         }
     );
 }
 
-function obtenerObjetivoUbicacion(
-    nodo
-) {
-    return {
-        x:
-            nodo.clusterRef.x
-            +
-            nodo.ubicacionRef.xLocal
-            +
-            nodo.xLocal,
-        y:
-            nodo.clusterRef.y
-            +
-            nodo.ubicacionRef.yLocal
-            +
-            nodo.yLocal
-    };
+function obtenerObjetivoUbicacion(nodo) {
+    return {x: nodo.clusterRef.x
+                + nodo.ubicacionRef.xLocal
+                + nodo.xLocal,
+            y:
+                nodo.clusterRef.y
+                + nodo.ubicacionRef.yLocal
+                + nodo.yLocal
+            };
 }
 
     /* ---------------FUERZA: PERMANECER EN CLUSTER--------------- */
-function aplicarFuerzaCluster(
-    modelo,
-    desplazamientos
-) {
+function aplicarFuerzaCluster(modelo, desplazamientos) {
     const peso =
         CONFIG_LAYOUT
             .PESOS
             .permanecerEnCluster
-        *
-        CONFIG_LAYOUT
+        * CONFIG_LAYOUT
             .FUERZAS
             .cluster;
-    modelo.nodos.forEach(
-        nodo => {
-            const cluster =
-                nodo.clusterRef;
-            const dx =
-                cluster.x - nodo.x;
-            const dy =
-                cluster.y - nodo.y;
-            const desplazamiento =
-                desplazamientos.get(
-                    nodo.id
-                );
-            desplazamiento.x +=
-                dx * peso;
-            desplazamiento.y +=
-                dy * peso;
+    modelo.nodos.forEach(nodo => {
+            const cluster = nodo.clusterRef;
+            const dx = cluster.x - nodo.x;
+            const dy = cluster.y - nodo.y;
+            const desplazamiento = desplazamientos.get(nodo.id);
+            desplazamiento.x += dx * peso;
+            desplazamiento.y += dy * peso;
         }
     );
 }
 
     /* ---------------FUERZA: MANTENER JERARQUÍA--------------- */
-function aplicarFuerzaJerarquia(
-    modelo,
-    desplazamientos
-) {
+function aplicarFuerzaJerarquia(modelo,desplazamientos) {
     const peso =
         CONFIG_LAYOUT
             .PESOS
             .mantenerJerarquia
-        *
-        CONFIG_LAYOUT
+        * CONFIG_LAYOUT
             .FUERZAS
             .jerarquia;
     modelo.conexiones.forEach(
         conexion => {
-            if (
-                !conexion.mismaUbicacion
-            ) {
+            if (!conexion.mismaUbicacion) {
                 return;
             }
-            aplicarResorte(
-                conexion.superior,
+            aplicarResorte( conexion.superior,
                 conexion.subordinado,
                 CONFIG_LAYOUT
                     .DISTANCIAS
                     .jerarquiaLocal,
-                peso,
-                desplazamientos
+                peso, desplazamientos
             );
         }
     );
 }
 
     /* ---------------FUERZA: ACERCARSE AL SUPERIOR--------------- */
-function aplicarFuerzaSuperior(
-    modelo,
-    desplazamientos
-) {
+function aplicarFuerzaSuperior(modelo, desplazamientos) {
     const peso =
         CONFIG_LAYOUT
             .PESOS
             .acercarseAlSuperior
-        *
-        CONFIG_LAYOUT
+        *CONFIG_LAYOUT
             .FUERZAS
             .superior;
-    modelo.nodos.forEach(
-        nodo => {
-            if (
-                !nodo.superior
-                ||
-                nodo.ubicacionRef !==
-                nodo.superior.ubicacionRef
-            ) {
+    modelo.nodos.forEach(nodo => {
+            if (!nodo.superior || nodo.ubicacionRef !== nodo.superior.ubicacionRef) {
                 return;
             }
-            const dx =
-                nodo.superior.x
-                -
-                nodo.x;
-            const dy =
-                nodo.superior.y
-                -
-                nodo.y;
-            const desplazamiento =
-                desplazamientos.get(
-                    nodo.id
-                );
-            desplazamiento.x +=
-                dx * peso;
-            desplazamiento.y +=
-                dy * peso;
+            const dx = nodo.superior.x - nodo.x;
+            const dy = nodo.superior.y -nodo.y;
+            const desplazamiento = desplazamientos.get(nodo.id);
+                desplazamiento.x += dx * peso;
+                desplazamiento.y += dy * peso;
         }
     );
 }
 
     /* ---------------FUERZA: COLISIONES--------------- */
-function aplicarFuerzaColision(
-    modelo,
-    desplazamientos
-) {
+function aplicarFuerzaColision(modelo, desplazamientos) {
     const peso =
         CONFIG_LAYOUT
             .PESOS
             .evitarColisiones
-        *
-        CONFIG_LAYOUT
+        * CONFIG_LAYOUT
             .FUERZAS
             .colision;
-    modelo.ubicaciones.forEach(
-        ubicacion => {
+    modelo.ubicaciones.forEach(ubicacion => {
             aplicarColisionesDentroUbicacion(
                 ubicacion,
                 desplazamientos,
@@ -2011,15 +1435,12 @@ function aplicarColisionesDentroUbicacion(
     desplazamientos,
     peso
 ) {
-    const nodos =
-        ubicacion.nodos;
-    for (
-        let i = 0;
+    const nodos = ubicacion.nodos;
+    for (let i = 0;
         i < nodos.length;
         i++
     ) {
-        for (
-            let j = i + 1;
+        for (let j = i + 1;
             j < nodos.length;
             j++
         ) {
@@ -2033,131 +1454,52 @@ function aplicarColisionesDentroUbicacion(
     }
 }
 
-function separarParNodos(
-    a,
-    b,
-    desplazamientos,
-    peso
-) {
-    let dx =
-        b.x - a.x;
-    let dy =
-        b.y - a.y;
-    let distancia =
-        Math.hypot(
-            dx,
-            dy
-        );
-    if (
-    distancia === 0
-) {
-    const direccion =
-        obtenerDireccionDeterminista(
-            a.id,
-            b.id
-        );
-    dx =
-        direccion.x;
-
-    dy =
-        direccion.y;
+function separarParNodos(a, b, desplazamientos, peso) {
+    let dx = b.x - a.x;
+    let dy = b.y - a.y;
+    let distancia = Math.hypot(dx, dy);
+    if (distancia === 0) {
+    const direccion = obtenerDireccionDeterminista(a.id, b.id);
+    dx = direccion.x;
+    dy = direccion.y;
     distancia = 1;
 }
  
-    const distanciaMinima =
-        a.radio
-        +
-        b.radio
-        +
-        CONFIG_LAYOUT
+    const distanciaMinima = a.radio
+        + b.radio
+        + CONFIG_LAYOUT
             .DISTANCIAS
             .margenColision;
-    if (
-        distancia >=
-        distanciaMinima
-    ) {
+    if (distancia >= distanciaMinima) {
         return;
     }
-    const solapamiento =
-        distanciaMinima
-        -
-        distancia;
-    const ux =
-        dx / distancia;
-    const uy =
-        dy / distancia;
-    const fuerza =
-        solapamiento
-        *
-        0.5
-        *
-        peso;
-    const desplazamientoA =
-        desplazamientos.get(
-            a.id
-        );
-    const desplazamientoB =
-        desplazamientos.get(
-            b.id
-        );
-    desplazamientoA.x -=
-        ux * fuerza;
-    desplazamientoA.y -=
-        uy * fuerza;
-    desplazamientoB.x +=
-        ux * fuerza;
-    desplazamientoB.y +=
-        uy * fuerza;
+    const solapamiento = distanciaMinima - distancia;
+    const ux = dx / distancia;
+    const uy = dy / distancia;
+    const fuerza = solapamiento * 0.5 * peso;
+    const desplazamientoA = desplazamientos.get(a.id);
+    const desplazamientoB = desplazamientos.get(b.id);
+    desplazamientoA.x -= ux * fuerza;
+    desplazamientoA.y -= uy * fuerza;
+    desplazamientoB.x += ux * fuerza;
+    desplazamientoB.y += uy * fuerza;
 }
 
     /* ---------------RESORTE JERÁRQUICO--------------- */
-function aplicarResorte(
-    a,
-    b,
-    distanciaObjetivo,
-    peso,
-    desplazamientos
-) {
-    const dx =
-        b.x - a.x;
-    const dy =
-        b.y - a.y;
-    const distancia =
-        Math.hypot(
-            dx,
-            dy
-        )
-        || 1;
-    const diferencia =
-        distancia
-        -
-        distanciaObjetivo;
-    const ux =
-        dx / distancia;
-    const uy =
-        dy / distancia;
-    const fuerza =
-        diferencia
-        *
-        peso
-        *
-        0.5;
-    const desplazamientoA =
-        desplazamientos.get(
-            a.id
-        );
-    const desplazamientoB =
-        desplazamientos.get(
-            b.id
-        );
-    desplazamientoA.x +=
-        ux * fuerza;
-    desplazamientoA.y +=
-        uy * fuerza;
-    desplazamientoB.x -=
-        ux * fuerza;
-    desplazamientoB.y -=
-        uy * fuerza;
+function aplicarResorte(a, b, distanciaObjetivo, peso, desplazamientos) {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const distancia = Math.hypot(dx,dy) || 1;
+    const diferencia = distancia - distanciaObjetivo;
+    const ux = dx / distancia;
+    const uy = dy / distancia;
+    const fuerza = diferencia * peso * 0.5;
+    const desplazamientoA = desplazamientos.get(a.id);
+    const desplazamientoB = desplazamientos.get(b.id);
+          desplazamientoA.x += ux * fuerza;
+          desplazamientoA.y += uy * fuerza;
+          desplazamientoB.x -= ux * fuerza;
+          desplazamientoB.y -= uy * fuerza;
 }
 
     /* ---------------APLICACIÓN DE DESPLAZAMIENTOS--------------- */
@@ -2166,127 +1508,70 @@ function aplicarDesplazamientos(
     desplazamientos,
     intensidad
 ) {
-    nodos.forEach(
-        nodo => {
-            if (
-                nodo.esRaizGlobal
-            ) {
+    nodos.forEach(nodo => {
+            if (nodo.esRaizGlobal) {
                 return;
             }
             const desplazamiento =
-                desplazamientos.get(
-                    nodo.id
-                );
-            nodo.x +=
-                limitarValor(
-                    desplazamiento.x,
-                    -8,
-                    8
-                )
-                *
-                intensidad;
-            nodo.y +=
-                limitarValor(
-                    desplazamiento.y,
-                    -8,
-                    8
-                )
-                *
-                intensidad;
+                desplazamientos.get(nodo.id);
+            nodo.x += limitarValor(desplazamiento.x, -8, 8)
+                * intensidad;
+            nodo.y += limitarValor(desplazamiento.y, -8, 8)
+                * intensidad;
         }
     );
 }
 
     /* ---------------PASADA FINAL DE COLISIONES--------------- */
-function resolverColisiones(
-    modelo
-) {
+function resolverColisiones(modelo) {
     const iteraciones =
         CONFIG_LAYOUT
             .SIMULACION
             .iteracionesColisionFinal;
-    for (
-        let iteracion = 0;
-        iteracion < iteraciones;
-        iteracion++
-    ) {
+    for (let iteracion = 0;
+        iteracion < iteraciones; iteracion++) {
         const desplazamientos =
-            crearMapaDesplazamientos(
-                modelo.nodos
-            );
-        aplicarFuerzaColision(
-            modelo,
-            desplazamientos
-        );
-        aplicarDesplazamientos(
-            modelo.nodos,
-            desplazamientos,
-            0.65
-        );
+            crearMapaDesplazamientos(modelo.nodos);
+        aplicarFuerzaColision(modelo, desplazamientos);
+        aplicarDesplazamientos(modelo.nodos, desplazamientos, 0.65);
     }
 }
 
-function recalcularRadiosPostSimulacion(
-    modelo
-) {
-    modelo.ubicaciones.forEach(
-        ubicacion => {
-            recalcularRadioUbicacionFinal(
-                ubicacion
-            );
+function recalcularRadiosPostSimulacion(modelo) {
+    modelo.ubicaciones.forEach( ubicacion => {
+            recalcularRadioUbicacionFinal(ubicacion);
         }
     );
 
-    modelo.clusters.forEach(
-        cluster => {
-            calcularRadioCluster(
-                cluster
-            );
+    modelo.clusters.forEach(cluster => {
+            calcularRadioCluster(cluster);
         }
     );
 }
 
-function recalcularRadioUbicacionFinal(
-    ubicacion
-) {
-    const centroX =
-        ubicacion.cluster.x
-        +
-        ubicacion.xLocal;
-    const centroY =
-        ubicacion.cluster.y
-        +
-        ubicacion.yLocal;
+function recalcularRadioUbicacionFinal(ubicacion) {
+    const centroX = ubicacion.cluster.x
+        + ubicacion.xLocal;
+    const centroY = ubicacion.cluster.y
+        + ubicacion.yLocal;
     let radio = 0;
-    ubicacion.nodos.forEach(
-        nodo => {
-            const distancia =
-                Math.hypot(
+    ubicacion.nodos.forEach( nodo => {
+            const distancia =Math.hypot(
                     nodo.x - centroX,
                     nodo.y - centroY
                 )
-                +
-                nodo.radio;
-
-            radio =
-                Math.max(
-                    radio,
-                    distancia
-                );
+                + nodo.radio;
+            radio = Math.max(radio, distancia);
         }
     );
-    ubicacion.radio =
-        radio
-        +
-        CONFIG_LAYOUT
+    ubicacion.radio = radio
+        +CONFIG_LAYOUT
             .ESCALA
             .crecimientoUbicacion;
 }
 
     /* ---------------NORMALIZACIÓN--------------- */
-function normalizarMapa(
-    modelo
-) {
+function normalizarMapa(modelo) {
     const margen =
         CONFIG_LAYOUT
             .DISTANCIAS
@@ -2295,51 +1580,32 @@ function normalizarMapa(
     let alcanceMaximo = 0;
     modelo.nodos.forEach(
         nodo => {
-            const alcanceX =
-                Math.abs(nodo.x)
-                +
-                nodo.radio;
-            const alcanceY =
-                Math.abs(nodo.y)
-                +
-                nodo.radio;
-            alcanceMaximo =
-                Math.max(
+            const alcanceX = Math.abs(nodo.x)
+                + nodo.radio;
+            const alcanceY = Math.abs(nodo.y)
+                + nodo.radio;
+            alcanceMaximo = Math.max(
                     alcanceMaximo,
                     alcanceX,
                     alcanceY
                 );
         }
     );
-    const semilado =
-        alcanceMaximo
-        +
-        margen;
-    const lado =
-        semilado
-        *
-        2;
+    const semilado = alcanceMaximo + margen;
+    const lado = semilado * 2;
     modelo.nodos.forEach(
         nodo => {
-            nodo.x +=
-                semilado;
-            nodo.y +=
-                semilado;
+            nodo.x += semilado;
+            nodo.y += semilado;
         }
     );
     modelo.clusters.forEach(
-        cluster => {
-            cluster.x +=
-                semilado;
-            cluster.y +=
-                semilado;
+        cluster => { cluster.x += semilado;
+            cluster.y += semilado;
         }
     );
 
-    modelo.svg.setAttribute(
-        "viewBox",
-        `0 0 ${lado} ${lado}`
-    );
+    modelo.svg.setAttribute( "viewBox", `0 0 ${lado} ${lado}`);
 }
 
 function calcularLimites(nodos) {
@@ -2347,356 +1613,135 @@ function calcularLimites(nodos) {
     let minY = Infinity;
     let maxX = -Infinity;
     let maxY = -Infinity;
-    nodos.forEach(
-        nodo => {
-            minX =
-                Math.min(
-                    minX,
-                    nodo.x - nodo.radio
-                );
-            minY =
-                Math.min(
-                    minY,
-                    nodo.y - nodo.radio
-                );
-            maxX =
-                Math.max(
-                    maxX,
-                    nodo.x + nodo.radio
-                );
-            maxY =
-                Math.max(
-                    maxY,
-                    nodo.y + nodo.radio
-                );
+    nodos.forEach(nodo => {
+            minX = Math.min(minX, nodo.x - nodo.radio);
+            minY = Math.min( minY, nodo.y - nodo.radio);
+            maxX = Math.max( maxX, nodo.x + nodo.radio);
+            maxY = Math.max( maxY, nodo.y + nodo.radio);
         }
     );
-    return {
-        minX,
-        minY,
-        maxX,
-        maxY
-    };
+    return {minX, minY, maxX, maxY};
 }
 
 /* ---------------PAN Y ZOOM--------------- */
-function configurarInteraccionVista(
-    modelo
-) {
-    const svg =
-        modelo.svg;
-    svg.addEventListener(
-        "wheel",
-        evento =>
-            manejarRuedaVista(
-                modelo,
-                evento
-            ),
-        {
-            passive: false
-        }
-    );
-    svg.addEventListener(
-        "pointerdown",
-        evento =>
-            iniciarArrastreVista(
-                modelo,
-                evento
-            )
-    );
-    svg.addEventListener(
-        "pointermove",
-        evento =>
-            moverVista(
-                modelo,
-                evento
-            )
-    );
-    svg.addEventListener(
-        "pointerup",
-        evento =>
-            finalizarArrastreVista(
-                modelo,
-                evento
-            )
-    );
-    svg.addEventListener(
-        "pointercancel",
-        evento =>
-            cancelarArrastreVista(
-                modelo,
-                evento
-            )
-    );
-    svg.addEventListener(
-        "click",
-        evento =>
-            manejarClickFondoVista(
-                modelo,
-                evento
-            )
-      );
-      svg.addEventListener(
-      "dblclick",
-      evento => {
-          evento.preventDefault(); 
-          if (
-              modelo.vista.modo ===
-              "cluster"
-          ) {
-              salirVistaCluster(
-                  modelo
-              );
+function configurarInteraccionVista(modelo) {
+    const svg = modelo.svg;
+    svg.addEventListener("wheel", evento => manejarRuedaVista(modelo, evento),
+        {passive: false});
+    svg.addEventListener("pointerdown", evento => iniciarArrastreVista(modelo,evento));
+    svg.addEventListener("pointermove", evento => moverVista(modelo, evento));
+    svg.addEventListener("pointerup", evento => finalizarArrastreVista(modelo, evento));
+    svg.addEventListener("pointercancel", evento => cancelarArrastreVista(modelo, evento));
+    svg.addEventListener("click",evento => manejarClickFondoVista( modelo, evento));
+    svg.addEventListener( "dblclick", evento => { evento.preventDefault();
+                                                 if ( modelo.vista.modo === "cluster") {
+              salirVistaCluster(modelo);
               return;
           }
-          restablecerVista(
-              modelo
-          );
+          restablecerVista(modelo);
       }
   );
 }
 
-function manejarRuedaVista(
-    modelo,
-    evento
-) {
+function manejarRuedaVista(modelo, evento) {
     evento.preventDefault();
-    const vista =
-        modelo.vista;
+    const vista = modelo.vista;
     const configuracion =
         CONFIG_LAYOUT
             .VISTA;
-    const factor =
-        evento.deltaY < 0
-            ? configuracion.factorRueda
-            : 1
-              /
-              configuracion.factorRueda;
-    const escalaAnterior =
-        vista.escala;
-    const escalaNueva =
-        limitarValor(
-            escalaAnterior
-            *
-            factor,
-            configuracion.zoomMinimo,
-            configuracion.zoomMaximo
-        );
-    if (
-        escalaNueva ===
-        escalaAnterior
-    ) {
+    const factor = evento.deltaY < 0
+            ? configuracion.factorRueda : 1 / configuracion.factorRueda;
+    const escalaAnterior = vista.escala;
+    const escalaNueva = limitarValor(escalaAnterior* factor, configuracion.zoomMinimo,
+            configuracion.zoomMaximo);
+    if (escalaNueva === escalaAnterior) {
         return;
     }
-    const puntoCursor =
-        obtenerPuntoSVG(
-            modelo.svg,
-            evento.clientX,
-            evento.clientY
-        );
-    const puntoLocalX =
-        (
-            puntoCursor.x
-            -
-            vista.desplazamientoX
-        )
-        /
-        escalaAnterior;
-    const puntoLocalY =
-        (
-            puntoCursor.y
-            -
-            vista.desplazamientoY
-        )
-        /
-        escalaAnterior;
-    vista.escala =
-        escalaNueva;
-    vista.desplazamientoX =
-        puntoCursor.x
-        -
-        puntoLocalX
-        *
-        escalaNueva;
-    vista.desplazamientoY =
-        puntoCursor.y
-        -
-        puntoLocalY
-        *
-        escalaNueva;
+    const puntoCursor = obtenerPuntoSVG(modelo.svg, evento.clientX, evento.clientY);
+    const puntoLocalX = (puntoCursor.x - vista.desplazamientoX) / escalaAnterior;
+    const puntoLocalY = (puntoCursor.y - vista.desplazamientoY) / escalaAnterior;
+    vista.escala = escalaNueva;
+    vista.desplazamientoX = puntoCursor.x - puntoLocalX * escalaNueva;
+    vista.desplazamientoY = puntoCursor.y - puntoLocalY * escalaNueva;
     ocultarEtiquetaNodo();
-    aplicarTransformacionVista(
-        modelo
-    );
+    aplicarTransformacionVista(modelo);
 }
 
-function iniciarArrastreVista(
-    modelo,
-    evento
-) {
-    if (
-        evento.button !== 0
-    ) {
+function iniciarArrastreVista(modelo,evento) {
+    if (evento.button !== 0) {
         return;
     }
-    const vista =
-        modelo.vista;
-    const punto =
-        obtenerPuntoSVG(
-            modelo.svg,
-            evento.clientX,
-            evento.clientY
-        );
+    const vista = modelo.vista;
+    const punto = obtenerPuntoSVG(modelo.svg, evento.clientX, evento.clientY);
     vista.arrastrando = true;
     vista.huboArrastre = false;
-    vista.punteroId =
-        evento.pointerId;
-    vista.inicioClienteX =
-        evento.clientX;
-    vista.inicioClienteY =
-        evento.clientY;
-    vista.inicioSVGX =
-        punto.x;
-    vista.inicioSVGY =
-        punto.y;
-    vista.desplazamientoInicialX =
-        vista.desplazamientoX;
-    vista.desplazamientoInicialY =
-        vista.desplazamientoY;
+    vista.punteroId = evento.pointerId;
+    vista.inicioClienteX = evento.clientX;
+    vista.inicioClienteY = evento.clientY;
+    vista.inicioSVGX = punto.x;
+    vista.inicioSVGY = punto.y;
+    vista.desplazamientoInicialX = vista.desplazamientoX;
+    vista.desplazamientoInicialY = vista.desplazamientoY;
 }
 
-function moverVista(
-    modelo,
-    evento
-) {
-    const vista =
-        modelo.vista;
-    if (
-        !vista.arrastrando
-        ||
-        evento.pointerId !==
-        vista.punteroId
-    ) {
+function moverVista(modelo,evento) {
+    const vista = modelo.vista;
+    if (!vista.arrastrando || evento.pointerId !== vista.punteroId) {
         return;
     }
-    const movimientoCliente =
-        Math.hypot(
-            evento.clientX
-            -
-            vista.inicioClienteX,
-            evento.clientY
-            -
-            vista.inicioClienteY
-        );
-    if (
-        !vista.huboArrastre
-        &&
-        movimientoCliente
-        <
+    const movimientoCliente = Math.hypot( evento.clientX - vista.inicioClienteX,
+                                         evento.clientY - vista.inicioClienteY);
+    if (!vista.huboArrastre && movimientoCliente <
         CONFIG_LAYOUT
             .VISTA
             .umbralArrastre
     ) {
         return;
     }
-    if (
-    !vista.huboArrastre
-) {
-    vista.huboArrastre = true;
-
+    if (!vista.huboArrastre) {vista.huboArrastre = true;
     ocultarEtiquetaNodo();
-
-    modelo.svg.setPointerCapture(
-        evento.pointerId
-    );
+    modelo.svg.setPointerCapture(evento.pointerId);
 }
     evento.preventDefault();
-    const puntoActual =
-        obtenerPuntoSVG(
-            modelo.svg,
-            evento.clientX,
-            evento.clientY
-        );
-    vista.desplazamientoX =
-        vista.desplazamientoInicialX
-        +
-        puntoActual.x
-        -
-        vista.inicioSVGX;
-    vista.desplazamientoY =
-        vista.desplazamientoInicialY
-        +
-        puntoActual.y
-        -
-        vista.inicioSVGY;
-    aplicarTransformacionVista(
-        modelo
-    );
+    const puntoActual = obtenerPuntoSVG(modelo.svg, evento.clientX, evento.clientY);
+    vista.desplazamientoX = vista.desplazamientoInicialX + puntoActual.x - vista.inicioSVGX;
+    vista.desplazamientoY = vista.desplazamientoInicialY + puntoActual.y - vista.inicioSVGY;
+    aplicarTransformacionVista(modelo);
 }
 
-function finalizarArrastreVista(
-    modelo,
-    evento
-) {
-    const vista =
-        modelo.vista;
-    if (
-        evento.pointerId !==
-        vista.punteroId
-    ) {
+function finalizarArrastreVista(modelo, evento) {
+    const vista = modelo.vista;
+    if ( evento.pointerId !== vista.punteroId) {
         return;
     }
-    if (
-        vista.huboArrastre
-    ) {
-        vista.suprimirProximoClick =
-            true;
+    if (vista.huboArrastre) {
+        vista.suprimirProximoClick = true;
     }
-    liberarCapturaPuntero(
-        modelo.svg,
-        evento.pointerId
-    );
+    liberarCapturaPuntero(modelo.svg, evento.pointerId);
     vista.arrastrando = false;
     vista.punteroId = null;
 }
 
-function cancelarArrastreVista(
-    modelo,
-    evento
-) {
-    const vista =
-        modelo.vista;
-    if (
-        evento.pointerId !==
-        vista.punteroId
-    ) {
+function cancelarArrastreVista(modelo, evento) {
+    const vista = modelo.vista;
+    if (evento.pointerId !== vista.punteroId) {
         return;
     }
-    liberarCapturaPuntero(
-        modelo.svg,
-        evento.pointerId
-    );
+    liberarCapturaPuntero(modelo.svg, evento.pointerId);
     vista.arrastrando = false;
     vista.huboArrastre = false;
     vista.punteroId = null;
 }
 
-function liberarCapturaPuntero(
-    svg,
-    pointerId
-) {
-    if (
-        svg.hasPointerCapture(pointerId)
-    ) {
+function liberarCapturaPuntero(svg, pointerId) {
+    if (svg.hasPointerCapture(pointerId)) {
         svg.releasePointerCapture(pointerId);
     }
 }
 
 function manejarClickFondoVista(modelo) {
-    if (
-        consumirClickSuprimido(modelo)
-    ) {
-        return;
+    if (consumirClickSuprimido(modelo)) {
+        return; /*-------------------Hasta aquí llegué-----------------------*/
     }
     limpiarResaltadoJerarquia(modelo);
     ocultarEtiquetaNodo();
