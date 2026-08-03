@@ -125,12 +125,9 @@ async function cargarDatos(url) {
         );
     }
 
-    const json =
-        await respuesta.json();
-    const personas =
-        Array.isArray(json)
-            ? json
-            : json.personas;
+    const json = await respuesta.json();
+    const personas = Array.isArray(json)
+            ? json : json.personas;
         validarPersonas(personas);
     return personas;
 }
@@ -143,9 +140,7 @@ function validarConfiguracion() {
     }
     const suma = Object
         .values(CONFIG_LAYOUT.PESOS)
-        .reduce(
-            (a, b) => a + b, 0
-        );
+        .reduce((a, b) => a + b, 0);
     if (Math.abs(suma - 1) > 0.0001) 
     {
         throw new Error(
@@ -191,18 +186,13 @@ function validarPersonas(personas) {
 function construirModelo(personas) {
     const nodos = prepararNodos(personas);
     const indice = crearIndiceNodos(nodos);
-        vincularJerarquia(
-        nodos,
-        indice
+        vincularJerarquia(nodos, indice
     );
     const conexiones = prepararConexiones(nodos);
     const clusters = construirClusters(nodos);
     const ubicaciones = extraerUbicaciones(clusters);
     const raices = encontrarRaices(nodos);
-    const raiz = seleccionarRaizGlobal(
-            raices,
-            nodos
-        );
+    const raiz = seleccionarRaizGlobal(raices, nodos);
     calcularJerarquia(raices);
     detectarLideresLocales(ubicaciones);
     calcularJerarquiaLocal(ubicaciones);
@@ -287,21 +277,11 @@ function prepararNodos(personas) {
 }
 
 function crearIndiceNodos(nodos) {
-    return new Map(
-        nodos.map(
-            nodo => [
-                nodo.id,
-                nodo
-            ]
-        )
-    );
+    return new Map(nodos.map(nodo => [nodo.id, nodo]));
 }
 
     /* ---------------JERARQUÍA--------------- */
-function vincularJerarquia(
-    nodos,
-    indice
-) {
+function vincularJerarquia(nodos, indice) {
     nodos.forEach(nodo => {
         if (!nodo.datos.reportaA)
             return;
@@ -342,10 +322,7 @@ function encontrarRaices(nodos) {
     return nodos.filter(nodo => nodo.superior === null);
 }
 
-function seleccionarRaizGlobal(
-    raices,
-    nodos
-) {
+function seleccionarRaizGlobal(raices, nodos) {
     if (raices.length === 1) {
         return raices[0];
     }
