@@ -1741,15 +1741,13 @@ function liberarCapturaPuntero(svg, pointerId) {
 
 function manejarClickFondoVista(modelo) {
     if (consumirClickSuprimido(modelo)) {
-        return; /*-------------------Hasta aquí llegué-----------------------*/
+        return;
     }
     limpiarResaltadoJerarquia(modelo);
     ocultarEtiquetaNodo();
 }
 
-function consumirClickSuprimido(
-    modelo
-) {
+function consumirClickSuprimido(modelo) {
     if (
         !modelo
             .vista
@@ -1766,11 +1764,8 @@ function consumirClickSuprimido(
 
 function restablecerVista(modelo) 
 {
-    const vista =
-        modelo.vista;
-    mostrarMapaCompleto(
-        modelo
-    );
+    const vista = modelo.vista;
+    mostrarMapaCompleto(modelo);
     vista.escala = 1;
     vista.desplazamientoX = 0;
     vista.desplazamientoY = 0;
@@ -1783,16 +1778,11 @@ function restablecerVista(modelo)
     vista.punteroId = null;
     limpiarResaltadoJerarquia(modelo);
     ocultarEtiquetaNodo();
-    aplicarTransformacionVista(
-        modelo
-    );
+    aplicarTransformacionVista(modelo);
 }
 
-function aplicarTransformacionVista(
-    modelo
-) {
-    const vista =
-        modelo.vista;
+function aplicarTransformacionVista(modelo) {
+    const vista = modelo.vista;
     modelo.viewport.setAttribute(
         "transform",
         [
@@ -1807,118 +1797,57 @@ function aplicarTransformacionVista(
     );
 }
 
-function obtenerPuntoSVG(
-    svg,
-    clienteX,
-    clienteY
-) {
-    const punto =
-        svg.createSVGPoint();
-    punto.x =
-        clienteX;
-
-    punto.y =
-        clienteY;
-
-    const matriz =
-        svg.getScreenCTM();
-    if (
-        !matriz
-    ) {
-        return {
-            x: 0,
-            y: 0
-        };
+function obtenerPuntoSVG(svg, clienteX, clienteY) {
+    const punto = svg.createSVGPoint();
+    punto.x = clienteX;
+    punto.y = clienteY;
+    const matriz = svg.getScreenCTM();
+    if (!matriz) {
+        return {x: 0,y: 0};
     }
-    const transformado =
-        punto.matrixTransform(
-            matriz.inverse()
-        );
-    return {
-        x: transformado.x,
-        y: transformado.y
-    };
+    const transformado = punto.matrixTransform(matriz.inverse());
+    return {x: transformado.x, y: transformado.y};
 }
 
 /* ---------------VISTA AISLADA DE CLUSTER--------------- */
 
-function alternarVistaCluster(
-    modelo,
-    cluster
-) {
-    if (
-        !cluster
-        ||
-        cluster.nodos.length < 10
-    ) {
+function alternarVistaCluster(modelo, cluster) {
+    if (!cluster || cluster.nodos.length < 10) {
         return;
     }
-    if (
-        modelo.vista.modo ===
-        "cluster"
-    ) {
-        salirVistaCluster(
-            modelo
-        );
+    if (modelo.vista.modo ==="cluster") {
+        salirVistaCluster(modelo);
         return;
     }
-    entrarVistaCluster(
-        modelo,
-        cluster
-    );
+    entrarVistaCluster(modelo, cluster);
 }
 
-function entrarVistaCluster(
-    modelo,
-    cluster
-) {
-    const vista =
-        modelo.vista;
+function entrarVistaCluster(modelo, cluster) {
+    const vista = modelo.vista;
     vista.vistaAnterior = {
-        escala:
-            vista.escala,
-        desplazamientoX:
-            vista.desplazamientoX,
-        desplazamientoY:
-            vista.desplazamientoY
+        escala: vista.escala,
+        desplazamientoX: vista.desplazamientoX,
+        desplazamientoY: vista.desplazamientoY
     };
-    vista.modo =
-        "cluster";
-    vista.clusterActivo =
-        cluster.id;
+    vista.modo = "cluster";
+    vista.clusterActivo = cluster.id;
     ocultarEtiquetaNodo();
-    aplicarVisibilidadCluster(
-        modelo,
-        cluster.id
-    );
-    enfocarCluster(
-        modelo,
-        cluster
-    );
+    aplicarVisibilidadCluster(modelo, cluster.id);
+    enfocarCluster(modelo, cluster);
 }
 
-function salirVistaCluster(
-    modelo
-) {
-    const vista =
-        modelo.vista;
-    mostrarMapaCompleto(
-        modelo
-    );
+function salirVistaCluster(modelo) {
+    const vista = modelo.vista;
+    mostrarMapaCompleto(modelo);
 
-    if (
-        vista.vistaAnterior
-    ) {
-        vista.escala =
-            vista
+    if (vista.vistaAnterior) {
+        vista.escala = vista
                 .vistaAnterior
                 .escala;
-        vista.desplazamientoX =
-            vista
+        vista.desplazamientoX = vista
                 .vistaAnterior
                 .desplazamientoX;
-        vista.desplazamientoY =
-            vista
+        vista.desplazamientoY = vista
                 .vistaAnterior
                 .desplazamientoY;
     }
@@ -1927,154 +1856,90 @@ function salirVistaCluster(
         vista.desplazamientoX = 0;
         vista.desplazamientoY = 0;
     }
-    vista.modo =
-        "mapa";
-    vista.clusterActivo =
-        null;
-    vista.vistaAnterior =
-        null;
+    vista.modo = "mapa";
+    vista.clusterActivo = null;
+    vista.vistaAnterior = null;
     ocultarEtiquetaNodo();
-    aplicarTransformacionVista(
-        modelo
-    );
+    aplicarTransformacionVista(modelo);
 }
 
-function aplicarVisibilidadCluster(
-    modelo,
-    clusterId
-) {
-    const nodos =
-        modelo
+function aplicarVisibilidadCluster(modelo, clusterId) {
+    const nodos = modelo
             .capas
             .nodos
-            .querySelectorAll(
-                ".mapa-redes__nodo"
-            );
+            .querySelectorAll(".mapa-redes__nodo");
 
-    nodos.forEach(
-        elemento => {
-            const pertenece =
-                elemento.dataset
-                    .clusterId ===
-                clusterId;
-
-            elemento.style.display =
-                pertenece
+    nodos.forEach(elemento => {
+            const pertenece = elemento.dataset
+                    .clusterId === clusterId;
+            elemento.style.display = pertenece
                     ? ""
                     : "none";
         }
     );
 
-    const conexiones =
-        modelo
+    const conexiones = modelo
             .capas
             .conexiones
-            .querySelectorAll(
-                ".mapa-redes__conexion"
-            );
+            .querySelectorAll(".mapa-redes__conexion");
 
-    conexiones.forEach(
-        elemento => {
-            const superior =
-                elemento.dataset
+    conexiones.forEach( elemento => {
+            const superior = elemento.dataset
                     .clusterSuperior;
-
-            const subordinado =
-                elemento.dataset
+            const subordinado = elemento.dataset
                     .clusterSubordinado;
-
-            const esInterna =
-                superior ===
-                clusterId
-                &&
-                subordinado ===
-                clusterId;
-
-            elemento.style.display =
-                esInterna
+            const esInterna = superior === clusterId
+                && subordinado === clusterId;
+            elemento.style.display = esInterna
                     ? ""
                     : "none";
         }
     );
 }
 
-function mostrarMapaCompleto(
-    modelo
-) {
+function mostrarMapaCompleto(modelo) {
     modelo
         .capas
         .nodos
-        .querySelectorAll(
-            ".mapa-redes__nodo"
-        )
+        .querySelectorAll(".mapa-redes__nodo")
         .forEach(
             elemento => {
-                elemento.style.display =
-                    "";
+                elemento.style.display = "";
             }
         );
 
     modelo
         .capas
         .conexiones
-        .querySelectorAll(
-            ".mapa-redes__conexion"
-        )
+        .querySelectorAll(".mapa-redes__conexion")
         .forEach(
             elemento => {
-                elemento.style.display =
-                    "";
+                elemento.style.display = "";
             }
         );
 }
 
-function enfocarCluster(
-    modelo,
-    cluster
-) {
-    requestAnimationFrame(
-        () => {
-            const cajaVisible =
-                modelo
+function enfocarCluster(modelo, cluster) {
+    requestAnimationFrame(() => {
+            const cajaVisible = modelo
                     .capas
                     .nodos
                     .getBBox();
-            if (
-                cajaVisible.width <= 0
-                ||
-                cajaVisible.height <= 0
-            ) {
+            if (cajaVisible.width <= 0 || cajaVisible.height <= 0}) {
                 return;
             }
-            const viewBox =
-                modelo
+            const viewBox = modelo
                     .svg
                     .viewBox
                     .baseVal;
-            const margen =
-                0.82;
-            const escalaHorizontal =
-                (
-                    viewBox.width
-                    *
-                    margen
-                )
-                /
-                cajaVisible.width;
-            const escalaVertical =
-                (
-                    viewBox.height
-                    *
-                    margen
-                )
-                /
-                cajaVisible.height;
+            const margen = 0.82;
+            const escalaHorizontal = (viewBox.width * margen)
+                / cajaVisible.width;
+            const escalaVertical = (viewBox.height * margen)
+                / cajaVisible.height;
             const escalaObjetivo =
                 limitarValor(
-                    Math.min(
-                        escalaHorizontal,
-                        escalaVertical
-                    ),
+                    Math.min(escalaHorizontal, escalaVertical),
                     CONFIG_LAYOUT
                         .VISTA
                         .zoomMinimo,
@@ -2082,108 +1947,43 @@ function enfocarCluster(
                         .VISTA
                         .zoomMaximo
                 );
-            const centroClusterX =
-                cajaVisible.x
-                +
-                cajaVisible.width
-                /
-                2;
-            const centroClusterY =
-                cajaVisible.y
-                +
-                cajaVisible.height
-                /
-                2;
-            const centroVistaX =
-                viewBox.x
-                +
-                viewBox.width
-                /
-                2;
-            const centroVistaY =
-                viewBox.y
-                +
-                viewBox.height
-                /
-                2;
-            modelo.vista.escala =
-                escalaObjetivo;
-            modelo.vista.desplazamientoX =
-                centroVistaX
-                -
-                centroClusterX
-                *
-                escalaObjetivo;
-            modelo.vista.desplazamientoY =
-                centroVistaY
-                -
-                centroClusterY
-                *
-                escalaObjetivo;
-            aplicarTransformacionVista(
-                modelo
-            );
+            const centroClusterX = cajaVisible.x + cajaVisible.width / 2;
+            const centroClusterY = cajaVisible.y + cajaVisible.height / 2;
+            const centroVistaX = viewBox.x + viewBox.width / 2;
+            const centroVistaY = viewBox.y + viewBox.height / 2;
+            modelo.vista.escala = escalaObjetivo;
+            modelo.vista.desplazamientoX = centroVistaX - centroClusterX * escalaObjetivo;
+            modelo.vista.desplazamientoY = centroVistaY - centroClusterY * escalaObjetivo;
+            aplicarTransformacionVista(modelo);
         }
     );
 }
 
 /* ---------------RESALTADO JERÁRQUICO--------------- */
+function resaltarJerarquiaNodo(modelo, nodoSeleccionado) {
+    limpiarResaltadoJerarquia(modelo);
 
-function resaltarJerarquiaNodo(
-    modelo,
-    nodoSeleccionado
-) {
-    limpiarResaltadoJerarquia(
-        modelo
-    );
+    const nodosRelacionados = obtenerNodosJerarquiaDestacados(nodoSeleccionado);
 
-    const nodosRelacionados =
-        obtenerNodosJerarquiaDestacados(
-            nodoSeleccionado
-        );
-
-    const idsRelacionados =
-        new Set(
-            nodosRelacionados.map(
-                nodo => nodo.id
-            )
+    const idsRelacionados = new Set(
+            nodosRelacionados.map(nodo => nodo.id)
         );
 
     modelo
         .capas
         .nodos
-        .querySelectorAll(
-            ".mapa-redes__nodo"
-        )
-        .forEach(
-            elemento => {
-                if (
-                    elemento.style.display ===
-                    "none"
-                ) {
+        .querySelectorAll(".mapa-redes__nodo")
+        .forEach(elemento => {
+                if (elemento.style.display === "none") {
                     return;
                 }
-
-                const id =
-                    elemento.dataset.id;
-
-                if (
-                    id ===
-                    nodoSeleccionado.id
-                ) {
-                    elemento.classList.add(
-                        "mapa-redes__nodo--seleccionado"
-                    );
-
+                const id = elemento.dataset.id;
+                if (id === nodoSeleccionado.id) {
+                    elemento.classList.add("mapa-redes__nodo--seleccionado");
                     return;
                 }
-
-                if (
-                    idsRelacionados.has(id)
-                ) {
-                    elemento.classList.add(
-                        "mapa-redes__nodo--relacionado"
-                    );
+                if (idsRelacionados.has(id)) {
+                    elemento.classList.add("mapa-redes__nodo--relacionado");
                 }
             }
         );
@@ -2191,28 +1991,16 @@ function resaltarJerarquiaNodo(
     modelo
         .capas
         .conexiones
-        .querySelectorAll(
-            ".mapa-redes__conexion"
-        )
-        .forEach(
-            elemento => {
-                if (
-                    elemento.style.display ===
-                    "none"
-                ) {
+        .querySelectorAll(".mapa-redes__conexion")
+        .forEach(elemento => {
+                if (elemento.style.display === "none") {
                     return;
                 }
 
-                elemento.classList.add(
-                    "mapa-redes__conexion--atenuada"
-                );
-
-                const superiorId =
-                    elemento.dataset
+                elemento.classList.add("mapa-redes__conexion--atenuada");
+                const superiorId = elemento.dataset
                         .superiorId;
-
-                const subordinadoId =
-                    elemento.dataset
+                const subordinadoId = elemento.dataset
                         .subordinadoId;
 
                 if (
@@ -2222,56 +2010,28 @@ function resaltarJerarquiaNodo(
                         subordinadoId
                     )
                 ) {
-                    elemento.classList.remove(
-                        "mapa-redes__conexion--atenuada"
-                    );
-
-                    elemento.classList.add(
-                        "mapa-redes__conexion--destacada"
-                    );
+                    elemento.classList.remove("mapa-redes__conexion--atenuada");
+                    elemento.classList.add("mapa-redes__conexion--destacada");
                 }
             }
         );
 }
 
-function obtenerNodosJerarquiaDestacados(
-    nodoSeleccionado
-) {
-    const resultado =
-        new Map();
-
-    resultado.set(
-        nodoSeleccionado.id,
-        nodoSeleccionado
-    );
-
-    let superior =
-        nodoSeleccionado.superior;
-
+function obtenerNodosJerarquiaDestacados(nodoSeleccionado) {
+    const resultado = new Map();
+    resultado.set(nodoSeleccionado.id, nodoSeleccionado);
+    let superior = nodoSeleccionado.superior;
     while (superior) {
-        resultado.set(
-            superior.id,
-            superior
-        );
-
-        superior =
-            superior.superior;
+        resultado.set(superior.id, superior);
+        superior = superior.superior;
     }
-
     nodoSeleccionado
         .subordinados
-        .forEach(
-            subordinado => {
-                resultado.set(
-                    subordinado.id,
-                    subordinado
-                );
+        .forEach(subordinado => {
+                resultado.set(subordinado.id, subordinado);
             }
         );
-
-    return [
-        ...resultado.values()
-    ];
+    return [...resultado.values()];
 }
 
 function esConexionJerarquicaDestacada(
@@ -2279,48 +2039,29 @@ function esConexionJerarquicaDestacada(
     superiorId,
     subordinadoId
 ) {
-    if (
-        superiorId ===
-        nodoSeleccionado.id
-        &&
-        nodoSeleccionado
+    if (superiorId === nodoSeleccionado.id
+        && nodoSeleccionado
             .subordinados
-            .some(
-                nodo =>
-                    nodo.id ===
-                    subordinadoId
-            )
+            .some(nodo => nodo.id === subordinadoId )
     ) {
         return true;
     }
-    let nodoActual =
-        nodoSeleccionado;
-    while (
-        nodoActual.superior
-    ) {
-        if (
-            superiorId ===
-            nodoActual.superior.id
-            &&
-            subordinadoId ===
-            nodoActual.id
+    let nodoActual = nodoSeleccionado;
+    while (nodoActual.superior) {
+        if (superiorId === nodoActual.superior.id
+            && subordinadoId === nodoActual.id
         ) {
             return true;
         }
-        nodoActual =
-            nodoActual.superior;
+        nodoActual = nodoActual.superior;
     }
     return false;
 }
-function limpiarResaltadoJerarquia(
-    modelo
-) {
+function limpiarResaltadoJerarquia(modelo) {
     modelo
         .capas
         .nodos
-        .querySelectorAll(
-            ".mapa-redes__nodo"
-        )
+        .querySelectorAll(".mapa-redes__nodo")
         .forEach(
             elemento => {
                 elemento.classList.remove(
@@ -2332,9 +2073,7 @@ function limpiarResaltadoJerarquia(
     modelo
         .capas
         .conexiones
-        .querySelectorAll(
-            ".mapa-redes__conexion"
-        )
+        .querySelectorAll(".mapa-redes__conexion")
         .forEach(
             elemento => {
                 elemento.classList.remove(
@@ -2353,48 +2092,34 @@ function dibujarMapa(modelo) {
 
  /* ---------------CONEXIONES--------------- */
 function dibujarConexiones(modelo) {
-    const fragmento =
-        document.createDocumentFragment();
+    const fragmento = document.createDocumentFragment();
     modelo.conexiones.forEach(
         conexion => {
             fragmento.append(
-                crearSVG(
-                    "line",
+                crearSVG("line",
                     {
-                        class:
-                            "mapa-redes__conexion",
+                        class: "mapa-redes__conexion",
                         x1: conexion.superior.x,
                         y1: conexion.superior.y,
                         x2: conexion.subordinado.x,
                         y2: conexion.subordinado.y,
-                        "data-cluster-superior":
-                            conexion.superior.clusterRef.id,
-                        "data-cluster-subordinado":
-                            conexion.subordinado.clusterRef.id,
-                        "data-superior-id":
-                            conexion.superior.id,
-                        "data-subordinado-id":
-                            conexion.subordinado.id
+                        "data-cluster-superior": conexion.superior.clusterRef.id,
+                        "data-cluster-subordinado": conexion.subordinado.clusterRef.id,
+                        "data-superior-id": conexion.superior.id,
+                        "data-subordinado-id": conexion.subordinado.id
                         }
                      )
             );
         }
     );
-    modelo.capas.conexiones.append(
-        fragmento
-    );
+    modelo.capas.conexiones.append(fragmento);
 }
 
  /* ---------------NODOS--------------- */
 function dibujarNodos(modelo) {
-    const fragmento =
-        document.createDocumentFragment();
-    modelo.nodos.forEach(
-        nodo => {
-            const grupo = crearGrupoNodo(
-                nodo,
-                modelo
-            );
+    const fragmento = document.createDocumentFragment();
+    modelo.nodos.forEach(nodo => {
+            const grupo = crearGrupoNodo(nodo, modelo);
             fragmento.append(grupo);
         }
     );
@@ -2404,87 +2129,46 @@ function dibujarNodos(modelo) {
         .append(fragmento);
 }
 
-function crearGrupoNodo(
-    nodo,
-    modelo
-) {
-    const clases = [
-        "mapa-redes__nodo"
-    ];
-    if (
-        nodo.esRaizGlobal
-    ) {
-        clases.push(
-            "mapa-redes__nodo--raiz"
-        );
+function crearGrupoNodo(nodo, modelo) {
+    const clases = ["mapa-redes__nodo"];
+    if (nodo.esRaizGlobal) {
+        clases.push("mapa-redes__nodo--raiz");
     }
-    const grupo =
-        crearSVG(
-            "g",
+    const grupo = crearSVG( "g",
             {
-                class:
-                    clases.join(" "),
-                transform:
-                    `translate(${nodo.x} ${nodo.y})`,
-                "data-id":
-                    nodo.id,
-                "data-cluster-id":
-                    nodo.clusterRef.id,
-                "data-ubicacion":
-                    nodo.datos.ubicacion,
-                "data-superior":
-                    nodo.datos.reportaA ?? ""
+                class: clases.join(" "),
+                transform: `translate(${nodo.x} ${nodo.y})`,
+                "data-id": nodo.id,
+                "data-cluster-id": nodo.clusterRef.id,
+                "data-ubicacion": nodo.datos.ubicacion,
+                "data-superior": nodo.datos.reportaA ?? ""
             }
         );
-    const circulo =
-        crearSVG(
-            "circle",
+    const circulo = crearSVG("circle",
             {
-                class:
-                    "mapa-redes__circulo",
+                class:"mapa-redes__circulo",
                 cx: 0,
                 cy: 0,
                 r: nodo.radio
             }
         );
-    grupo.append(
-        circulo
-    );
-grupo.addEventListener(
-    "click",
+    grupo.append(circulo);
+grupo.addEventListener("click",
     evento => {
         evento.stopPropagation();
-        if (
-            consumirClickSuprimido(
-                modelo
-            )
-        ) {
+        if (consumirClickSuprimido(modelo)) {
             return;
         }
-        resaltarJerarquiaNodo(
-            modelo,
-            nodo
-        );
-        mostrarEtiquetaNodo(
-            nodo,
-            evento
-        );
+        resaltarJerarquiaNodo(modelo, nodo);
+        mostrarEtiquetaNodo(nodo, evento);
     }
 );
-grupo.addEventListener(
-    "dblclick",
-    evento => {
-        evento.preventDefault();
+grupo.addEventListener("dblclick",
+    evento => {evento.preventDefault();
         evento.stopPropagation();
-        limpiarResaltadoJerarquia(
-            modelo
-        );
+        limpiarResaltadoJerarquia(modelo);
         ocultarEtiquetaNodo();
-
-        alternarVistaCluster(
-            modelo,
-            nodo.clusterRef
-        );
+        alternarVistaCluster(modelo, nodo.clusterRef);
     }
 );
 return grupo;
@@ -2492,80 +2176,38 @@ return grupo;
 
 function construirTituloNodo(nodo) {
     const partes = [];
-    if (nodo.datos.nombre) {
-        partes.push(nodo.datos.nombre);
+    if (nodo.datos.nombre) {partes.push(nodo.datos.nombre);
     }
     if (nodo.datos.cargo) {
-        partes.push(
-            nodo.datos.cargo
-        );
+        partes.push(nodo.datos.cargo);
     }
     partes.push(nodo.datos.cluster);
     partes.push(nodo.datos.ubicacion);
     return partes.join(" · ");
 }
  /* ---------------ETIQUETAS--------------- */
-function mostrarEtiquetaNodo(
-    nodo,
-    evento
-) {
-    const contenedor =
-        document.querySelector(
+function mostrarEtiquetaNodo(nodo,evento) {
+    const contenedor = document.querySelector(
             CONFIG_LAYOUT
                 .SELECTORES
                 .contenedor
         );
-    if (
-        !contenedor
-    ) {
+    if (!contenedor) {
         return;
     }
     ocultarEtiquetaNodo();
-    const etiqueta =
-        document.createElement(
-            "div"
-        );
-    etiqueta.className =
-        "etiqueta-nodo";
-    etiqueta.dataset.nodoId =
-        nodo.id;
-    const nombre =
-        document.createElement(
-            "strong"
-        );
-    nombre.textContent =
-        nodo.datos.nombre
-        ||
-        "Sin nombre";
-    const cargo =
-        document.createElement(
-            "span"
-        );
-    cargo.textContent =
-        nodo.datos.cargo
-        ||
-        "Sin cargo";
-    const equipo =
-        document.createElement(
-            "small"
-        );
-    equipo.textContent =
-        nodo.datos.equipo
-        ||
-        "Sin equipo";
-    etiqueta.append(
-        nombre,
-        cargo,
-        equipo
-    );
-    contenedor.append(
-        etiqueta
-    );
-    posicionarEtiquetaNodo(
-        etiqueta,
-        evento,
-        contenedor
-    );
+    const etiqueta = document.createElement("div");
+    etiqueta.className = "etiqueta-nodo";
+    etiqueta.dataset.nodoId = nodo.id;
+    const nombre = document.createElement("strong");
+    nombre.textContent = nodo.datos.nombre || "Sin nombre";
+    const cargo = document.createElement("span");
+    cargo.textContent = nodo.datos.cargo || "Sin cargo";
+    const equipo = document.createElement("small");
+    equipo.textContent = nodo.datos.equipo || "Sin equipo";
+    etiqueta.append(nombre, cargo, equipo);
+    contenedor.append(etiqueta);
+    posicionarEtiquetaNodo(etiqueta, evento, contenedor);
 }
 
 function posicionarEtiquetaNodo(
@@ -2573,75 +2215,35 @@ function posicionarEtiquetaNodo(
     evento,
     contenedor
 ) {
-    const rectContenedor =
-        contenedor
+    const rectContenedor = contenedor
             .getBoundingClientRect();
     const margen = 10;
     const separacionNodo = 14;
-    const xClick =
-        evento.clientX
-        -
-        rectContenedor.left;
-    const yClick =
-        evento.clientY
-        -
-        rectContenedor.top;
-    const anchoEtiqueta =
-        etiqueta.offsetWidth;
-    const altoEtiqueta =
-        etiqueta.offsetHeight;
-    let izquierda =
-        xClick
-        -
-        anchoEtiqueta / 2;
-    izquierda =
-        limitarValor(
+    const xClick = evento.clientX - rectContenedor.left;
+    const yClick = evento.clientY - rectContenedor.top;
+    const anchoEtiqueta = etiqueta.offsetWidth;
+    const altoEtiqueta = etiqueta.offsetHeight;
+    let izquierda = xClick - anchoEtiqueta / 2;
+    izquierda = limitarValor(
             izquierda,
             margen,
-            rectContenedor.width
-            -
-            anchoEtiqueta
-            -
-            margen
-        );
-    let arriba =
-        yClick
-        -
-        altoEtiqueta
-        -
-        separacionNodo;
-    if (
-        arriba < margen
-    ) {
-        arriba =
-            yClick
-            +
-            separacionNodo;
+            rectContenedor.width - anchoEtiqueta - margen);
+    let arriba = yClick - altoEtiqueta - separacionNodo;
+    if (arriba < margen) {
+        arriba = yClick + separacionNodo;
     }
-    arriba =
-        limitarValor(
+    arriba = limitarValor(
             arriba,
             margen,
-            rectContenedor.height
-            -
-            altoEtiqueta
-            -
-            margen
-        );
-    etiqueta.style.left =
-        `${izquierda}px`;
-    etiqueta.style.top =
-        `${arriba}px`;
+            rectContenedor.height - altoEtiqueta - margen);
+    etiqueta.style.left = `${izquierda}px`;
+    etiqueta.style.top = `${arriba}px`;
 }
 
 function ocultarEtiquetaNodo() {
     const etiqueta =
-        document.querySelector(
-            ".etiqueta-nodo"
-        );
-    if (
-        etiqueta
-    ) {
+        document.querySelector(".etiqueta-nodo");
+    if (etiqueta) {
         etiqueta.remove();
     }
 }
@@ -2655,8 +2257,7 @@ function mostrarError(error) {
         );
     if (!contenedor)
         return;
-    const mensaje =
-        document.createElement("div");
+    const mensaje = document.createElement("div");
     mensaje.className = "mapa-redes__error";
     mensaje.textContent = error instanceof Error
             ? error.message
@@ -2665,26 +2266,17 @@ function mostrarError(error) {
 }
 
  /* ---------------UTILIDADES SVG--------------- */
-     function crearSVG(
-    etiqueta,
-    atributos = {}
-) {
+     function crearSVG(etiqueta, atributos = {}) {
     const elemento =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             etiqueta
         );
     Object.entries(atributos).forEach(([nombre, valor]) => {
-            if (
-                valor === undefined ||
-                valor === null
-            ) {
+            if (valor === undefined || valor === null) {
                 return;
             }
-            elemento.setAttribute(
-                nombre,
-                String(valor)
-            );
+            elemento.setAttribute(nombre, String(valor));
         }
     );
     return elemento;
@@ -2694,91 +2286,38 @@ function mostrarError(error) {
 function slug(valor) {
     return String(valor)
         .normalize("NFD")
-        .replace(
-            /[\u0300-\u036f]/g,
-            ""
-        )
+        .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
         .trim()
-        .replace(
-            /[^a-z0-9]+/g,
-            "-"
-        )
-        .replace(
-            /^-+|-+$/g,
-            ""
-        );
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
 }
 
-function obtenerAnguloDeterminista(
-    valor
-) {
-    const texto =
-        String(valor);
-    let hash =
-        2166136261;
-    for (
-        let indice = 0;
+function obtenerAnguloDeterminista(valor) {
+    const texto = String(valor);
+    let hash = 2166136261;
+    for (let indice = 0;
         indice < texto.length;
-        indice++
-    ) {
-        hash ^=
-            texto.charCodeAt(
-                indice
-            );
-        hash =
-            Math.imul(
-                hash,
-                16777619
-            );
+        indice++) {
+        hash ^= texto.charCodeAt(indice);
+        hash = Math.imul(hash, 16777619);
     }
     return (
-        (hash >>> 0)
-        /
-        4294967296
-    )
-    *
-    Math.PI
-    *
-    2;
+        (hash >>> 0) / 4294967296) * Math.PI} * 2;
 }
 
-function obtenerDireccionDeterminista(
-    idA,
-    idB
-) {
-    const clave =
-        String(idA) < String(idB)
-            ? `${idA}|${idB}`
-            : `${idB}|${idA}`;
-
+function obtenerDireccionDeterminista(idA, idB) {
+    const clave = String(idA) < String(idB)
+            ? `${idA}|${idB}` : `${idB}|${idA}`;
     let hash = 2166136261;
-    for (
-        let indice = 0;
+    for (let indice = 0;
         indice < clave.length;
-        indice++
-    ) {
-        hash ^=
-            clave.charCodeAt(
-                indice
-            );
-
-        hash =
-            Math.imul(
-                hash,
-                16777619
-            );
+        indice++) {
+        hash ^= clave.charCodeAt(indice);
+        hash = Math.imul(hash, 16777619);
     }
-    const proporcion =
-        (hash >>> 0)
-        /
-        4294967296;
-    const angulo =
-        proporcion
-        *
-        Math.PI
-        *
-        2;
+    const proporcion = (hash >>> 0) / 4294967296;
+    const angulo = proporcion * Math.PI * 2;
     return {
         x: Math.cos(angulo),
         y: Math.sin(angulo)
@@ -2792,9 +2331,6 @@ function limitarValor(
 ) {
     return Math.max(
         minimo,
-        Math.min(
-            valor,
-            maximo
-        )
+        Math.min(valor, maximo)
     );
 }
