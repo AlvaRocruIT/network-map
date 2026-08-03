@@ -1925,7 +1925,7 @@ function enfocarCluster(modelo, cluster) {
                     .capas
                     .nodos
                     .getBBox();
-            if (cajaVisible.width <= 0 || cajaVisible.height <= 0}) {
+            if (cajaVisible.width <= 0 || cajaVisible.height <= 0) {
                 return;
             }
             const viewBox = modelo
