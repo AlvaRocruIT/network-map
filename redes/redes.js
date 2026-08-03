@@ -826,10 +826,7 @@ function resolverLayoutCluster(cluster)
             .sort(compararUbicacionesPorTamano);
     ubicacionesPendientes.forEach(
         ubicacion => {
-            colocarUbicacionEnRacimo(
-                ubicacion,
-                ubicacionesColocadas
-            );
+            colocarUbicacionEnRacimo(ubicacion, ubicacionesColocadas);
             ubicacionesColocadas.push(ubicacion);
         }
     );
@@ -840,7 +837,7 @@ function seleccionarUbicacionCentral(cluster)
 {
     const ubicacionRaiz = cluster.ubicaciones.find(
             ubicacion => ubicacion.nodos.some(
-                    nodo => odo.esRaizGlobal
+                    nodo => nodo.esRaizGlobal
                 )
         );
     if (ubicacionRaiz) {
@@ -855,7 +852,6 @@ function compararUbicacionesPorTamano(a,b) {
     if (diferenciaRadio !== 0) {
         return diferenciaRadio;
     }
-
     return a.id.localeCompare(b.id);
 }
 
