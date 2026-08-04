@@ -2146,18 +2146,6 @@ grupo.addEventListener("dblclick",
 );
 return grupo;
 }
-
-function construirTituloNodo(nodo) {
-    const partes = [];
-    if (nodo.datos.nombre) {partes.push(nodo.datos.nombre);
-    }
-    if (nodo.datos.cargo) {
-        partes.push(nodo.datos.cargo);
-    }
-    partes.push(nodo.datos.cluster);
-    partes.push(nodo.datos.ubicacion);
-    return partes.join(" · ");
-}
  /* ---------------ETIQUETAS--------------- */
 function mostrarEtiquetaNodo(nodo,evento) {
     const contenedor = document.querySelector(
