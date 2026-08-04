@@ -138,15 +138,6 @@ function validarConfiguracion() {
         if (!ruta) {
             throw new Error("Debes configurar la ruta del JSON.");
     }
-    const suma = Object
-        .values(CONFIG_LAYOUT.PESOS)
-        .reduce((a, b) => a + b, 0);
-    if (Math.abs(suma - 1) > 0.0001) 
-    {
-        throw new Error(
-            "Los pesos deben sumar 1."
-        );
-    }
 }
 
 function validarPersonas(personas) {
