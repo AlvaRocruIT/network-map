@@ -34,14 +34,11 @@ const CONFIG_LAYOUT = {
     },
  
     DISTANCIAS: {
-        jerarquiaLocal: 34,
         separacionNivelesUbicacion: 38,
         separacionNodosAnillo: 14,
         radioNucleoUbicacion: 18,
         separacionUbicaciones: 22,
         separacionClusters: 60,
-        separacionRamas: 20,
-        margenColision: 5,
         margenMapa: 60
     },
 
