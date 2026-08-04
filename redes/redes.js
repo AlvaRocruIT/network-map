@@ -1248,31 +1248,6 @@ if (modelo.raiz) {
 }
 
     /* ---------------SIMULACIÓN POR FUERZAS--------------- */
-function simularLayout(modelo) {
-    let intensidad =
-        CONFIG_LAYOUT
-            .SIMULACION
-            .intensidadInicial;
-    for (
-        let iteracion = 0;
-        iteracion < CONFIG_LAYOUT
-            .SIMULACION
-            .iteraciones;
-        iteracion++) {
-        const desplazamientos = crearMapaDesplazamientos(modelo.nodos);
-        aplicarFuerzaUbicacion(modelo, desplazamientos);
-        aplicarFuerzaCluster(modelo, desplazamientos);
-        aplicarFuerzaJerarquia(modelo, desplazamientos);
-        aplicarFuerzaSuperior(modelo, desplazamientos);
-        aplicarFuerzaColision(modelo, desplazamientos);
-        aplicarDesplazamientos(modelo.nodos, desplazamientos, intensidad);
-        intensidad *=
-            CONFIG_LAYOUT
-                .SIMULACION
-                .enfriamiento;
-    }
-}
-
 function crearMapaDesplazamientos(nodos) {
     const mapa = new Map();
     nodos.forEach( nodo => {mapa.set(nodo.id,
@@ -1496,32 +1471,6 @@ function aplicarDesplazamientos(
 }
 
     /* ---------------PASADA FINAL DE COLISIONES--------------- */
-function resolverColisiones(modelo) {
-    const iteraciones =
-        CONFIG_LAYOUT
-            .SIMULACION
-            .iteracionesColisionFinal;
-    for (let iteracion = 0;
-        iteracion < iteraciones; iteracion++) {
-        const desplazamientos =
-            crearMapaDesplazamientos(modelo.nodos);
-        aplicarFuerzaColision(modelo, desplazamientos);
-        aplicarDesplazamientos(modelo.nodos, desplazamientos, 0.65);
-    }
-}
-
-function recalcularRadiosPostSimulacion(modelo) {
-    modelo.ubicaciones.forEach( ubicacion => {
-            recalcularRadioUbicacionFinal(ubicacion);
-        }
-    );
-
-    modelo.clusters.forEach(cluster => {
-            calcularRadioCluster(cluster);
-        }
-    );
-}
-
 function recalcularRadioUbicacionFinal(ubicacion) {
     const centroX = ubicacion.cluster.x
         + ubicacion.xLocal;
