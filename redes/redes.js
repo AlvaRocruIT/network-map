@@ -1229,26 +1229,6 @@ function crearMapaDesplazamientos(nodos) {
 }
 
     /* ---------------FUERZA: PERMANECER EN UBICACIÓN--------------- */
-function aplicarFuerzaUbicacion(modelo, desplazamientos) {
-    const peso =
-        CONFIG_LAYOUT
-            .PESOS
-            .permanecerEnUbicacion
-        * CONFIG_LAYOUT
-            .FUERZAS
-            .ubicacion;
-    modelo.nodos.forEach(
-        nodo => {
-            const objetivo = obtenerObjetivoUbicacion(nodo);
-            const dx = objetivo.x - nodo.x;
-            const dy = objetivo.y - nodo.y;
-            const desplazamiento = desplazamientos.get(nodo.id);
-            desplazamiento.x += dx * peso;
-            desplazamiento.y += dy * peso;
-        }
-    );
-}
-
 function obtenerObjetivoUbicacion(nodo) {
     return {x: nodo.clusterRef.x
                 + nodo.ubicacionRef.xLocal
@@ -1261,91 +1241,6 @@ function obtenerObjetivoUbicacion(nodo) {
 }
 
     /* ---------------FUERZA: PERMANECER EN CLUSTER--------------- */
-function aplicarFuerzaCluster(modelo, desplazamientos) {
-    const peso =
-        CONFIG_LAYOUT
-            .PESOS
-            .permanecerEnCluster
-        * CONFIG_LAYOUT
-            .FUERZAS
-            .cluster;
-    modelo.nodos.forEach(nodo => {
-            const cluster = nodo.clusterRef;
-            const dx = cluster.x - nodo.x;
-            const dy = cluster.y - nodo.y;
-            const desplazamiento = desplazamientos.get(nodo.id);
-            desplazamiento.x += dx * peso;
-            desplazamiento.y += dy * peso;
-        }
-    );
-}
-
-    /* ---------------FUERZA: MANTENER JERARQUÍA--------------- */
-function aplicarFuerzaJerarquia(modelo,desplazamientos) {
-    const peso =
-        CONFIG_LAYOUT
-            .PESOS
-            .mantenerJerarquia
-        * CONFIG_LAYOUT
-            .FUERZAS
-            .jerarquia;
-    modelo.conexiones.forEach(
-        conexion => {
-            if (!conexion.mismaUbicacion) {
-                return;
-            }
-            aplicarResorte( conexion.superior,
-                conexion.subordinado,
-                CONFIG_LAYOUT
-                    .DISTANCIAS
-                    .jerarquiaLocal,
-                peso, desplazamientos
-            );
-        }
-    );
-}
-
-    /* ---------------FUERZA: ACERCARSE AL SUPERIOR--------------- */
-function aplicarFuerzaSuperior(modelo, desplazamientos) {
-    const peso =
-        CONFIG_LAYOUT
-            .PESOS
-            .acercarseAlSuperior
-        *CONFIG_LAYOUT
-            .FUERZAS
-            .superior;
-    modelo.nodos.forEach(nodo => {
-            if (!nodo.superior || nodo.ubicacionRef !== nodo.superior.ubicacionRef) {
-                return;
-            }
-            const dx = nodo.superior.x - nodo.x;
-            const dy = nodo.superior.y -nodo.y;
-            const desplazamiento = desplazamientos.get(nodo.id);
-                desplazamiento.x += dx * peso;
-                desplazamiento.y += dy * peso;
-        }
-    );
-}
-
-    /* ---------------FUERZA: COLISIONES--------------- */
-function aplicarFuerzaColision(modelo, desplazamientos) {
-    const peso =
-        CONFIG_LAYOUT
-            .PESOS
-            .evitarColisiones
-        * CONFIG_LAYOUT
-            .FUERZAS
-            .colision;
-    modelo.ubicaciones.forEach(ubicacion => {
-            aplicarColisionesDentroUbicacion(
-                ubicacion,
-                desplazamientos,
-                peso
-            );
-        }
-    );
-}
-
 function aplicarColisionesDentroUbicacion(
     ubicacion,
     desplazamientos,
