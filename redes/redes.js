@@ -1581,21 +1581,6 @@ function normalizarMapa(modelo) {
     modelo.svg.setAttribute( "viewBox", `0 0 ${lado} ${lado}`);
 }
 
-function calcularLimites(nodos) {
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
-    nodos.forEach(nodo => {
-            minX = Math.min(minX, nodo.x - nodo.radio);
-            minY = Math.min( minY, nodo.y - nodo.radio);
-            maxX = Math.max( maxX, nodo.x + nodo.radio);
-            maxY = Math.max( maxY, nodo.y + nodo.radio);
-        }
-    );
-    return {minX, minY, maxX, maxY};
-}
-
 /* ---------------PAN Y ZOOM--------------- */
 function configurarInteraccionVista(modelo) {
     const svg = modelo.svg;
