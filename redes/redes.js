@@ -2239,19 +2239,6 @@ function slug(valor) {
         .replace(/^-+|-+$/g, "");
 }
 
-function obtenerAnguloDeterminista(valor) {
-    const texto = String(valor);
-    let hash = 2166136261;
-    for (let indice = 0;
-        indice < texto.length;
-        indice++) {
-        hash ^= texto.charCodeAt(indice);
-        hash = Math.imul(hash, 16777619);
-    }
-    return (
-        (hash >>> 0) / 4294967296) * Math.PI * 2;
-}
-
 function obtenerDireccionDeterminista(idA, idB) {
     const clave = String(idA) < String(idB)
             ? `${idA}|${idB}` : `${idB}|${idA}`;
