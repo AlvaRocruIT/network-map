@@ -27,15 +27,7 @@ const CONFIG_LAYOUT = {
         factorRueda: 1.15,
         umbralArrastre: 4
     },
-
-    PESOS: {
-        permanecerEnUbicacion: 0.23,
-        permanecerEnCluster: 0.23,
-        mantenerJerarquia: 0.16,
-        evitarColisiones: 0.28,
-        acercarseAlSuperior: 0.10
-    },
-    
+  
     NODOS: {
         radioNormal: 10,
         radioRaiz: 15
@@ -72,22 +64,7 @@ const CONFIG_LAYOUT = {
         pesoPoblacionSector: 1,
         pesoTamanoSector: 0.018,
         margenAngularSector: 0.035
-    },
- 
-    FUERZAS: {
-        ubicacion: 0.05,
-        cluster: 0.025,
-        jerarquia: 0.045,
-        colision: 0.90,
-        superior: 0.018
-    },
-
-    SIMULACION: {
-        iteraciones: 260,
-        intensidadInicial: 1,
-        enfriamiento: 0.985,
-        iteracionesColisionFinal: 18
-    }
+    },   
 };
 
     /* ---------------AQUÍ VAMOS--------------- */
