@@ -1911,24 +1911,6 @@ function slug(valor) {
         .replace(/^-+|-+$/g, "");
 }
 
-function obtenerDireccionDeterminista(idA, idB) {
-    const clave = String(idA) < String(idB)
-            ? `${idA}|${idB}` : `${idB}|${idA}`;
-    let hash = 2166136261;
-    for (let indice = 0;
-        indice < clave.length;
-        indice++) {
-        hash ^= clave.charCodeAt(indice);
-        hash = Math.imul(hash, 16777619);
-    }
-    const proporcion = (hash >>> 0) / 4294967296;
-    const angulo = proporcion * Math.PI * 2;
-    return {
-        x: Math.cos(angulo),
-        y: Math.sin(angulo)
-    };
-}
-
 function limitarValor(
     valor,
     minimo,
