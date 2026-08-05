@@ -610,14 +610,17 @@ function agruparNodosPorNivelLocal(ubicacion) {
                 .push(nodo);
         }
     );
-    return [...mapa.entries()]
-        .sort(
-            ([profundidadA], [profundidadB]) 
-             => profundidadA - profundidadB
-        )
-        .map(([profundidad, nodos]) => 
-         ({profundidad, nodos})
-        );
+return [...mapa.entries()]
+    .sort(
+        ([profundidadA], [profundidadB]) =>
+            profundidadA - profundidadB
+    )
+    .map(
+        ([profundidad, nodos]) => ({
+            profundidad,
+            nodos
+        })
+    );
 }
 
 function distribuirNivelEnAnillo(
