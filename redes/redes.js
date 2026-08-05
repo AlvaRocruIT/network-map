@@ -613,7 +613,7 @@ function agruparNodosPorNivelLocal(ubicacion) {
     return [...mapa.entries()]
         .sort(
             ([profundidadA], [profundidadB]) 
-             => profundidadA - profundidadB)
+             => profundidadA - profundidadB))
         .map(([profundidad, nodos]) => 
          ({profundidad, nodos})
         );
