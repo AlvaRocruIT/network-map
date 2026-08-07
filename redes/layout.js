@@ -1,4 +1,4 @@
----------------------CONFIG--------------- */
+/*---------------------CONFIG--------------- */
 const CONFIG_LAYOUT = {
     VINCULOS: {
         datos: "../data/organigrama.json"
