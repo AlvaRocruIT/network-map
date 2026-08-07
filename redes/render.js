@@ -29,6 +29,7 @@ function prepararSVG(modelo) {
     modelo.capas = {conexiones, nodos};
     configurarInteraccionVista(modelo);
     aplicarTransformacionVista(modelo);
+}
 
       /* ---------------RENDERIZADO--------------- */
 function dibujarMapa(modelo) {
