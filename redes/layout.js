@@ -171,6 +171,187 @@ function calcularLayout(modelo) {
     normalizarMapa(modelo);
 }
 
+  /* ---------------LAYOUT DE UBICACIONES--------------- */
+function resolverLayoutUbicaciones(modelo) {
+    modelo.ubicaciones.forEach(
+        ubicacion => {
+            resolverLayoutUbicacion(ubicacion);
+        }
+    );
+}
+function resolverLayoutUbicacion(ubicacion) {
+    const niveles = agruparNodosPorNivelLocal(ubicacion);
+
+    if (niveles.length === 0) {
+        ubicacion.radio =
+            CONFIG_LAYOUT
+                .ESCALA
+                .crecimientoUbicacion;
+        return;
+    }
+
+    const raizGlobal = ubicacion.nodos.find(
+            nodo => nodo.esRaizGlobal);
+    let radioAnterior = 0;
+    niveles.forEach(
+        nivel => {
+            let nodosNivel = [...nivel.nodos]
+                    .sort(compararNodosDeterministicamente);
+
+            if (nivel.profundidad === 0 && raizGlobal) {
+                raizGlobal.xLocal = 0;
+                raizGlobal.yLocal = 0;
+                raizGlobal.angulo =
+                    -Math.PI / 2;
+                nodosNivel =
+                    nodosNivel.filter(nodo => nodo !== raizGlobal);
+                if (nodosNivel.length > 0) {
+                    radioAnterior =
+                        distribuirNivelEnAnillo(
+                            nodosNivel,
+                            CONFIG_LAYOUT
+                                .DISTANCIAS
+                                .radioNucleoUbicacion,
+                            -Math.PI / 2
+                        );
+                }
+                return;
+            }
+
+            if (nivel.profundidad === 0 && nodosNivel.length === 1) {
+                const nodo =
+                    nodosNivel[0];
+                nodo.xLocal = 0;
+                nodo.yLocal = 0;
+                nodo.angulo = -Math.PI / 2;
+                return;
+            }
+            const radioJerarquico = nivel.profundidad === 0
+                    ? CONFIG_LAYOUT
+                        .DISTANCIAS
+                        .radioNucleoUbicacion
+                    : nivel.profundidad
+                        *
+                        CONFIG_LAYOUT
+                            .DISTANCIAS
+                            .separacionNivelesUbicacion;
+            const radioMinimo = Math.max(
+                    radioJerarquico,
+                    radioAnterior +
+                    CONFIG_LAYOUT
+                        .DISTANCIAS
+                        .separacionNivelesUbicacion
+                        *
+                        0.72
+                );
+            radioAnterior = distribuirNivelEnAnillo(
+                    nodosNivel,
+                    radioMinimo,
+                    -Math.PI / 2
+                    + nivel.profundidad * 0.31
+                );
+        }
+    );
+
+
+        /* ---------------LAYOUT DE CLUSTERS--------------- */
+function resolverLayoutClusters(modelo) {
+    modelo.clusters.forEach(
+        cluster => {
+            resolverLayoutCluster(cluster);
+        }
+    );
+    distribuirClusters(modelo.clusters);
+}
+
+function resolverLayoutCluster(cluster) 
+{
+    const ubicaciones = cluster.ubicaciones;
+    if (ubicaciones.length === 0) {
+        cluster.radio = 0;
+        return;
+    }
+    const ubicacionCentral =
+        seleccionarUbicacionCentral(cluster);
+    ubicacionCentral.xLocal = 0;
+    ubicacionCentral.yLocal = 0;
+    const ubicacionesColocadas = [ubicacionCentral];
+    const ubicacionesPendientes = ubicaciones
+            .filter(ubicacion => ubicacion !== ubicacionCentral)
+            .sort(compararUbicacionesPorTamano);
+    ubicacionesPendientes.forEach(
+        ubicacion => {
+            colocarUbicacionEnRacimo(ubicacion, ubicacionesColocadas);
+            ubicacionesColocadas.push(ubicacion);
+        }
+    );
+    calcularRadioCluster(cluster);
+}
+
+    /* ---------------POSICIÓN GLOBAL DE NODOS--------------- */
+function resolverLayoutPersonas(modelo) {
+    modelo.clusters.forEach(
+        cluster => {
+            cluster.ubicaciones.forEach(
+                ubicacion => {
+                    ubicacion.nodos.forEach(
+                        nodo => {
+                            nodo.xBase = cluster.x + ubicacion.xLocal + nodo.xLocal;
+                            nodo.yBase = cluster.y + ubicacion.yLocal + nodo.yLocal;
+                            nodo.x = nodo.xBase;
+                            nodo.y = nodo.yBase;
+                        }
+                    );
+                }
+            );
+        }
+    );
+if (modelo.raiz) {
+        modelo.raiz.xBase = 0;
+        modelo.raiz.yBase = 0;
+        modelo.raiz.x = 0;
+        modelo.raiz.y = 0;
+    }
+}
+
+    /* ---------------NORMALIZACIÓN--------------- */
+function normalizarMapa(modelo) {
+    const margen =
+        CONFIG_LAYOUT
+            .DISTANCIAS
+            .margenMapa;
+
+    let alcanceMaximo = 0;
+    modelo.nodos.forEach(
+        nodo => {
+            const alcanceX = Math.abs(nodo.x)
+                + nodo.radio;
+            const alcanceY = Math.abs(nodo.y)
+                + nodo.radio;
+            alcanceMaximo = Math.max(
+                    alcanceMaximo,
+                    alcanceX,
+                    alcanceY
+                );
+        }
+    );
+    const semilado = alcanceMaximo + margen;
+    const lado = semilado * 2;
+    modelo.nodos.forEach(
+        nodo => {
+            nodo.x += semilado;
+            nodo.y += semilado;
+        }
+    );
+    modelo.clusters.forEach(
+        cluster => { cluster.x += semilado;
+            cluster.y += semilado;
+        }
+    );
+
+    modelo.svg.setAttribute( "viewBox", `0 0 ${lado} ${lado}`);
+}
+    
     /* ---------------PREPARACIÓN DE NODOS--------------- */
 function prepararNodos(personas) {
     return personas.map(persona => ({
