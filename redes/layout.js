@@ -252,7 +252,7 @@ function resolverLayoutUbicacion(ubicacion) {
                 );
         }
     );
-
+}
 
         /* ---------------LAYOUT DE CLUSTERS--------------- */
 function resolverLayoutClusters(modelo) {
