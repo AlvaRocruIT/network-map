@@ -163,6 +163,14 @@ function construirModelo(personas) {
     };
 }
 
+    /* ---------------CÁLCULO DEL LAYOUT--------------- */
+function calcularLayout(modelo) {
+    resolverLayoutUbicaciones(modelo);
+    resolverLayoutClusters(modelo);
+    resolverLayoutPersonas(modelo);
+    normalizarMapa(modelo);
+}
+
     /* ---------------PREPARACIÓN DE NODOS--------------- */
 function prepararNodos(personas) {
     return personas.map(persona => ({
